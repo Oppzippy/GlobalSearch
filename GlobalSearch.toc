@@ -1,4 +1,4 @@
-## Interface: 90250
+## Interface: 90205
 ## Title: Global Search
 ## Notes: Search for anything.
 ## Author: Oppzippy
@@ -6,5 +6,7 @@
 ## OptionalDeps: Ace3
 
 Libs.xml
+Widgets\Widgets.xml
 
+SearchUI.lua
 Core.lua
