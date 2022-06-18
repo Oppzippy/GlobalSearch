@@ -1,0 +1,10 @@
+## Interface: 90250
+## Title: Global Search
+## Notes: Search for anything.
+## Author: Oppzippy
+## Version: @project-version@
+## OptionalDeps: Ace3
+
+Libs.xml
+
+Core.lua
