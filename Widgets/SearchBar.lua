@@ -10,6 +10,9 @@ local methods = {
 	SetText = function(self, text)
 		self.frame:SetText(text)
 	end,
+	GetText = function(self)
+		return self.frame:GetText()
+	end,
 }
 
 do
@@ -25,8 +28,13 @@ do
 		end
 	end
 
+	local function onTextChanged(frame)
+		frame.obj:Fire("OnTextChanged")
+	end
+
 	local function constructor()
 		local frame = CreateFrame("EditBox", nil, UIParent, "BackdropTemplate")
+		frame:Hide()
 
 		frame.backdropInfo = {
 			bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
@@ -43,6 +51,7 @@ do
 
 		frame:SetScript("OnEscapePressed", onEscapePressed)
 		frame:SetScript("OnArrowPressed", onArrowPressed)
+		frame:SetScript("OnTextChanged", onTextChanged)
 
 		local widget = {
 			type = widgetType,

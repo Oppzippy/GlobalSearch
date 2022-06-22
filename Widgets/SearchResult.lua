@@ -16,6 +16,7 @@ local methods = {
 do
 	local function constructor()
 		local frame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
+		frame:Hide()
 
 		frame.backdropInfo = {
 			bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",

@@ -1,12 +1,9 @@
-local _, addon = ...
-
+local AceAddon = LibStub("AceAddon-3.0")
+local AceLocale = LibStub("AceLocale-3.0")
 local AceGUI = LibStub("AceGUI-3.0")
 
-local frame = AceGUI:Create("GlobalSearch-SearchBar")
-frame:SetPoint("TOP", 0, -20)
-frame:SetCallback("OnClose", function()
-	frame:Release()
-end)
+local addon = AceAddon:NewAddon("GlobalSearch")
+local L = AceLocale:GetLocale("GlobalSearch")
 
-local result = AceGUI:Create("GlobalSearch-SearchResult")
-result:SetPoint("TOP", 0, -100)
+function addon:OnEnable()
+end

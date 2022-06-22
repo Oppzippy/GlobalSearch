@@ -1,0 +1,5 @@
+<Bindings>
+	<Binding name="GLOBALSEARCH_TOGGLE" header="GLOBALSEARCH" category="ADDONS" default="ALT+SPACE">
+		LibStub("AceAddon-3.0"):GetAddon("GlobalSearch"):GetModule("SearchUI"):Show()
+	</Binding>
+</Bindings>

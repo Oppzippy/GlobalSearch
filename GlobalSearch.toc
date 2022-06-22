@@ -6,7 +6,11 @@
 ## OptionalDeps: Ace3
 
 Libs.xml
+Bindings.xml
+
+Locales\Locales.xml
 Widgets\Widgets.xml
 
-SearchUI.lua
 Core.lua
+
+Modules\Modules.xml
