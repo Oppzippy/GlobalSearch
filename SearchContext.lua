@@ -8,8 +8,11 @@ local SearchContextPrototype = {}
 
 ---@class SearchContextItem
 ---@field name string
----@field icon number
+---@field category string
+---@field texture number
 ---@field searchableText string
+---@field spellId number
+---@field action function
 
 ---@param items SearchContextItem[]
 local function CreateSearchContext(items)
@@ -19,6 +22,7 @@ local function CreateSearchContext(items)
 end
 
 ---@param query string
+---@return SearchContextItem[]
 function SearchContextPrototype:Search(query)
 	local items
 	if self.prevQuery ~= nil and string.find(query, self.prevQuery, nil, true) == 1 then
@@ -26,6 +30,7 @@ function SearchContextPrototype:Search(query)
 	else
 		items = self.items
 	end
+	self.prevQuery = query
 
 	local results = self:SearchItems(query, items)
 	self.results = results
@@ -37,7 +42,7 @@ end
 function SearchContextPrototype:SearchItems(query, items)
 	local matches = {}
 	for _, item in ipairs(items) do
-		if ns.QueryMatcher.MatchesQuery then
+		if ns.QueryMatcher.MatchesQuery(query, item.searchableText) then
 			matches[#matches + 1] = item
 		end
 	end

@@ -5,11 +5,14 @@ local AceGUI = LibStub("AceGUI-3.0")
 local methods = {
 	OnAcquire = function(self)
 		self.frame:SetSize(350, 40)
-		self.texture:SetTexture(132089)
-		self.fontString:SetText("Ambush")
+		self.texture:SetTexture(0)
+		self.fontString:SetText("")
 	end,
 	SetText = function(self, text)
-		self.frame:SetText(text)
+		self.fontString:SetText(text)
+	end,
+	SetTexture = function(self, texture)
+		self.texture:SetTexture(texture)
 	end,
 }
 

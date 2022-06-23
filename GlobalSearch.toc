@@ -11,6 +11,9 @@ Bindings.xml
 Locales\Locales.xml
 Widgets\Widgets.xml
 
+SearchContext.lua
+QueryMatcher.lua
+SearchItemProvider.lua
 Core.lua
 
 Modules\Modules.xml

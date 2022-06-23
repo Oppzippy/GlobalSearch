@@ -1,9 +1,15 @@
 ---@class ns
-local _, ns
+local _, ns = ...
 
 ---@param query string
 ---@param text string
 local function MatchesQuery(query, text)
+	if query == "" then
+		return true
+	end
+	query = query:lower()
+	text = text:lower()
+
 	local queryIndex = 1
 	for i = 1, #text do
 		local char = string.sub(text, i, i)
