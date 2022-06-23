@@ -82,7 +82,6 @@ function module:Search(query)
 		resultWidget:SetFullWidth(true)
 		resultWidget:SetHeight(40)
 		self.widgets.resultsContainer:AddChild(resultWidget)
-		print(result.texture, result.name)
 
 		if i > 10 then break end
 	end

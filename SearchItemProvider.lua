@@ -22,22 +22,21 @@ local function GetSpells()
 	for i = 1, GetNumSpellTabs() do
 		local tabName, _, offset, numEntries = GetSpellTabInfo(i)
 		for j = offset + 1, offset + numEntries do
-			local _, _, spellId = GetSpellBookItemName(j, BOOKTYPE_SPELL)
-			local spell = Spell:CreateFromSpellID(spellId)
-			local name = spell:GetSpellName()
-			local subtext = spell:GetSpellSubtext()
-			if subtext ~= nil and subtext ~= "" then
-				name = string.format("%s (%s)", name, subtext)
-			end
-			local searchableText = string.format("%s %s %d", name, spell:GetSpellDescription(), spellId)
+			local spellName, spellSubName, spellId = GetSpellBookItemName(j, BOOKTYPE_SPELL)
+			if spellId ~= nil and not IsPassiveSpell(spellId) then
+				local name = spellName
+				if spellSubName ~= "" then
+					name = string.format("%s (%s)", spellName, spellSubName)
+				end
 
-			items[#items + 1] = {
-				name = spell:GetSpellName(),
-				category = tabName,
-				texture = GetSpellTexture(spellId),
-				searchableText = searchableText,
-				spellId = spellId,
-			}
+				items[#items + 1] = {
+					name = name,
+					category = tabName,
+					texture = GetSpellTexture(spellId),
+					searchableText = name,
+					spellId = spellId,
+				}
+			end
 		end
 	end
 
