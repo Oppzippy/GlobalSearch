@@ -14,16 +14,24 @@ TODO:
 
 ]]
 
----@return SearchContextItem[]
+---@class SearchItem
+---@field name string
+---@field category string
+---@field texture number
+---@field searchableText string
+---@field spellId number
+---@field action function
+
+---@return SearchItem[]
 local function GetSpells()
-	---@type SearchContextItem[]
+	---@type SearchItem[]
 	local items = {}
 
 	for i = 1, GetNumSpellTabs() do
 		local tabName, _, offset, numEntries = GetSpellTabInfo(i)
 		for j = offset + 1, offset + numEntries do
 			local spellName, spellSubName, spellId = GetSpellBookItemName(j, BOOKTYPE_SPELL)
-			if spellId ~= nil and not IsPassiveSpell(spellId) then
+			if spellId and not IsPassiveSpell(spellId) then
 				local name = spellName
 				if spellSubName ~= "" then
 					name = string.format("%s (%s)", spellName, spellSubName)
@@ -67,13 +75,13 @@ local function GetDefaultUIPanels()
 
 end
 
----@return SearchContextItem[]
+---@return SearchItem[]
 local function GetItems()
 	return GetSpells()
 end
 
 local export = { GetItems = GetItems }
-if ns ~= nil then
+if ns then
 	ns.SearchItemProvider = export
 end
 return export

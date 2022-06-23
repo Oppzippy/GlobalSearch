@@ -16,7 +16,7 @@ function module:OnInitialize()
 end
 
 function module:Show()
-	if self.widgets.container ~= nil then return end
+	if self.widgets.container then return end
 
 	local container = AceGUI:Create("SimpleGroup")
 	container:SetLayout("List")
@@ -77,8 +77,8 @@ function module:Search(query)
 	self.widgets.resultsContainer:PauseLayout()
 	for i, result in ipairs(results) do
 		local resultWidget = AceGUI:Create("GlobalSearch-SearchResult")
-		resultWidget:SetText(result.name)
-		resultWidget:SetTexture(result.texture)
+		resultWidget:SetText(self:HighlightRanges(result.item.name, result.matchRanges))
+		resultWidget:SetTexture(result.item.texture)
 		resultWidget:SetFullWidth(true)
 		resultWidget:SetHeight(40)
 		self.widgets.resultsContainer:AddChild(resultWidget)
@@ -87,4 +87,33 @@ function module:Search(query)
 	end
 	self.widgets.resultsContainer:ResumeLayout()
 	self.widgets.resultsContainer:DoLayout()
+end
+
+do
+	local color = CreateColor(0.75, 0.75, 0)
+
+	---@param text string
+	---@param ranges MatchRange[]
+	function module:HighlightRanges(text, ranges)
+		if #ranges == 0 then
+			return text
+		end
+
+		---@type string[]
+		local newStringTable = {}
+		for i, range in ipairs(ranges) do
+			if range.from ~= 1 then
+				-- add everything between the previous range and this one
+				local prevTo = i == 1 and 1 or (ranges[i - 1].to + 1)
+				newStringTable[#newStringTable + 1] = text:sub(prevTo, range.from - 1)
+			end
+			local substring = text:sub(range.from, range.to)
+			newStringTable[#newStringTable + 1] = color:WrapTextInColorCode(substring)
+		end
+
+		-- the rest outside the last range
+		newStringTable[#newStringTable + 1] = text:sub(ranges[#ranges].to + 1, #text)
+
+		return table.concat(newStringTable)
+	end
 end
