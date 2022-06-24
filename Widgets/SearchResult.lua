@@ -7,12 +7,20 @@ local methods = {
 		self.frame:SetSize(350, 40)
 		self.texture:SetTexture(0)
 		self.fontString:SetText("")
+		self.highlightTexture:Hide()
 	end,
 	SetText = function(self, text)
 		self.fontString:SetText(text)
 	end,
 	SetTexture = function(self, texture)
 		self.texture:SetTexture(texture)
+	end,
+	SetIsSelected = function(self, isSelected)
+		if isSelected then
+			self.highlightTexture:Show()
+		else
+			self.highlightTexture:Hide()
+		end
 	end,
 }
 
@@ -27,6 +35,11 @@ do
 		}
 		frame:ApplyBackdrop()
 
+		local highlightTexture = frame:CreateTexture(nil, "ARTWORK")
+		highlightTexture:SetAllPoints(frame)
+		highlightTexture:SetColorTexture(1, 1, 1, 0.5)
+		highlightTexture:Hide()
+
 		local texture = frame:CreateTexture(nil, "OVERLAY")
 		texture:SetPoint("LEFT", 4, 0)
 		texture:SetSize(32, 32)
@@ -38,6 +51,7 @@ do
 			type = widgetType,
 			frame = frame,
 			texture = texture,
+			highlightTexture = highlightTexture,
 			fontString = fontString,
 		}
 

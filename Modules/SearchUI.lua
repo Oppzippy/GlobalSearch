@@ -11,12 +11,16 @@ local module = addon:NewModule("SearchUI")
 ---@type table<string, AceGUIWidget|AceGUIContainer>
 module.widgets = {}
 module.searchQuery = ""
+module.selectedIndex = 1
+module.maxResults = 10
 
 function module:OnInitialize()
 end
 
 function module:Show()
 	if self.widgets.container then return end
+
+	self.selectedIndex = 1
 
 	local container = AceGUI:Create("SimpleGroup")
 	container:SetLayout("List")
@@ -31,6 +35,20 @@ function module:Show()
 	end)
 	searchBar:SetCallback("OnTextChanged", function()
 		self:Search(searchBar:GetText())
+	end)
+	searchBar:SetCallback("OnSelectNextItem", function()
+		self.selectedIndex = self.selectedIndex + 1
+		if self.selectedIndex > math.min(#self.results, self.maxResults) then
+			self.selectedIndex = 1
+		end
+		self:RenderResults()
+	end)
+	searchBar:SetCallback("OnSelectPreviousItem", function()
+		self.selectedIndex = self.selectedIndex - 1
+		if self.selectedIndex < 1 then
+			self.selectedIndex = math.min(#self.results, self.maxResults)
+		end
+		self:RenderResults()
 	end)
 	searchBar:SetFullWidth(true)
 	searchBar:SetHeight(40)
@@ -54,6 +72,7 @@ function module:Show()
 
 	self.searchContext = ns.SearchContext.Create(ns.SearchItemProvider.GetItems())
 	searchBar:SetText(self.searchQuery)
+
 	self:Search(self.searchQuery)
 end
 
@@ -70,20 +89,42 @@ function module:IsVisible()
 end
 
 function module:Search(query)
+	local prevSelection = self.results and self.results[self.selectedIndex] or nil
+
 	self.searchQuery = query
 	local results = self.searchContext:Search(query)
+	self.results = results
+
+	local newSelectedIndex = 1
+	for i, result in ipairs(results) do
+		if result == prevSelection then
+			newSelectedIndex = i
+			break
+		end
+	end
+	self.selectedIndex = newSelectedIndex
+
+	self:RenderResults()
+end
+
+function module:RenderResults()
 	self.widgets.resultsContainer:ReleaseChildren()
 
 	self.widgets.resultsContainer:PauseLayout()
-	for i, result in ipairs(results) do
+	for i, result in ipairs(self.results) do
 		local resultWidget = AceGUI:Create("GlobalSearch-SearchResult")
 		resultWidget:SetText(self:HighlightRanges(result.item.name, result.matchRanges))
 		resultWidget:SetTexture(result.item.texture)
 		resultWidget:SetFullWidth(true)
 		resultWidget:SetHeight(40)
+
+		if i == self.selectedIndex then
+			resultWidget:SetIsSelected(true)
+		end
+
 		self.widgets.resultsContainer:AddChild(resultWidget)
 
-		if i > 10 then break end
+		if i >= self.maxResults then break end
 	end
 	self.widgets.resultsContainer:ResumeLayout()
 	self.widgets.resultsContainer:DoLayout()

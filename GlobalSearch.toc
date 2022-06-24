@@ -10,10 +10,10 @@ Bindings.xml
 
 Locales\Locales.xml
 Widgets\Widgets.xml
+SearchItemProviders\SearchItemProviders.xml
 
 SearchContext.lua
 QueryMatcher.lua
-SearchItemProvider.lua
-Core.lua
 
+Core.lua
 Modules\Modules.xml
