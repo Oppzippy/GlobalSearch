@@ -97,10 +97,11 @@ function module:Search(query)
 
 	local newSelectedIndex = 1
 	for i, result in ipairs(results) do
-		if result == prevSelection then
+		if prevSelection ~= nil and result.item == prevSelection.item then
 			newSelectedIndex = i
 			break
 		end
+		if i >= self.maxResults then break end
 	end
 	self.selectedIndex = newSelectedIndex
 
