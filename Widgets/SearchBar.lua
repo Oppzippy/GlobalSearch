@@ -28,6 +28,10 @@ do
 		end
 	end
 
+	local function onEnterPressed(frame)
+		frame.obj:Fire("OnItemChosen")
+	end
+
 	local function onTextChanged(frame)
 		frame.obj:Fire("OnTextChanged")
 	end
@@ -51,6 +55,7 @@ do
 
 		frame:SetScript("OnEscapePressed", onEscapePressed)
 		frame:SetScript("OnArrowPressed", onArrowPressed)
+		frame:SetScript("OnEnterPressed", onEnterPressed)
 		frame:SetScript("OnTextChanged", onTextChanged)
 
 		local widget = {

@@ -71,13 +71,19 @@ local function GetMounts()
 
 end
 
-local function GetDefaultUIPanels()
-
-end
-
 ---@return SearchItem[]
 local function GetItems()
-	return GetSpells()
+	local itemGroups = {
+		GetSpells(),
+		ns.SearchItemProvider.GetDefaultUIPanels()
+	}
+	local items = {}
+	for _, itemGroup in ipairs(itemGroups) do
+		for _, item in ipairs(itemGroup) do
+			items[#items + 1] = item
+		end
+	end
+	return items
 end
 
 local export = { GetItems = GetItems }

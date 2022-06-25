@@ -50,6 +50,16 @@ function module:Show()
 		end
 		self:RenderResults()
 	end)
+	searchBar:SetCallback("OnItemChosen", function(widget)
+		local result = self.results[self.selectedIndex]
+		if result then
+			if result.item.action then
+				result.item.action()
+			end
+		end
+		self.searchQuery = ""
+		self:Hide()
+	end)
 	searchBar:SetFullWidth(true)
 	searchBar:SetHeight(40)
 
