@@ -2,4 +2,5 @@
 ..\FrameXML\UI.xsd">
 	<Script file="SearchItemProvider.lua" />
 	<Script file="DefaultUIPanelProvider.lua" />
+	<Script file="MountItemProvider.lua" />
 </Ui>

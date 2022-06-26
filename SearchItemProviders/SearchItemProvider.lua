@@ -75,7 +75,8 @@ end
 local function GetItems()
 	local itemGroups = {
 		GetSpells(),
-		ns.SearchItemProvider.GetDefaultUIPanels()
+		ns.SearchItemProvider.GetDefaultUIPanels(),
+		ns.SearchItemProvider.GetMounts(),
 	}
 	local items = {}
 	for _, itemGroup in ipairs(itemGroups) do
