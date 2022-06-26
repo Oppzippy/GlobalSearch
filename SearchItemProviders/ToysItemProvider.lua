@@ -71,9 +71,7 @@ function ToysItemProvider:GetToys()
 			category = L.toys,
 			texture = icon,
 			searchableText = name,
-			action = function()
-				-- UseToy(itemID)
-			end,
+			macro = "/use " .. name,
 		}
 	end
 	SetToyBoxSettings(prevSettings)

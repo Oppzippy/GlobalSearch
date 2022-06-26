@@ -65,6 +65,8 @@ function module:OnSelectionChanged(_, item)
 	elseif item.spellId then
 		local name = GetSpellInfo(item.spellId)
 		macro[#macro + 1] = "/cast " .. name
+	elseif item.macro then
+		macro[#macro + 1] = item.macro
 	else
 		print("no action set")
 		return

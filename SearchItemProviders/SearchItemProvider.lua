@@ -21,6 +21,7 @@ TODO:
 ---@field searchableText string
 ---@field spellId number
 ---@field action function
+---@field macro string
 
 local function GetMacros()
 
