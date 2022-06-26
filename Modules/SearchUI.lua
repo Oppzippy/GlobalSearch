@@ -36,7 +36,9 @@ function SearchUIPrototype:Show()
 		self:Hide()
 	end)
 	searchBar:SetCallback("OnTextChanged", function()
-		self.callbacks:Fire("OnTextChanged", searchBar:GetText())
+		local text = searchBar:GetText()
+		text = strtrim(text) -- XXX Temporary fix for the search bar starting with a space in it due to the keybind
+		self.callbacks:Fire("OnTextChanged", text)
 	end)
 	searchBar:SetCallback("OnSelectNextItem", function()
 		local newSelectedIndex = self.selectedIndex + 1
