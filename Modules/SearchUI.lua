@@ -80,7 +80,7 @@ function module:Show()
 	self.widgets.searchBar = searchBar
 	self.widgets.resultsContainer = resultsContainer
 
-	self.searchContext = ns.SearchContext.Create(ns.SearchItemProvider.GetItems())
+	self.searchContext = ns.SearchContext.Create(ns.GetSearchItems())
 	searchBar:SetText(self.searchQuery)
 
 	self:Search(self.searchQuery)

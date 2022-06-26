@@ -4,8 +4,17 @@ local _, ns = ...
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
+---@class MountsItemProvider
+local MountsItemProvider = {}
+
 ---@return SearchItem[]
-local function GetMounts()
+function MountsItemProvider:Get()
+	-- TODO cache mounts
+	return self:GetMounts()
+end
+
+---@return SearchItem[]
+function MountsItemProvider:GetMounts()
 	local items = {}
 	local mountIDs = C_MountJournal.GetMountIDs()
 	for _, mountID in ipairs(mountIDs) do
@@ -25,4 +34,4 @@ local function GetMounts()
 	return items
 end
 
-ns.SearchItemProvider.GetMounts = GetMounts
+ns.SearchItemProviders[#ns.SearchItemProviders + 1] = MountsItemProvider

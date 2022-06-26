@@ -4,11 +4,23 @@ local _, ns = ...
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
+---@class DefaultUIPanelsItemProvider
+---@field cache SearchItem[]
+local DefaultUIPanelsItemProvider = {}
+
 ---@return SearchItem[]
-local function GetDefaultUIPanels()
+function DefaultUIPanelsItemProvider:Get()
+	if not self.cache then
+		self.cache = self:CreateItems()
+	end
+
+	return self.cache
+end
+
+---@return SearchItem[]
+function DefaultUIPanelsItemProvider:CreateItems()
 	-- TODO
 	-- Covenant Sanctum (and grarrison etc)
-
 	return {
 		{
 			name = L.game_menu,
@@ -142,4 +154,4 @@ local function GetDefaultUIPanels()
 	}
 end
 
-ns.SearchItemProvider.GetDefaultUIPanels = GetDefaultUIPanels
+ns.SearchItemProviders[#ns.SearchItemProviders + 1] = GetDefaultUIPanels
