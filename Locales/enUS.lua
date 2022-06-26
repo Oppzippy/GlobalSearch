@@ -3,6 +3,7 @@ local L = LibStub("AceLocale-3.0"):NewLocale("GlobalSearch", "enUS", true)
 L.ui_panels = "UI Panels"
 L.calendar = "Calendar"
 L.toys = "Toys"
+L.slash_commands = "Slash Commands"
 
 L.mounts = MOUNTS
 L.game_menu = MAINMENU_BUTTON

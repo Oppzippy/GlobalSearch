@@ -35,14 +35,6 @@ local function GetUsableItems()
 
 end
 
-local function GetToys()
-
-end
-
-local function GetMounts()
-
-end
-
 ---@return SearchItem[]
 local function GetItems()
 	local items = {}

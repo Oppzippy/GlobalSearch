@@ -5,4 +5,5 @@
 	<Script file="MountsItemProvider.lua" />
 	<Script file="ToysItemProvider.lua" />
 	<Script file="SpellsItemProvider.lua" />
+	<Script file="SlashCommandsItemProvider.lua" />
 </Ui>
