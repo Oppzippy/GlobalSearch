@@ -15,6 +15,7 @@ do
 		end
 	})
 	toyBoxSettings = {
+		search = "",
 		expansion = trueTable,
 		source = trueTable,
 		collected = true,
@@ -25,6 +26,7 @@ end
 
 local function GetToyBoxSettings()
 	local settings = {
+		search = (ToyBox and ToyBox.searchBox and ToyBox.searchBox:GetText()) or "",
 		collected = C_ToyBox.GetCollectedShown(),
 		uncollected = C_ToyBox.GetUncollectedShown(),
 		unusable = C_ToyBox.GetUnusableShown(),
@@ -41,6 +43,7 @@ local function GetToyBoxSettings()
 end
 
 local function SetToyBoxSettings(settings)
+	C_ToyBox.SetFilterString(settings.search)
 	C_ToyBox.SetCollectedShown(settings.collected)
 	C_ToyBox.SetUncollectedShown(settings.uncollected)
 	C_ToyBox.SetUnusableShown(settings.unusable)
