@@ -51,12 +51,6 @@ function SearchUIPrototype:Show()
 		end
 		self:SetSelection(newSelectedIndex)
 	end)
-	searchBar:SetCallback("OnItemChosen", function()
-		local widget = self.widgets.results[self.selectedIndex]
-		local item = widget:GetUserData("item")
-		self.callbacks:Fire("OnItemChosen", item)
-		self:Hide()
-	end)
 	searchBar:SetFullWidth(true)
 	searchBar:SetHeight(40)
 
@@ -98,6 +92,13 @@ function SearchUIPrototype:SetSelection(index)
 	local newSelection = self.widgets.results[index]
 	newSelection:SetIsSelected(true)
 	self.selectedIndex = index
+	self:FireSelectionChange()
+end
+
+function SearchUIPrototype:FireSelectionChange()
+	local widget = self.widgets.results[self.selectedIndex]
+	local item = widget:GetUserData("item")
+	self.callbacks:Fire("OnSelectionChanged", item)
 end
 
 function SearchUIPrototype:SetSearchQuery(query)
@@ -129,6 +130,8 @@ function SearchUIPrototype:RenderResults(results)
 	end
 	self.widgets.resultsContainer:ResumeLayout()
 	self.widgets.resultsContainer:DoLayout()
+
+	self:FireSelectionChange()
 end
 
 do

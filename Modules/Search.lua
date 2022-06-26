@@ -5,7 +5,9 @@ local AceAddon = LibStub("AceAddon-3.0")
 
 local addon = AceAddon:GetAddon("GlobalSearch")
 ---@class SearchModule
-local module = addon:NewModule("Search")
+local module = addon:NewModule("Search", "AceEvent-3.0")
+local searchExecute = CreateFrame("Button", "GlobalSearchExecute", UIParent, "InsecureActionButtonTemplate")
+searchExecute:RegisterForClicks("AnyDown")
 
 function module:OnInitialize()
 	self.searchQuery = ""
@@ -15,7 +17,8 @@ function module:OnInitialize()
 	self.searchContext = ns.SearchContext.Create(ns.GetSearchItems())
 
 	self.searchUI.RegisterCallback(self, "OnTextChanged")
-	self.searchUI.RegisterCallback(self, "OnItemChosen")
+	self.searchUI.RegisterCallback(self, "OnSelectionChanged")
+	self:RegisterEvent("PLAYER_REGEN_DISABLED", "Hide")
 end
 
 function module:Show()
@@ -31,6 +34,7 @@ function module:Hide()
 	self.searchContext = nil
 	self.searchUI:SetSearchQuery("")
 	self.searchUI:Hide()
+	ClearOverrideBindings(searchExecute)
 end
 
 function module:IsVisible()
@@ -43,10 +47,26 @@ end
 
 ---@param _ any
 ---@param item SearchItem
-function module:OnItemChosen(_, item)
+function module:OnSelectionChanged(_, item)
+	ClearOverrideBindings(searchExecute)
+
+	searchExecute:SetAttribute("type", "macro")
+	local macro = {
+		[[/run LibStub("AceAddon-3.0"):GetAddon("GlobalSearch"):GetModule("Search"):Hide()]],
+	}
 	if item.action then
-		item.action()
+		macro[#macro + 1] = [[/run LibStub("AceAddon-3.0"):GetAddon("GlobalSearch"):GetModule("Search").selectedAction()]]
+		self.selectedAction = item.action
+	elseif item.spellId then
+		local name = GetSpellInfo(item.spellId)
+		macro[#macro + 1] = "/cast " .. name
+	else
+		print("no action set")
+		return
 	end
+	searchExecute:SetAttribute("macrotext", table.concat(macro, "\n"))
+
+	SetOverrideBindingClick(searchExecute, true, "ENTER", "GlobalSearchExecute")
 end
 
 function module:Search(query)

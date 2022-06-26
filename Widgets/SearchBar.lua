@@ -28,8 +28,12 @@ do
 		end
 	end
 
-	local function onEnterPressed(frame)
-		frame.obj:Fire("OnItemChosen")
+	local function onKeyDown(frame, button)
+		if button == "ENTER" then
+			frame:SetPropagateKeyboardInput(true)
+		else
+			frame:SetPropagateKeyboardInput(false)
+		end
 	end
 
 	local function onTextChanged(frame)
@@ -55,7 +59,7 @@ do
 
 		frame:SetScript("OnEscapePressed", onEscapePressed)
 		frame:SetScript("OnArrowPressed", onArrowPressed)
-		frame:SetScript("OnEnterPressed", onEnterPressed)
+		frame:SetScript("OnKeyDown", onKeyDown)
 		frame:SetScript("OnTextChanged", onTextChanged)
 
 		local widget = {
