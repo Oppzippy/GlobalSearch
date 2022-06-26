@@ -6,6 +6,7 @@ local CallbackHandler = LibStub("CallbackHandler-1.0")
 
 ---@class SearchUI
 ---@field callbacks table
+---@field RegisterCallback function
 local SearchUIPrototype = {
 	maxResults = 10,
 }
@@ -73,16 +74,18 @@ function SearchUIPrototype:Show()
 end
 
 function SearchUIPrototype:Hide()
-	if self.widgets.container == nil then return end
+	if not self.widgets.container then return end
 
 	self.widgets.container:Release()
 	self.widgets = { results = {} }
 end
 
+---@return boolean
 function SearchUIPrototype:IsVisible()
 	return self.widgets.container ~= nil
 end
 
+---@param index number
 function SearchUIPrototype:SetSelection(index)
 	local prevSelection = self.widgets.results[self.selectedIndex]
 	if prevSelection then
@@ -97,7 +100,7 @@ end
 
 function SearchUIPrototype:FireSelectionChange()
 	local widget = self.widgets.results[self.selectedIndex]
-	local item = widget:GetUserData("item")
+	local item = widget and widget:GetUserData("item")
 	self.callbacks:Fire("OnSelectionChanged", item)
 end
 

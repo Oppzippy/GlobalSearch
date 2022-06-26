@@ -57,7 +57,7 @@ function SearchContextPrototype:SearchItems(query, items)
 
 	table.sort(matches, function(a, b)
 		local aMatchRange, bMatchRange = a.matchRanges[1], b.matchRanges[1]
-		if aMatchRange == nil or bMatchRange == nil then
+		if not aMatchRange or not bMatchRange then
 			-- Fallback to alphabetical order if there are no match ranges
 			return a.item.name < b.item.name
 		end

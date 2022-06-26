@@ -5,8 +5,9 @@ local AceAddon = LibStub("AceAddon-3.0")
 
 local addon = AceAddon:GetAddon("GlobalSearch")
 ---@class SearchModule
+---@field RegisterEvent function
 local module = addon:NewModule("Search", "AceEvent-3.0")
-local searchExecute = CreateFrame("Button", "GlobalSearchExecute", UIParent, "InsecureActionButtonTemplate")
+local searchExecute = CreateFrame("Button", "GlobalSearchExecuteButton", nil, "InsecureActionButtonTemplate")
 searchExecute:RegisterForClicks("AnyDown")
 
 function module:OnInitialize()
@@ -37,10 +38,13 @@ function module:Hide()
 	ClearOverrideBindings(searchExecute)
 end
 
+---@return boolean
 function module:IsVisible()
 	return self.searchUI:IsVisible()
 end
 
+---@param _ any
+---@param text string
 function module:OnTextChanged(_, text)
 	self:Search(text)
 end
@@ -49,6 +53,7 @@ end
 ---@param item SearchItem
 function module:OnSelectionChanged(_, item)
 	ClearOverrideBindings(searchExecute)
+	if not item then return end
 
 	searchExecute:SetAttribute("type", "macro")
 	local macro = {
@@ -66,9 +71,10 @@ function module:OnSelectionChanged(_, item)
 	end
 	searchExecute:SetAttribute("macrotext", table.concat(macro, "\n"))
 
-	SetOverrideBindingClick(searchExecute, true, "ENTER", "GlobalSearchExecute")
+	SetOverrideBindingClick(searchExecute, true, "ENTER", "GlobalSearchExecuteButton")
 end
 
+---@param query string
 function module:Search(query)
 	local prevSelection = self.results and self.results[self.selectedIndex] or nil
 
@@ -78,7 +84,7 @@ function module:Search(query)
 
 	local newSelectedIndex = 1
 	for i, result in ipairs(results) do
-		if prevSelection ~= nil and result.item == prevSelection.item then
+		if prevSelection and prevSelection.item == result.item then
 			newSelectedIndex = i
 			break
 		end
