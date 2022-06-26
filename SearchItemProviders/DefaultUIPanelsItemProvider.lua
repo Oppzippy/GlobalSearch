@@ -154,4 +154,4 @@ function DefaultUIPanelsItemProvider:CreateItems()
 	}
 end
 
-ns.SearchItemProviders[#ns.SearchItemProviders + 1] = GetDefaultUIPanels
+ns.SearchItemProviders[#ns.SearchItemProviders + 1] = DefaultUIPanelsItemProvider
