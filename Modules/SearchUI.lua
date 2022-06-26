@@ -1,23 +1,25 @@
 ---@class ns
 local _, ns = ...
 
-local AceAddon = LibStub("AceAddon-3.0")
 local AceGUI = LibStub("AceGUI-3.0")
+local CallbackHandler = LibStub("CallbackHandler-1.0")
 
-local addon = AceAddon:GetAddon("GlobalSearch")
 ---@class SearchUI
-local module = addon:NewModule("SearchUI")
+---@field callbacks table
+local SearchUIPrototype = {
+	maxResults = 10,
+}
 
----@type table<string, AceGUIWidget|AceGUIContainer>
-module.widgets = {}
-module.searchQuery = ""
-module.selectedIndex = 1
-module.maxResults = 10
-
-function module:OnInitialize()
+local function CreateSearchUI()
+	local searchUI = setmetatable({
+		widgets = { results = {} },
+		selectedIndex = 1,
+	}, { __index = SearchUIPrototype })
+	searchUI.callbacks = CallbackHandler:New(searchUI)
+	return searchUI
 end
 
-function module:Show()
+function SearchUIPrototype:Show()
 	if self.widgets.container then return end
 
 	self.selectedIndex = 1
@@ -30,34 +32,29 @@ function module:Show()
 
 	local searchBar = AceGUI:Create("GlobalSearch-SearchBar")
 	searchBar:SetCallback("OnClose", function()
-		self.searchQuery = ""
 		self:Hide()
 	end)
 	searchBar:SetCallback("OnTextChanged", function()
-		self:Search(searchBar:GetText())
+		self.callbacks:Fire("OnTextChanged", searchBar:GetText())
 	end)
 	searchBar:SetCallback("OnSelectNextItem", function()
-		self.selectedIndex = self.selectedIndex + 1
-		if self.selectedIndex > math.min(#self.results, self.maxResults) then
-			self.selectedIndex = 1
+		local newSelectedIndex = self.selectedIndex + 1
+		if newSelectedIndex > math.min(#self.widgets.results, self.maxResults) then
+			newSelectedIndex = 1
 		end
-		self:RenderResults()
+		self:SetSelection(newSelectedIndex)
 	end)
 	searchBar:SetCallback("OnSelectPreviousItem", function()
-		self.selectedIndex = self.selectedIndex - 1
-		if self.selectedIndex < 1 then
-			self.selectedIndex = math.min(#self.results, self.maxResults)
+		local newSelectedIndex = self.selectedIndex - 1
+		if newSelectedIndex < 1 then
+			newSelectedIndex = math.min(#self.widgets.results, self.maxResults)
 		end
-		self:RenderResults()
+		self:SetSelection(newSelectedIndex)
 	end)
-	searchBar:SetCallback("OnItemChosen", function(widget)
-		local result = self.results[self.selectedIndex]
-		if result then
-			if result.item.action then
-				result.item.action()
-			end
-		end
-		self.searchQuery = ""
+	searchBar:SetCallback("OnItemChosen", function()
+		local widget = self.widgets.results[self.selectedIndex]
+		local item = widget:GetUserData("item")
+		self.callbacks:Fire("OnItemChosen", item)
 		self:Hide()
 	end)
 	searchBar:SetFullWidth(true)
@@ -79,61 +76,54 @@ function module:Show()
 	self.widgets.container = container
 	self.widgets.searchBar = searchBar
 	self.widgets.resultsContainer = resultsContainer
-
-	self.searchContext = ns.SearchContext.Create(ns.GetSearchItems())
-	searchBar:SetText(self.searchQuery)
-
-	self:Search(self.searchQuery)
 end
 
-function module:Hide()
+function SearchUIPrototype:Hide()
 	if self.widgets.container == nil then return end
 
 	self.widgets.container:Release()
-	self.widgets = {}
-	self.searchContext = nil
+	self.widgets = { results = {} }
 end
 
-function module:IsVisible()
+function SearchUIPrototype:IsVisible()
 	return self.widgets.container ~= nil
 end
 
-function module:Search(query)
-	local prevSelection = self.results and self.results[self.selectedIndex] or nil
-
-	self.searchQuery = query
-	local results = self.searchContext:Search(query)
-	self.results = results
-
-	local newSelectedIndex = 1
-	for i, result in ipairs(results) do
-		if prevSelection ~= nil and result.item == prevSelection.item then
-			newSelectedIndex = i
-			break
-		end
-		if i >= self.maxResults then break end
+function SearchUIPrototype:SetSelection(index)
+	local prevSelection = self.widgets.results[self.selectedIndex]
+	if prevSelection then
+		prevSelection:SetIsSelected(false)
 	end
-	self.selectedIndex = newSelectedIndex
 
-	self:RenderResults()
+	local newSelection = self.widgets.results[index]
+	newSelection:SetIsSelected(true)
+	self.selectedIndex = index
 end
 
-function module:RenderResults()
-	self.widgets.resultsContainer:ReleaseChildren()
+function SearchUIPrototype:SetSearchQuery(query)
+	self.widgets.searchBar:SetText(query)
+end
 
+function SearchUIPrototype:RenderResults(results)
+	self.widgets.resultsContainer:ReleaseChildren()
+	self.selectedIndex = 1
+
+	self.widgets.results = {}
 	self.widgets.resultsContainer:PauseLayout()
-	for i, result in ipairs(self.results) do
+	for i, result in ipairs(results) do
 		local resultWidget = AceGUI:Create("GlobalSearch-SearchResult")
 		resultWidget:SetText(self:HighlightRanges(result.item.name, result.matchRanges))
 		resultWidget:SetTexture(result.item.texture)
 		resultWidget:SetFullWidth(true)
 		resultWidget:SetHeight(40)
+		resultWidget:SetUserData("item", result.item)
 
 		if i == self.selectedIndex then
 			resultWidget:SetIsSelected(true)
 		end
 
 		self.widgets.resultsContainer:AddChild(resultWidget)
+		self.widgets.results[i] = resultWidget
 
 		if i >= self.maxResults then break end
 	end
@@ -146,7 +136,7 @@ do
 
 	---@param text string
 	---@param ranges MatchRange[]
-	function module:HighlightRanges(text, ranges)
+	function SearchUIPrototype:HighlightRanges(text, ranges)
 		if #ranges == 0 then
 			return text
 		end
@@ -169,3 +159,9 @@ do
 		return table.concat(newStringTable)
 	end
 end
+
+local export = { Create = CreateSearchUI }
+if ns then
+	ns.SearchUI = export
+end
+return export
