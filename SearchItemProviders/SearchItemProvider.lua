@@ -3,15 +3,9 @@ local _, ns = ...
 
 --[[
 TODO:
-- spells
 - macros
-- slash commands
 - inventory items
 - equipment (trinkets and such)
-- toys
-- mounts
-- default UI panels
-
 ]]
 
 ---@class SearchItem
@@ -22,18 +16,6 @@ TODO:
 ---@field spellId number
 ---@field action function
 ---@field macro string
-
-local function GetMacros()
-
-end
-
-local function GetSlashCommands()
-
-end
-
-local function GetUsableItems()
-
-end
 
 ---@return SearchItem[]
 local function GetItems()
