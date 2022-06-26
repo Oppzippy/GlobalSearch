@@ -19,6 +19,7 @@ function module:OnInitialize()
 
 	self.searchUI.RegisterCallback(self, "OnTextChanged")
 	self.searchUI.RegisterCallback(self, "OnSelectionChanged")
+	self.searchUI.RegisterCallback(self, "OnClose")
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "Hide")
 end
 
@@ -47,6 +48,10 @@ end
 ---@param text string
 function module:OnTextChanged(_, text)
 	self:Search(text)
+end
+
+function module:OnClose()
+	self:Hide()
 end
 
 ---@param _ any

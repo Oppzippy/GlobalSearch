@@ -33,7 +33,7 @@ function SearchUIPrototype:Show()
 
 	local searchBar = AceGUI:Create("GlobalSearch-SearchBar")
 	searchBar:SetCallback("OnClose", function()
-		self:Hide()
+		self.callbacks:Fire("OnClose")
 	end)
 	searchBar:SetCallback("OnTextChanged", function()
 		local text = searchBar:GetText()
