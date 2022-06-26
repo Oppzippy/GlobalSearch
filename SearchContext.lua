@@ -22,7 +22,7 @@ end
 ---@return SearchContextItem[]
 function SearchContextPrototype:Search(query)
 	local items
-	if self.prevResults and self.prevQuery and string.find(query, self.prevQuery, nil, true) == 1 then
+	if self.prevResults and self.prevQuery and self.prevQuery ~= "" and string.find(query, self.prevQuery, nil, true) == 1 then
 		items = {}
 		for i, result in ipairs(self.prevResults) do
 			items[i] = result.item
@@ -43,6 +43,8 @@ end
 ---@param items SearchItem[]
 ---@return SearchContextItem[]
 function SearchContextPrototype:SearchItems(query, items)
+	if query == "" then return {} end
+
 	---@type SearchContextItem[]
 	local matches = {}
 	for _, item in ipairs(items) do
@@ -56,18 +58,19 @@ function SearchContextPrototype:SearchItems(query, items)
 	end
 
 	table.sort(matches, function(a, b)
-		local aMatchRange, bMatchRange = a.matchRanges[1], b.matchRanges[1]
-		if not aMatchRange or not bMatchRange then
-			-- Fallback to alphabetical order if there are no match ranges
-			return a.item.name < b.item.name
-		end
+		local aNumRanges, bNumRanges = #a.matchRanges, #b.matchRanges
 
-		-- Sort by which match range starts first
-		-- if they start at the same place, go by which ends later
-		if aMatchRange.from == bMatchRange.from then
-			return aMatchRange.to > bMatchRange.to
+		-- Fewest total matches
+		if aNumRanges ~= bNumRanges then
+			return aNumRanges < bNumRanges
 		end
-		return a.matchRanges[1].from < b.matchRanges[1].from
+		-- Which starts first
+		local aFirstRange, bFirstRange = a.matchRanges[1], b.matchRanges[1]
+		if aFirstRange.from == bFirstRange.from then
+			return aFirstRange.to > bFirstRange.to
+		end
+		-- Which ends later
+		return aFirstRange.from < bFirstRange.from
 	end)
 
 	return matches
