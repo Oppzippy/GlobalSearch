@@ -13,7 +13,7 @@ local function GetMounts()
 		if isUsable then
 			items[#items + 1] = {
 				name = name,
-				category = MOUNTS,
+				category = L.mounts,
 				texture = icon,
 				searchableText = name,
 				action = function()
