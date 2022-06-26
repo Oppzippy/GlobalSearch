@@ -6,6 +6,7 @@ L.toys = "Toys"
 L.slash_commands = "Slash Commands"
 
 L.mounts = MOUNTS
+L.pets = PETS
 L.game_menu = MAINMENU_BUTTON
 L.adventure_guide = ADVENTURE_JOURNAL
 L.collections = COLLECTIONS

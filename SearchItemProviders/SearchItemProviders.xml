@@ -4,6 +4,7 @@
 	<Script file="DefaultUIPanelsItemProvider.lua" />
 	<Script file="MountsItemProvider.lua" />
 	<Script file="ToysItemProvider.lua" />
+	<Script file="PetsItemProvider.lua" />
 	<Script file="SpellsItemProvider.lua" />
 	<Script file="SlashCommandsItemProvider.lua" />
 </Ui>
