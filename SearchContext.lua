@@ -22,6 +22,7 @@ end
 ---@return SearchContextItem[]
 function SearchContextPrototype:Search(query)
 	local items
+	-- If the new query starts with the previous one, we can re-use the results and filter them
 	if self.prevResults and self.prevQuery and self.prevQuery ~= "" and string.find(query, self.prevQuery, nil, true) == 1 then
 		items = {}
 		for i, result in ipairs(self.prevResults) do
