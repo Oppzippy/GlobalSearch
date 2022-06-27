@@ -13,7 +13,6 @@ TODO:
 ---@field category string
 ---@field texture number
 ---@field searchableText string
----@field spellId number
 ---@field action function
 ---@field macro string
 

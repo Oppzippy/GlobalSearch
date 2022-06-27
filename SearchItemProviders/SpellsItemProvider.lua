@@ -32,7 +32,7 @@ function SpellsItemProvider:GetSpells()
 					category = L.spells,
 					texture = GetSpellTexture(spellId),
 					searchableText = name,
-					spellId = spellId,
+					macro = "/cast " .. spellName,
 				}
 			end
 		end

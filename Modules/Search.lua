@@ -67,9 +67,6 @@ function module:OnSelectionChanged(_, item)
 	if item.action then
 		macro[#macro + 1] = [[/run LibStub("AceAddon-3.0"):GetAddon("GlobalSearch"):GetModule("Search").selectedAction()]]
 		self.selectedAction = item.action
-	elseif item.spellId then
-		local name = GetSpellInfo(item.spellId)
-		macro[#macro + 1] = "/cast " .. name
 	elseif item.macro then
 		macro[#macro + 1] = item.macro
 	else
