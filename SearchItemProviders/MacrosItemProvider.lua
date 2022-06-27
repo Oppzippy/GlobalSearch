@@ -31,9 +31,6 @@ end
 ---@return SearchItem
 function MacrosCommandsItemProvider:GetItemByMacroIndex(index)
 	local name, icon, body = GetMacroInfo(index)
-	if name == nil then
-		print(index)
-	end
 	return {
 		name = name,
 		category = L.macros,
