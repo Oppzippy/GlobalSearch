@@ -4,6 +4,7 @@ L.ui_panels = "UI Panels"
 L.calendar = "Calendar"
 L.toys = "Toys"
 L.slash_commands = "Slash Commands"
+L.emotes = "Emotes"
 
 L.mounts = MOUNTS
 L.pets = PETS

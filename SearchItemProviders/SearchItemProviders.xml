@@ -8,4 +8,6 @@
 	<Script file="SpellsItemProvider.lua" />
 	<Script file="SlashCommandsItemProvider.lua" />
 	<Script file="MacrosItemProvider.lua" />
+	<Script file="Emotes.lua" />
+	<Script file="EmotesItemProvider.lua" />
 </Ui>
