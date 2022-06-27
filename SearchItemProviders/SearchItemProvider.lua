@@ -3,7 +3,6 @@ local _, ns = ...
 
 --[[
 TODO:
-- macros
 - inventory items
 - equipment (trinkets and such)
 ]]

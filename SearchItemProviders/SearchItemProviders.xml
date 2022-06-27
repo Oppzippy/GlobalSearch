@@ -7,4 +7,5 @@
 	<Script file="PetsItemProvider.lua" />
 	<Script file="SpellsItemProvider.lua" />
 	<Script file="SlashCommandsItemProvider.lua" />
+	<Script file="MacrosItemProvider.lua" />
 </Ui>
