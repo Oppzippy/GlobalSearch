@@ -37,7 +37,7 @@ function SlashCommandsItemProvider:SlashCommands()
 		items[#items + 1] = {
 			name = command,
 			category = L.slash_commands,
-			-- TODO texture = 0,
+			texture = 136243, -- Interface/Icons/Trade_Engineering
 			searchableText = command,
 			macro = command,
 		}
