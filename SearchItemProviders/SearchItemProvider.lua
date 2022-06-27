@@ -14,7 +14,7 @@ TODO:
 ---@field texture number
 ---@field searchableText string
 ---@field action function
----@field macro string
+---@field macroText string
 
 ---@return SearchItem[]
 local function GetItems()

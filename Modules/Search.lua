@@ -61,19 +61,19 @@ function module:OnSelectionChanged(_, item)
 	if not item then return end
 
 	searchExecute:SetAttribute("type", "macro")
-	local macro = {
+	local macroText = {
 		[[/run LibStub("AceAddon-3.0"):GetAddon("GlobalSearch"):GetModule("Search"):Hide()]],
 	}
 	if item.action then
-		macro[#macro + 1] = [[/run LibStub("AceAddon-3.0"):GetAddon("GlobalSearch"):GetModule("Search").selectedAction()]]
+		macroText[#macroText + 1] = [[/run LibStub("AceAddon-3.0"):GetAddon("GlobalSearch"):GetModule("Search").selectedAction()]]
 		self.selectedAction = item.action
-	elseif item.macro then
-		macro[#macro + 1] = item.macro
+	elseif item.macroText then
+		macroText[#macroText + 1] = item.macroText
 	else
 		print("no action set")
 		return
 	end
-	searchExecute:SetAttribute("macrotext", table.concat(macro, "\n"))
+	searchExecute:SetAttribute("macrotext", table.concat(macroText, "\n"))
 
 	SetOverrideBindingClick(searchExecute, true, "ENTER", "GlobalSearchExecuteButton")
 end

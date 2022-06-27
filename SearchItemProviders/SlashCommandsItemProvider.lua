@@ -39,7 +39,7 @@ function SlashCommandsItemProvider:SlashCommands()
 			category = L.slash_commands,
 			texture = 136243, -- Interface/Icons/Trade_Engineering
 			searchableText = command,
-			macro = command,
+			macroText = command,
 		}
 	end
 	return items
