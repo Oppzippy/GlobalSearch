@@ -2,17 +2,25 @@
 local _, ns = ...
 
 local AceLocale = LibStub("AceLocale-3.0")
+local AceEvent = LibStub("AceEvent-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
----@class BagsSearchProvider : SearchProvider
+---@class BagsSearchProvider : SearchProvider, AceEvent-3.0
 local BagsSearchProvider = {
 	localizedName = L.bags
 }
+AceEvent:Embed(BagsSearchProvider)
 
 ---@return SearchItem[]
 function BagsSearchProvider:Get()
-	-- TODO cache inventory
-	return self:Fetch()
+	if not self.cache then
+		self.cache = self:Fetch()
+	end
+	return self.cache
+end
+
+function BagsSearchProvider:ResetCache()
+	self.cache = nil
 end
 
 ---@return SearchItem[]
@@ -67,3 +75,4 @@ function BagsSearchProvider:IterateBagItems()
 end
 
 GlobalSearchAPI:RegisterProvider("bags", BagsSearchProvider)
+BagsSearchProvider:RegisterEvent("BAG_UPDATE_DELAYED", "ResetCache")
