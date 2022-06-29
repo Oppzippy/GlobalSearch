@@ -9,14 +9,15 @@ local AceLocale = LibStub("AceLocale-3.0")
 
 local L = AceLocale:GetLocale("GlobalSearch")
 
----@class GlobalSearch : AceAddon, AceEvent-3.0
-local GlobalSearch = AceAddon:NewAddon("GlobalSearch", "AceEvent-3.0")
+---@class GlobalSearch : AceAddon, AceEvent-3.0, AceConsole-3.0
+local GlobalSearch = AceAddon:NewAddon("GlobalSearch", "AceEvent-3.0", "AceConsole-3.0")
 GlobalSearch:SetDefaultModuleState(false)
 
 GlobalSearch.providerRegistry = ns.SearchProviderRegistry.Create()
 
 function GlobalSearch:OnInitialize()
 	self.db = AceDB:New("GlobalSearchDB", ns.dbDefaults, true)
+	self:RegisterChatCommand("globalsearchprofile", "ProfilingResults")
 end
 
 function GlobalSearch:OnEnable()
@@ -54,4 +55,11 @@ function GlobalSearch:UpdateProviderCollection()
 	---@type SearchModule
 	local searchModule = self:GetModule("Search")
 	searchModule.providerCollection = self.providerRegistry:GetProviderCollection(self.db.profile.disabledSearchProviders)
+end
+
+function GlobalSearch:ProfilingResults()
+	for name, provider in pairs(self.providerRegistry:GetProviders()) do
+		local time, count = GetFunctionCPUUsage(provider.Get, true)
+		self:Printf("%s: %d / %d", name, time, count)
+	end
 end
