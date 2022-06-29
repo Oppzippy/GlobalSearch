@@ -27,8 +27,8 @@ end
 function BagsSearchProvider:Fetch()
 	local items = {}
 	for itemID in next, self:GetItemSet() do
-		local itemName, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemID)
-		local spellName = GetItemSpell(itemID)
+		local itemName, itemString, _, _, _, _, _, _, _, icon = GetItemInfo(itemID)
+		local spellName = GetItemSpell(itemString)
 		if itemName ~= nil and spellName ~= nil then
 			items[#items + 1] = {
 				name = itemName,
@@ -36,6 +36,9 @@ function BagsSearchProvider:Fetch()
 				texture = icon,
 				searchableText = itemName,
 				macroText = "/use " .. itemName,
+				pickup = function()
+					PickupItem(itemString)
+				end
 			}
 		end
 	end

@@ -39,6 +39,9 @@ function MacrosSearchProvider:GetItemByMacroIndex(index)
 		texture = icon,
 		searchableText = name,
 		macroText = body,
+		pickup = function()
+			PickupMacro(index)
+		end
 	}
 end
 

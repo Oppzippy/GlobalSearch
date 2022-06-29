@@ -81,6 +81,9 @@ function PetsSearchProvider:Fetch()
 				action = function()
 					C_PetJournal.SummonPetByGUID(petID)
 				end,
+				pickup = function()
+					C_PetJournal.PickupPet(petID)
+				end,
 			}
 		end
 	end

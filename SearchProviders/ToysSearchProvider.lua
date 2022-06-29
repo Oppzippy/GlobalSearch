@@ -77,6 +77,9 @@ function ToysSearchProvider:Fetch()
 			texture = icon,
 			searchableText = name,
 			macroText = "/use " .. name,
+			pickup = function()
+				C_ToyBox.PickupToyBoxItem(itemID)
+			end
 		}
 	end
 	SetToyBoxSettings(prevSettings)

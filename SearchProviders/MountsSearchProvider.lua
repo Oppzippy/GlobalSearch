@@ -20,7 +20,7 @@ function MountsSearchProvider:Fetch()
 	local items = {}
 	local mountIDs = C_MountJournal.GetMountIDs()
 	for _, mountID in ipairs(mountIDs) do
-		local name, _, icon, _, isUsable = C_MountJournal.GetMountInfoByID(mountID)
+		local name, spellID, icon, _, isUsable = C_MountJournal.GetMountInfoByID(mountID)
 		if isUsable then
 			items[#items + 1] = {
 				name = name,
@@ -30,6 +30,9 @@ function MountsSearchProvider:Fetch()
 				action = function()
 					C_MountJournal.SummonByID(mountID)
 				end,
+				pickup = function()
+					PickupSpell(spellID)
+				end
 			}
 		end
 	end
