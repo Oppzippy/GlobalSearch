@@ -7,10 +7,14 @@ local methods = {
 		self.frame:SetSize(350, 40)
 		self.texture:SetTexture(0)
 		self.fontString:SetText("")
+		self.categoryFontString:SetText("")
 		self.highlightTexture:Hide()
 	end,
 	SetText = function(self, text)
 		self.fontString:SetText(text)
+	end,
+	SetCategory = function(self, category)
+		self.categoryFontString:SetText(category)
 	end,
 	SetTexture = function(self, texture)
 		self.texture:SetTexture(texture)
@@ -37,7 +41,7 @@ do
 
 		local highlightTexture = frame:CreateTexture(nil, "ARTWORK")
 		highlightTexture:SetAllPoints(frame)
-		highlightTexture:SetColorTexture(1, 1, 1, 0.5)
+		highlightTexture:SetColorTexture(1, 1, 1, 0.3)
 		highlightTexture:Hide()
 
 		local texture = frame:CreateTexture(nil, "OVERLAY")
@@ -47,12 +51,17 @@ do
 		local fontString = frame:CreateFontString(nil, "OVERLAY", "GameFontWhite")
 		fontString:SetPoint("LEFT", frame, "LEFT", 45, 0)
 
+		local categoryFontString = frame:CreateFontString(nil, "OVERLAY", "GameFontWhite")
+		categoryFontString:SetPoint("right", frame, "RIGHT", -5, 0)
+		categoryFontString:SetTextColor(0.8, 0.8, 0.8, 1)
+
 		local widget = {
 			type = widgetType,
 			frame = frame,
 			texture = texture,
 			highlightTexture = highlightTexture,
 			fontString = fontString,
+			categoryFontString = categoryFontString,
 		}
 
 		for method, func in next, methods do

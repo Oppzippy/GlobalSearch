@@ -106,10 +106,12 @@ function SearchUIPrototype:FireSelectionChange()
 	self.callbacks:Fire("OnSelectionChanged", item)
 end
 
+---@param query string
 function SearchUIPrototype:SetSearchQuery(query)
 	self.widgets.searchBar:SetText(query)
 end
 
+---@param results SearchContextItem[]
 function SearchUIPrototype:RenderResults(results)
 	self.widgets.resultsContainer:ReleaseChildren()
 	self.selectedIndex = 1
@@ -119,6 +121,7 @@ function SearchUIPrototype:RenderResults(results)
 	for i, result in ipairs(results) do
 		local resultWidget = AceGUI:Create("GlobalSearch-SearchResult")
 		resultWidget:SetText(self:HighlightRanges(result.item.name, result.matchRanges))
+		resultWidget:SetCategory(result.item.category)
 		resultWidget:SetTexture(result.item.texture)
 		resultWidget:SetFullWidth(true)
 		resultWidget:SetHeight(40)
