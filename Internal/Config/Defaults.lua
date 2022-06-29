@@ -3,6 +3,6 @@ local _, ns = ...
 
 ns.dbDefaults = {
 	profile = {
-		disabledSearchItemProviders = {},
+		disabledSearchProviders = {},
 	},
 }

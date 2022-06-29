@@ -4,14 +4,14 @@ local _, ns = ...
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
----@class DefaultUIPanelsItemProvider : SearchItemProvider
+---@class UIPanelsSearchProvider : SearchProvider
 ---@field cache SearchItem[]
-local DefaultUIPanelsItemProvider = {
+local UIPanelsSearchProvider = {
 	localizedName = L.ui_panels,
 }
 
 ---@return SearchItem[]
-function DefaultUIPanelsItemProvider:Get()
+function UIPanelsSearchProvider:Get()
 	if not self.cache then
 		self.cache = self:Fetch()
 	end
@@ -20,7 +20,7 @@ function DefaultUIPanelsItemProvider:Get()
 end
 
 ---@return SearchItem[]
-function DefaultUIPanelsItemProvider:Fetch()
+function UIPanelsSearchProvider:Fetch()
 	-- TODO
 	-- Covenant Sanctum (and grarrison etc)
 	return {
@@ -156,4 +156,4 @@ function DefaultUIPanelsItemProvider:Fetch()
 	}
 end
 
-GlobalSearchAPI:RegisterProvider("defaultUIPanels", DefaultUIPanelsItemProvider)
+GlobalSearchAPI:RegisterProvider("defaultUIPanels", UIPanelsSearchProvider)

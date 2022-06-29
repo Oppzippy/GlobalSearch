@@ -8,20 +8,13 @@
 
 Libs.xml
 Bindings.xml
-
 Locales\Locales.xml
-Widgets\Widgets.xml
-
-# Classes
-SearchContext.lua
-QueryMatcher.lua
-SearchItemProviderCollection.lua
-SearchItemProviderRegistry.lua
-Config\Defaults.lua
+Widgets\Include.xml
+Internal\Include.xml
 
 GlobalSearch.lua
 Modules\Modules.xml
 
 GlobalSearchAPI.lua
-
-SearchItemProviders\SearchItemProviders.xml
+# All search providers are treated as third party
+SearchProviders\Include.xml

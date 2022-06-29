@@ -4,14 +4,14 @@ local _, ns = ...
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
----@class EmotesItemProvider : SearchItemProvider
+---@class EmotesSearchProvider : SearchProvider
 ---@field cache SearchItem[]
-local EmotesItemProvider = {
+local EmotesSearchProvider = {
 	localizedName = L.emotes,
 }
 
 ---@return SearchItem[]
-function EmotesItemProvider:Get()
+function EmotesSearchProvider:Get()
 	if not self.cache then
 		self.cache = self:Fetch()
 	end
@@ -20,7 +20,7 @@ function EmotesItemProvider:Get()
 end
 
 ---@return SearchItem[]
-function EmotesItemProvider:Fetch()
+function EmotesSearchProvider:Fetch()
 	local items = {}
 	for _, emote in ipairs(ns.emotes) do
 		local emoteLowerCase = emote:lower()
@@ -37,4 +37,4 @@ function EmotesItemProvider:Fetch()
 	return items
 end
 
-GlobalSearchAPI:RegisterProvider("emotes", EmotesItemProvider)
+GlobalSearchAPI:RegisterProvider("emotes", EmotesSearchProvider)

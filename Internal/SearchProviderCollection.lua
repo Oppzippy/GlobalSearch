@@ -9,25 +9,25 @@ local _, ns = ...
 ---@field action function
 ---@field macroText string
 
----@class SearchItemProviderCollection
----@field providers SearchItemProvider[]
-local SearchItemProviderCollectionPrototype = {}
+---@class SearchProviderCollection
+---@field providers SearchProvider[]
+local SearchProviderCollectionPrototype = {}
 
----@class SearchItemProvider
+---@class SearchProvider
 ---@field localizedName string
 ---@field Get fun(): SearchItem[]
 
----@param providers SearchItemProvider[]
----@return SearchItemProviderCollection
-local function CreateSearchItemProviderCollection(providers)
+---@param providers SearchProvider[]
+---@return SearchProviderCollection
+local function CreateSearchProviderCollection(providers)
 	local collection = setmetatable({
 		providers = providers,
-	}, { __index = SearchItemProviderCollectionPrototype })
+	}, { __index = SearchProviderCollectionPrototype })
 	return collection
 end
 
 ---@return SearchItem[]
-function SearchItemProviderCollectionPrototype:Get()
+function SearchProviderCollectionPrototype:Get()
 	local items = {}
 	for _, provider in ipairs(self.providers) do
 		local itemGroup = provider:Get()
@@ -38,8 +38,8 @@ function SearchItemProviderCollectionPrototype:Get()
 	return items
 end
 
-local export = { Create = CreateSearchItemProviderCollection }
+local export = { Create = CreateSearchProviderCollection }
 if ns then
-	ns.SearchItemProviderCollection = export
+	ns.SearchProviderCollection = export
 end
 return export

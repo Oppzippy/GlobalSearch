@@ -14,15 +14,15 @@ local module = addon:NewModule("Options", "AceEvent-3.0", "AceConsole-3.0")
 module.optionsTable = {
 	type = "group",
 	args = {
-		enabledSearchItemProviders = {
+		enabledSearchProviders = {
 			type = "group",
 			name = L.enabled_modules,
 			get = function(info)
-				return not module.db.profile.disabledSearchItemProviders[ info[#info] ]
+				return not module.db.profile.disabledSearchProviders[ info[#info] ]
 			end,
 			set = function(info, val)
 				local providerName = info[#info]
-				module.db.profile.disabledSearchItemProviders[providerName] = not val
+				module.db.profile.disabledSearchProviders[providerName] = not val
 				module:SendMessage("GlobalSearch_OnProviderEnabledOrDisabled", providerName, val)
 			end,
 			order = 1,
@@ -52,7 +52,7 @@ function module:RenderEnabledProviders()
 		self.numProviders = self.numProviders + 1
 		options[name] = self:RenderProvider(name, provider)
 	end
-	self.optionsTable.args.enabledSearchItemProviders.args = options
+	self.optionsTable.args.enabledSearchProviders.args = options
 end
 
 function module:RenderProvider(name, provider)

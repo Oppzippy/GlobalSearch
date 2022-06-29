@@ -4,19 +4,19 @@ local _, ns = ...
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
----@class SpellsItemProvider : SearchItemProvider
-local SpellsItemProvider = {
+---@class SpellsSearchProvider : SearchProvider
+local SpellsSearchProvider = {
 	localizedName = L.spells,
 }
 
 ---@return SearchItem[]
-function SpellsItemProvider:Get()
+function SpellsSearchProvider:Get()
 	-- TODO cache spells
 	return self:Fetch()
 end
 
 ---@return SearchItem[]
-function SpellsItemProvider:Fetch()
+function SpellsSearchProvider:Fetch()
 	local items = {}
 
 	for i = 1, GetNumSpellTabs() do
@@ -43,4 +43,4 @@ function SpellsItemProvider:Fetch()
 	return items
 end
 
-GlobalSearchAPI:RegisterProvider("spells", SpellsItemProvider)
+GlobalSearchAPI:RegisterProvider("spells", SpellsSearchProvider)

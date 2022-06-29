@@ -4,18 +4,18 @@ local _, ns = ...
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
----@class MacrosItemProvider : SearchItemProvider
-local MacrosItemProvider = {
+---@class MacrosSearchProvider : SearchProvider
+local MacrosSearchProvider = {
 	localizedName = L.macros,
 }
 
 ---@return SearchItem[]
-function MacrosItemProvider:Get()
+function MacrosSearchProvider:Get()
 	return self:Fetch()
 end
 
 ---@return SearchItem[]
-function MacrosItemProvider:Fetch()
+function MacrosSearchProvider:Fetch()
 	local items = {}
 
 	local numGlobalMacros, numCharacterMacros = GetNumMacros()
@@ -31,7 +31,7 @@ end
 
 ---@param index number
 ---@return SearchItem
-function MacrosItemProvider:GetItemByMacroIndex(index)
+function MacrosSearchProvider:GetItemByMacroIndex(index)
 	local name, icon, body = GetMacroInfo(index)
 	return {
 		name = name,
@@ -42,4 +42,4 @@ function MacrosItemProvider:GetItemByMacroIndex(index)
 	}
 end
 
-GlobalSearchAPI:RegisterProvider("macros", MacrosItemProvider)
+GlobalSearchAPI:RegisterProvider("macros", MacrosSearchProvider)

@@ -4,8 +4,8 @@ local _, ns = ...
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
----@class ToysItemProvider : SearchItemProvider
-local ToysItemProvider = {
+---@class ToysSearchProvider : SearchProvider
+local ToysSearchProvider = {
 	localizedName = L.toys,
 }
 
@@ -58,13 +58,13 @@ local function SetToyBoxSettings(settings)
 end
 
 ---@return SearchItem[]
-function ToysItemProvider:Get()
+function ToysSearchProvider:Get()
 	-- TODO cache toys
 	return self:Fetch()
 end
 
 ---@return SearchItem[]
-function ToysItemProvider:Fetch()
+function ToysSearchProvider:Fetch()
 	local items = {}
 	local prevSettings = GetToyBoxSettings()
 	SetToyBoxSettings(toyBoxSettings)
@@ -83,4 +83,4 @@ function ToysItemProvider:Fetch()
 	return items
 end
 
-GlobalSearchAPI:RegisterProvider("toys", ToysItemProvider)
+GlobalSearchAPI:RegisterProvider("toys", ToysSearchProvider)

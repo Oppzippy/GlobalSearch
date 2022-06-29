@@ -4,19 +4,19 @@ local _, ns = ...
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
----@class BagsItemProvider : SearchItemProvider
-local BagsItemProvider = {
+---@class BagsSearchProvider : SearchProvider
+local BagsSearchProvider = {
 	localizedName = L.bags
 }
 
 ---@return SearchItem[]
-function BagsItemProvider:Get()
+function BagsSearchProvider:Get()
 	-- TODO cache inventory
 	return self:Fetch()
 end
 
 ---@return SearchItem[]
-function BagsItemProvider:Fetch()
+function BagsSearchProvider:Fetch()
 	local items = {}
 	for itemID in next, self:GetItemSet() do
 		local itemName, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemID)
@@ -34,7 +34,7 @@ function BagsItemProvider:Fetch()
 	return items
 end
 
-function BagsItemProvider:GetItemSet()
+function BagsSearchProvider:GetItemSet()
 	local items = {}
 	for itemID in self:IterateBagItems() do
 		items[itemID] = true
@@ -43,7 +43,7 @@ function BagsItemProvider:GetItemSet()
 end
 
 -- Skips empty slots
-function BagsItemProvider:IterateBagItems()
+function BagsSearchProvider:IterateBagItems()
 	local bagID = 0
 	local slot = 1
 	local numContainerSlots = GetContainerNumSlots(bagID)
@@ -66,4 +66,4 @@ function BagsItemProvider:IterateBagItems()
 	end
 end
 
-GlobalSearchAPI:RegisterProvider("bags", BagsItemProvider)
+GlobalSearchAPI:RegisterProvider("bags", BagsSearchProvider)

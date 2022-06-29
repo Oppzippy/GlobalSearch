@@ -12,7 +12,7 @@ searchExecute:RegisterForClicks("AnyDown")
 
 function module:OnInitialize()
 	-- Start with an empty provider collection
-	self.providerCollection = ns.SearchItemProviderCollection.Create({})
+	self.providerCollection = ns.SearchProviderCollection.Create({})
 
 	self.searchQuery = ""
 	self.selectedIndex = 1

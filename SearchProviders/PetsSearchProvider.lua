@@ -4,8 +4,8 @@ local _, ns = ...
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
----@class PetsItemProvider : SearchItemProvider
-local PetsItemProvider = {
+---@class PetsSearchProvider : SearchProvider
+local PetsSearchProvider = {
 	localizedName = L.pets,
 }
 
@@ -55,13 +55,13 @@ local function SetPetJournalBoxSettings(settings)
 end
 
 ---@return SearchItem[]
-function PetsItemProvider:Get()
+function PetsSearchProvider:Get()
 	-- TODO cache pets
 	return self:Fetch()
 end
 
 ---@return SearchItem[]
-function PetsItemProvider:Fetch()
+function PetsSearchProvider:Fetch()
 	local items = {}
 	local prevSettings = GetPetJournalSettings()
 	SetPetJournalBoxSettings(petJournalSettings)
@@ -88,4 +88,4 @@ function PetsItemProvider:Fetch()
 	return items
 end
 
-GlobalSearchAPI:RegisterProvider("pets", PetsItemProvider)
+GlobalSearchAPI:RegisterProvider("pets", PetsSearchProvider)

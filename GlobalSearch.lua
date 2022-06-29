@@ -11,7 +11,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class GlobalSearch : AceAddon, AceEvent-3.0
 local GlobalSearch = AceAddon:NewAddon("GlobalSearch", "AceEvent-3.0")
-GlobalSearch.providerRegistry = ns.SearchItemProviderRegistry.Create()
+GlobalSearch.providerRegistry = ns.SearchProviderRegistry.Create()
 
 function GlobalSearch:OnInitialize()
 	self.db = AceDB:New("GlobalSearchDB", ns.dbDefaults, true)
@@ -26,19 +26,19 @@ function GlobalSearch:OnInitialize()
 end
 
 ---@param name string
----@param provider SearchItemProvider
-function GlobalSearch:RegisterSearchItemProvider(name, provider)
+---@param provider SearchProvider
+function GlobalSearch:RegisterSearchProvider(name, provider)
 	self.providerRegistry:Register(name, provider)
 	self:SendMessage("GlobalSearch_OnProviderRegistered", name, provider)
 end
 
 ---@return boolean
-function GlobalSearch:HasSearchItemProvider(name)
+function GlobalSearch:HasSearchProvider(name)
 	return self.providerRegistry:Has(name)
 end
 
 function GlobalSearch:GlobalSearch_OnProviderEnabledOrDisabled()
 	---@type SearchModule
 	local searchModule = self:GetModule("Search")
-	searchModule.providerCollection = self.providerRegistry:GetProviderCollection(self.db.profile.disabledSearchItemProviders)
+	searchModule.providerCollection = self.providerRegistry:GetProviderCollection(self.db.profile.disabledSearchProviders)
 end
