@@ -17,12 +17,6 @@ GlobalSearch.providerRegistry = ns.SearchProviderRegistry.Create()
 
 function GlobalSearch:OnInitialize()
 	self.db = AceDB:New("GlobalSearchDB", ns.dbDefaults, true)
-
-	self:RegisterMessage("GlobalSearch_OnProviderEnabledOrDisabled", nil)
-
-	local optionsModule = self:GetModule("Options")
-	AceConfig:RegisterOptionsTable("GlobalSearch", optionsModule.optionsTable)
-	AceConfigDialog:AddToBlizOptions("GlobalSearch", L.global_search)
 end
 
 function GlobalSearch:OnEnable()
@@ -30,6 +24,12 @@ function GlobalSearch:OnEnable()
 	self:SendMessage("GlobalSearch_OnDBAvailable", self.db)
 	self:SendMessage("GlobalSearch_OnSearchProviderRegistryAvailable", self.providerRegistry)
 	self:EnableModules()
+
+	self:UpdateProviderCollection()
+	self:RegisterMessage("GlobalSearch_OnProviderStatusChanged", "UpdateProviderCollection")
+
+	AceConfig:RegisterOptionsTable("GlobalSearch", self:GetModule("Options").optionsTable)
+	AceConfigDialog:AddToBlizOptions("GlobalSearch", L.global_search)
 end
 
 function GlobalSearch:EnableModules()
@@ -50,7 +50,7 @@ function GlobalSearch:HasSearchProvider(name)
 	return self.providerRegistry:Has(name)
 end
 
-function GlobalSearch:GlobalSearch_OnProviderEnabledOrDisabled()
+function GlobalSearch:UpdateProviderCollection()
 	---@type SearchModule
 	local searchModule = self:GetModule("Search")
 	searchModule.providerCollection = self.providerRegistry:GetProviderCollection(self.db.profile.disabledSearchProviders)

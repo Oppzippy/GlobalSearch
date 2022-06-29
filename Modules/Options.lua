@@ -24,7 +24,7 @@ module.optionsTable = {
 			set = function(info, val)
 				local providerName = info[#info]
 				module.db.profile.disabledSearchProviders[providerName] = not val
-				module:SendMessage("GlobalSearch_OnProviderEnabledOrDisabled", providerName, val)
+				module:SendMessage("GlobalSearch_OnProviderStatusChanged", providerName, val)
 			end,
 			order = 1,
 			args = {},
