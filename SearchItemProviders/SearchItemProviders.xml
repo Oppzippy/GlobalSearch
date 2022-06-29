@@ -10,4 +10,5 @@
 	<Script file="MacrosItemProvider.lua" />
 	<Script file="Emotes.lua" />
 	<Script file="EmotesItemProvider.lua" />
+	<Script file="BagsItemProvider.lua" />
 </Ui>

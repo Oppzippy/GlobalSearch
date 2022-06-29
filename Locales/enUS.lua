@@ -5,6 +5,7 @@ L.calendar = "Calendar"
 L.toys = "Toys"
 L.slash_commands = "Slash Commands"
 L.emotes = "Emotes"
+L.bags = "Bags"
 
 L.mounts = MOUNTS
 L.pets = PETS

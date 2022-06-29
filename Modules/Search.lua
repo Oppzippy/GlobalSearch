@@ -6,7 +6,8 @@ local AceAddon = LibStub("AceAddon-3.0")
 local addon = AceAddon:GetAddon("GlobalSearch")
 ---@class SearchModule
 ---@field RegisterEvent function
-local module = addon:NewModule("Search", "AceEvent-3.0")
+---@field Printf function
+local module = addon:NewModule("Search", "AceEvent-3.0", "AceConsole-3.0")
 local searchExecute = CreateFrame("Button", "GlobalSearchExecuteButton", nil, "InsecureActionButtonTemplate")
 searchExecute:RegisterForClicks("AnyDown")
 
@@ -70,7 +71,7 @@ function module:OnSelectionChanged(_, item)
 	elseif item.macroText then
 		macroText[#macroText + 1] = item.macroText
 	else
-		print("no action set")
+		self:Printf("No action set for %s in %s", item.name, item.category)
 		return
 	end
 	searchExecute:SetAttribute("macrotext", table.concat(macroText, "\n"))
