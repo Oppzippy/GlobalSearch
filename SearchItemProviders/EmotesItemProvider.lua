@@ -11,14 +11,14 @@ local EmotesItemProvider = {}
 ---@return SearchItem[]
 function EmotesItemProvider:Get()
 	if not self.cache then
-		self.cache = self:CreateItems()
+		self.cache = self:Fetch()
 	end
 
 	return self.cache
 end
 
 ---@return SearchItem[]
-function EmotesItemProvider:CreateItems()
+function EmotesItemProvider:Fetch()
 	local items = {}
 	for _, emote in ipairs(ns.emotes) do
 		local emoteLowerCase = emote:lower()

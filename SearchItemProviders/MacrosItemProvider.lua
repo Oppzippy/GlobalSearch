@@ -9,11 +9,11 @@ local MacrosCommandsItemProvider = {}
 
 ---@return SearchItem[]
 function MacrosCommandsItemProvider:Get()
-	return self:GetMarcos()
+	return self:Fetch()
 end
 
 ---@return SearchItem[]
-function MacrosCommandsItemProvider:GetMarcos()
+function MacrosCommandsItemProvider:Fetch()
 	local items = {}
 
 	local numGlobalMacros, numCharacterMacros = GetNumMacros()

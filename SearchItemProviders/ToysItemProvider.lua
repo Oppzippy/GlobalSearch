@@ -58,11 +58,11 @@ end
 ---@return SearchItem[]
 function ToysItemProvider:Get()
 	-- TODO cache toys
-	return self:GetToys()
+	return self:Fetch()
 end
 
 ---@return SearchItem[]
-function ToysItemProvider:GetToys()
+function ToysItemProvider:Fetch()
 	local items = {}
 	local prevSettings = GetToyBoxSettings()
 	SetToyBoxSettings(toyBoxSettings)

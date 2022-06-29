@@ -10,11 +10,11 @@ local SpellsItemProvider = {}
 ---@return SearchItem[]
 function SpellsItemProvider:Get()
 	-- TODO cache spells
-	return self:GetSpells()
+	return self:Fetch()
 end
 
 ---@return SearchItem[]
-function SpellsItemProvider:GetSpells()
+function SpellsItemProvider:Fetch()
 	local items = {}
 
 	for i = 1, GetNumSpellTabs() do

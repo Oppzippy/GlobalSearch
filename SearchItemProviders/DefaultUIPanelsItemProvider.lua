@@ -11,14 +11,14 @@ local DefaultUIPanelsItemProvider = {}
 ---@return SearchItem[]
 function DefaultUIPanelsItemProvider:Get()
 	if not self.cache then
-		self.cache = self:CreateItems()
+		self.cache = self:Fetch()
 	end
 
 	return self.cache
 end
 
 ---@return SearchItem[]
-function DefaultUIPanelsItemProvider:CreateItems()
+function DefaultUIPanelsItemProvider:Fetch()
 	-- TODO
 	-- Covenant Sanctum (and grarrison etc)
 	return {

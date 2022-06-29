@@ -10,11 +10,11 @@ local BagsItemProvider = {}
 ---@return SearchItem[]
 function BagsItemProvider:Get()
 	-- TODO cache inventory
-	return self:CreateItems()
+	return self:Fetch()
 end
 
 ---@return SearchItem[]
-function BagsItemProvider:CreateItems()
+function BagsItemProvider:Fetch()
 	local items = {}
 	for itemID in next, self:GetItemSet() do
 		local itemName, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemID)

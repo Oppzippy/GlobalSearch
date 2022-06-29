@@ -10,11 +10,11 @@ local MountsItemProvider = {}
 ---@return SearchItem[]
 function MountsItemProvider:Get()
 	-- TODO cache mounts
-	return self:GetMounts()
+	return self:Fetch()
 end
 
 ---@return SearchItem[]
-function MountsItemProvider:GetMounts()
+function MountsItemProvider:Fetch()
 	local items = {}
 	local mountIDs = C_MountJournal.GetMountIDs()
 	for _, mountID in ipairs(mountIDs) do

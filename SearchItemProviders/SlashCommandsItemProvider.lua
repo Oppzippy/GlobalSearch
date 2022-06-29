@@ -11,13 +11,13 @@ local SlashCommandsItemProvider = {}
 ---@return SearchItem[]
 function SlashCommandsItemProvider:Get()
 	if not self.cache then
-		self.cache = self:SlashCommands()
+		self.cache = self:Fetch()
 	end
 	return self.cache
 end
 
 ---@return SearchItem[]
-function SlashCommandsItemProvider:SlashCommands()
+function SlashCommandsItemProvider:Fetch()
 	local items = {}
 
 	local commands = {}

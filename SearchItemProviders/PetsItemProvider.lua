@@ -55,11 +55,11 @@ end
 ---@return SearchItem[]
 function PetsItemProvider:Get()
 	-- TODO cache pets
-	return self:GetPets()
+	return self:Fetch()
 end
 
 ---@return SearchItem[]
-function PetsItemProvider:GetPets()
+function PetsItemProvider:Fetch()
 	local items = {}
 	local prevSettings = GetPetJournalSettings()
 	SetPetJournalBoxSettings(petJournalSettings)
