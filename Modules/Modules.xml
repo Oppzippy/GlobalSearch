@@ -2,4 +2,5 @@
 ..\FrameXML\UI.xsd">
 	<Script file="Search.lua" />
 	<Script file="SearchUI.lua" />
+	<Script file="Options.lua" />
 </Ui>

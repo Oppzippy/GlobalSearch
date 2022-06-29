@@ -4,8 +4,10 @@ local _, ns = ...
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
----@class ToysItemProvider
-local ToysItemProvider = {}
+---@class ToysItemProvider : SearchItemProvider
+local ToysItemProvider = {
+	localizedName = L.toys,
+}
 
 local toyBoxSettings
 do
@@ -81,4 +83,4 @@ function ToysItemProvider:Fetch()
 	return items
 end
 
-ns.SearchItemProviders[#ns.SearchItemProviders + 1] = ToysItemProvider
+GlobalSearchAPI:RegisterProvider("toys", ToysItemProvider)

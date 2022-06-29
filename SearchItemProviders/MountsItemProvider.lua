@@ -4,8 +4,10 @@ local _, ns = ...
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
----@class MountsItemProvider
-local MountsItemProvider = {}
+---@class MountsItemProvider : SearchItemProvider
+local MountsItemProvider = {
+	localizedName = L.mounts,
+}
 
 ---@return SearchItem[]
 function MountsItemProvider:Get()
@@ -34,4 +36,4 @@ function MountsItemProvider:Fetch()
 	return items
 end
 
-ns.SearchItemProviders[#ns.SearchItemProviders + 1] = MountsItemProvider
+GlobalSearchAPI:RegisterProvider("mounts", MountsItemProvider)

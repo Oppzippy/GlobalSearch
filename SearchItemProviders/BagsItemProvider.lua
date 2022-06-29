@@ -4,8 +4,10 @@ local _, ns = ...
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
----@class BagsItemProvider
-local BagsItemProvider = {}
+---@class BagsItemProvider : SearchItemProvider
+local BagsItemProvider = {
+	localizedName = L.bags
+}
 
 ---@return SearchItem[]
 function BagsItemProvider:Get()
@@ -64,4 +66,4 @@ function BagsItemProvider:IterateBagItems()
 	end
 end
 
-ns.SearchItemProviders[#ns.SearchItemProviders + 1] = BagsItemProvider
+GlobalSearchAPI:RegisterProvider("bags", BagsItemProvider)

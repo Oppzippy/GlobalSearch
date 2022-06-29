@@ -4,16 +4,24 @@
 ## Author: Oppzippy
 ## Version: @project-version@
 ## OptionalDeps: Ace3
+## SavedVariables: GlobalSearchDB
 
 Libs.xml
 Bindings.xml
 
 Locales\Locales.xml
 Widgets\Widgets.xml
-SearchItemProviders\SearchItemProviders.xml
 
+# Classes
 SearchContext.lua
 QueryMatcher.lua
+SearchItemProviderCollection.lua
+SearchItemProviderRegistry.lua
+Config\Defaults.lua
 
-Core.lua
+GlobalSearch.lua
 Modules\Modules.xml
+
+GlobalSearchAPI.lua
+
+SearchItemProviders\SearchItemProviders.xml

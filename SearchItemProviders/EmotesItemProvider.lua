@@ -4,9 +4,11 @@ local _, ns = ...
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
----@class EmotesItemProvider
+---@class EmotesItemProvider : SearchItemProvider
 ---@field cache SearchItem[]
-local EmotesItemProvider = {}
+local EmotesItemProvider = {
+	localizedName = L.emotes,
+}
 
 ---@return SearchItem[]
 function EmotesItemProvider:Get()
@@ -35,4 +37,4 @@ function EmotesItemProvider:Fetch()
 	return items
 end
 
-ns.SearchItemProviders[#ns.SearchItemProviders + 1] = EmotesItemProvider
+GlobalSearchAPI:RegisterProvider("emotes", EmotesItemProvider)

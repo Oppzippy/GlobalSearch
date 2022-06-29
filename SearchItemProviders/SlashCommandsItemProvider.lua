@@ -4,9 +4,11 @@ local _, ns = ...
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
----@class SlashCommandsItemProvider
+---@class SlashCommandsItemProvider : SearchItemProvider
 ---@field cache SearchItem[]
-local SlashCommandsItemProvider = {}
+local SlashCommandsItemProvider = {
+	localizedName = L.slash_commands,
+}
 
 ---@return SearchItem[]
 function SlashCommandsItemProvider:Get()
@@ -45,4 +47,4 @@ function SlashCommandsItemProvider:Fetch()
 	return items
 end
 
-ns.SearchItemProviders[#ns.SearchItemProviders + 1] = SlashCommandsItemProvider
+GlobalSearchAPI:RegisterProvider("slashCommands", SlashCommandsItemProvider)

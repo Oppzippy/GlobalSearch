@@ -4,19 +4,20 @@ local _, ns = ...
 local AceAddon = LibStub("AceAddon-3.0")
 
 local addon = AceAddon:GetAddon("GlobalSearch")
----@class SearchModule
+---@class SearchModule : AceConsole-3.0
 ---@field RegisterEvent function
----@field Printf function
 local module = addon:NewModule("Search", "AceEvent-3.0", "AceConsole-3.0")
 local searchExecute = CreateFrame("Button", "GlobalSearchExecuteButton", nil, "InsecureActionButtonTemplate")
 searchExecute:RegisterForClicks("AnyDown")
 
 function module:OnInitialize()
+	-- Start with an empty provider collection
+	self.providerCollection = ns.SearchItemProviderCollection.Create({})
+
 	self.searchQuery = ""
 	self.selectedIndex = 1
 	self.maxResults = 10
 	self.searchUI = ns.SearchUI.Create()
-	self.searchContext = ns.SearchContext.Create(ns.GetSearchItems())
 
 	self.searchUI.RegisterCallback(self, "OnTextChanged")
 	self.searchUI.RegisterCallback(self, "OnSelectionChanged")
@@ -27,7 +28,7 @@ end
 function module:Show()
 	if self:IsVisible() then return end
 
-	self.searchContext = ns.SearchContext.Create(ns.GetSearchItems())
+	self.searchContext = ns.SearchContext.Create(self.providerCollection:Get())
 	self.searchUI:Show()
 end
 

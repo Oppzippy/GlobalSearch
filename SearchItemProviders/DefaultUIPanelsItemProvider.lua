@@ -4,9 +4,11 @@ local _, ns = ...
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
----@class DefaultUIPanelsItemProvider
+---@class DefaultUIPanelsItemProvider : SearchItemProvider
 ---@field cache SearchItem[]
-local DefaultUIPanelsItemProvider = {}
+local DefaultUIPanelsItemProvider = {
+	localizedName = L.ui_panels,
+}
 
 ---@return SearchItem[]
 function DefaultUIPanelsItemProvider:Get()
@@ -154,4 +156,4 @@ function DefaultUIPanelsItemProvider:Fetch()
 	}
 end
 
-ns.SearchItemProviders[#ns.SearchItemProviders + 1] = DefaultUIPanelsItemProvider
+GlobalSearchAPI:RegisterProvider("defaultUIPanels", DefaultUIPanelsItemProvider)
