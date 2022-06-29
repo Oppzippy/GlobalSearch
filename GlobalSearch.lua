@@ -11,6 +11,8 @@ local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class GlobalSearch : AceAddon, AceEvent-3.0
 local GlobalSearch = AceAddon:NewAddon("GlobalSearch", "AceEvent-3.0")
+GlobalSearch:SetDefaultModuleState(false)
+
 GlobalSearch.providerRegistry = ns.SearchProviderRegistry.Create()
 
 function GlobalSearch:OnInitialize()
@@ -19,10 +21,21 @@ function GlobalSearch:OnInitialize()
 	self:RegisterMessage("GlobalSearch_OnProviderEnabledOrDisabled", nil)
 
 	local optionsModule = self:GetModule("Options")
-	optionsModule.db = self.db -- TODO move this to an event or something
-	optionsModule.providerRegistry = self.providerRegistry
 	AceConfig:RegisterOptionsTable("GlobalSearch", optionsModule.optionsTable)
 	AceConfigDialog:AddToBlizOptions("GlobalSearch", L.global_search)
+end
+
+function GlobalSearch:OnEnable()
+	-- These events are guaranteed to fire between initialize and enable
+	self:SendMessage("GlobalSearch_OnDBAvailable", self.db)
+	self:SendMessage("GlobalSearch_OnSearchProviderRegistryAvailable", self.providerRegistry)
+	self:EnableModules()
+end
+
+function GlobalSearch:EnableModules()
+	for _, module in self:IterateModules() do
+		module:Enable()
+	end
 end
 
 ---@param name string

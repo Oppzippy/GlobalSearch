@@ -9,7 +9,8 @@ local L = AceLocale:GetLocale("GlobalSearch")
 local addon = AceAddon:GetAddon("GlobalSearch")
 ---@class OptionsModule : AceConsole-3.0, AceEvent-3.0
 ---@field RegisterEvent function
----@field db table
+---@field db AceDBObject-3.0
+---@field searchProviderRegistry SearchProviderRegistry
 local module = addon:NewModule("Options", "AceEvent-3.0", "AceConsole-3.0")
 module.optionsTable = {
 	type = "group",
@@ -32,11 +33,21 @@ module.optionsTable = {
 }
 
 function module:OnInitialize()
+	self:RegisterMessage("GlobalSearch_OnDBAvailable", "OnDBAvailable")
+	self:RegisterMessage("GlobalSearch_OnSearchProviderRegistryAvailable", "OnSearchProviderRegistryAvailable")
 end
 
 function module:OnEnable()
 	self:RenderEnabledProviders()
 	self:RegisterMessage("GlobalSearch_OnProviderRegistered", "RenderEnabledProviders")
+end
+
+function module:OnSearchProviderRegistryAvailable(_, searchProviderRegistry)
+	self.searchProviderRegistry = searchProviderRegistry
+end
+
+function module:OnDBAvailable(_, db)
+	self.db = db
 end
 
 function module:OnProviderRegistered(_, name, provider)
@@ -46,7 +57,7 @@ end
 
 function module:RenderEnabledProviders()
 	self.numProviders = 0
-	local providers = self.providerRegistry:GetProviders()
+	local providers = self.searchProviderRegistry:GetProviders()
 	local options = {}
 	for name, provider in next, providers do
 		self.numProviders = self.numProviders + 1
