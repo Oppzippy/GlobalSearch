@@ -29,6 +29,9 @@ function SpellsSearchProvider:Fetch()
 				texture = icon,
 				searchableText = name,
 				macroText = "/cast " .. name,
+				pickup = function()
+					PickupSpell(spellID)
+				end,
 			}
 		end
 	end

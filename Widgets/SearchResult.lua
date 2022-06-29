@@ -29,6 +29,10 @@ local methods = {
 }
 
 do
+	local function onDragStart(frame)
+		frame.obj:Fire("OnPickup")
+	end
+
 	local function constructor()
 		local frame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
 		frame:Hide()
@@ -38,6 +42,9 @@ do
 			insets = { left = 3, right = 1.5, top = 1.5, bottom = 3 },
 		}
 		frame:ApplyBackdrop()
+		frame:EnableMouse(true)
+		frame:RegisterForDrag("LeftButton")
+		frame:SetScript("OnDragStart", onDragStart)
 
 		local highlightTexture = frame:CreateTexture(nil, "ARTWORK")
 		highlightTexture:SetAllPoints(frame)

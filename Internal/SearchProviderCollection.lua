@@ -8,6 +8,7 @@ local _, ns = ...
 ---@field searchableText string
 ---@field action function
 ---@field macroText string
+---@field pickup function
 
 ---@class SearchProviderCollection
 ---@field providers SearchProvider[]

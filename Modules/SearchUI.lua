@@ -123,6 +123,9 @@ function SearchUIPrototype:RenderResults(results)
 		resultWidget:SetText(self:HighlightRanges(result.item.name, result.matchRanges))
 		resultWidget:SetCategory(result.item.category)
 		resultWidget:SetTexture(result.item.texture)
+		if result.item.pickup then
+			resultWidget:SetCallback("OnPickup", result.item.pickup)
+		end
 		resultWidget:SetFullWidth(true)
 		resultWidget:SetHeight(40)
 		resultWidget:SetUserData("item", result.item)
