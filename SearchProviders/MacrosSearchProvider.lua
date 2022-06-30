@@ -2,16 +2,25 @@
 local _, ns = ...
 
 local AceLocale = LibStub("AceLocale-3.0")
+local AceEvent = LibStub("AceEvent-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
----@class MacrosSearchProvider : SearchProvider
+---@class MacrosSearchProvider : SearchProvider, AceEvent-3.0
 local MacrosSearchProvider = {
 	localizedName = L.macros,
 }
+AceEvent:Embed(MacrosSearchProvider)
 
 ---@return SearchItem[]
 function MacrosSearchProvider:Get()
-	return self:Fetch()
+	if not self.cache then
+		self.cache = self:Fetch()
+	end
+	return self.cache
+end
+
+function MacrosSearchProvider:ClearCache()
+	self.cache = nil
 end
 
 ---@return SearchItem[]
@@ -44,4 +53,5 @@ function MacrosSearchProvider:GetItemByMacroIndex(index)
 	}
 end
 
+MacrosSearchProvider:RegisterEvent("UPDATE_MACROS", "ClearCache")
 GlobalSearchAPI:RegisterProvider("macros", MacrosSearchProvider)
