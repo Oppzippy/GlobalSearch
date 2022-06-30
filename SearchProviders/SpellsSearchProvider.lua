@@ -60,7 +60,7 @@ function SpellsSearchProvider:IterateKnownSpells()
 				index = 1
 			end
 
-			if spellID and IsSpellKnown(spellID) then
+			if spellID and IsSpellKnownOrOverridesKnown(spellID) then
 				return spellID
 			end
 		end
