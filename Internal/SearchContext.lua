@@ -71,11 +71,14 @@ function SearchContextPrototype:SearchItems(query, items)
 		end
 		-- Which starts first
 		local aFirstRange, bFirstRange = a.matchRanges[1], b.matchRanges[1]
-		if aFirstRange.from == bFirstRange.from then
-			return aFirstRange.to > bFirstRange.to
+		if aFirstRange.from ~= bFirstRange.from then
+			return aFirstRange.from < bFirstRange.from
 		end
 		-- Which ends later
-		return aFirstRange.from < bFirstRange.from
+		if aFirstRange.to ~= bFirstRange.to then
+			return aFirstRange.to < bFirstRange.to
+		end
+		return #a.item.name < #b.item.name
 	end)
 
 	return matches
