@@ -28,7 +28,7 @@ end
 function module:Show()
 	if self:IsVisible() then return end
 
-	self.searchContext = ns.SearchContext.Create(self.providerCollection:Get())
+	self.searchContext = ns.SearchContext.Create(ns.QueryMatcher.MatchesQuery, self.providerCollection:Get())
 	self.searchUI:Show()
 end
 

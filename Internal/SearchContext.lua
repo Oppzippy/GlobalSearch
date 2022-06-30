@@ -4,6 +4,7 @@ local _, ns = ...
 ---@class SearchContextPrototype
 ---@field prevQuery string
 ---@field items SearchItem[]
+---@field queryMatcher fun(string, string): boolean, MatchRange[]
 ---@field prevResults SearchContextItem[]
 local SearchContextPrototype = {}
 
@@ -11,10 +12,13 @@ local SearchContextPrototype = {}
 ---@field item SearchItem
 ---@field matchRanges MatchRange[]
 
+---@param queryMatcher fun(string, string): boolean, MatchRange[]
 ---@param items SearchItem[]
-local function CreateSearchContext(items)
-	local searchContext = setmetatable({}, { __index = SearchContextPrototype })
-	searchContext.items = items
+local function CreateSearchContext(queryMatcher, items)
+	local searchContext = setmetatable({
+		queryMatcher = queryMatcher,
+		items = items,
+	}, { __index = SearchContextPrototype })
 	return searchContext
 end
 
@@ -49,7 +53,7 @@ function SearchContextPrototype:SearchItems(query, items)
 	---@type SearchContextItem[]
 	local matches = {}
 	for _, item in ipairs(items) do
-		local isMatch, matchRanges = ns.QueryMatcher.MatchesQuery(query, item.searchableText)
+		local isMatch, matchRanges = self.queryMatcher(query, item.searchableText)
 		if isMatch then
 			matches[#matches + 1] = {
 				item = item,
