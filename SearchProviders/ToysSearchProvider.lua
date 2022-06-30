@@ -2,12 +2,14 @@
 local _, ns = ...
 
 local AceLocale = LibStub("AceLocale-3.0")
+local AceEvent = LibStub("AceEvent-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
----@class ToysSearchProvider : SearchProvider
+---@class ToysSearchProvider : SearchProvider, AceEvent-3.0
 local ToysSearchProvider = {
 	localizedName = L.toys,
 }
+AceEvent:Embed(ToysSearchProvider)
 
 local toyBoxSettings
 do
@@ -59,8 +61,14 @@ end
 
 ---@return SearchItem[]
 function ToysSearchProvider:Get()
-	-- TODO cache toys
-	return self:Fetch()
+	if not self.cache then
+		self.cache = self:Fetch()
+	end
+	return self.cache
+end
+
+function ToysSearchProvider:ClearCache()
+	self.cache = nil
 end
 
 ---@return SearchItem[]
@@ -85,4 +93,5 @@ function ToysSearchProvider:Fetch()
 	return items
 end
 
+ToysSearchProvider:RegisterEvent("NEW_TOY_ADDED", "ClearCache")
 GlobalSearchAPI:RegisterProvider("toys", ToysSearchProvider)
