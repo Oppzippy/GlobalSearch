@@ -22,6 +22,23 @@ function TestSearchContext:TestResultCaching()
 	luaunit.assertEquals(2, #thirdResults)
 end
 
+function TestSearchContext:TestExtraSearchText()
+	local items = {
+		{
+			name = "abc",
+			extraSearchText = "def",
+		},
+		{
+			name = "abcdef",
+		},
+	}
+	local context = SearchContext.Create(QueryMatcher.MatchesQuery, items)
+	local results = context:Search("abcdef")
+	luaunit.assertEquals(#results, 2)
+	luaunit.assertEquals(results[1].item.name, "abcdef")
+	luaunit.assertEquals(results[2].item.name, "abc")
+end
+
 function TestSearchContext:TestSortingByNumMatches()
 	local items = {
 		{

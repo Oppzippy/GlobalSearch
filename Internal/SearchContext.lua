@@ -65,6 +65,13 @@ function SearchContextPrototype:SearchItems(query, items)
 	table.sort(matches, function(a, b)
 		local aNumRanges, bNumRanges = #a.matchRanges, #b.matchRanges
 
+		-- If one of the matches uses extraSearchText, it should come last
+		local isAMatchEntirelyWithinName = a.matchRanges[aNumRanges].to <= #a.item.name
+		local isBMatchEntirelyWithinName = b.matchRanges[bNumRanges].to <= #b.item.name
+		if isAMatchEntirelyWithinName ~= isBMatchEntirelyWithinName then
+			return isAMatchEntirelyWithinName
+		end
+
 		-- Fewest total matches
 		if aNumRanges ~= bNumRanges then
 			return aNumRanges < bNumRanges
