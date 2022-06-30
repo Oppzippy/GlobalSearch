@@ -1,5 +1,5 @@
 local luaunit = require("luaunit")
-local QueryMatcher = require("QueryMatcher")
+local QueryMatcher = require("Internal/QueryMatcher")
 TestQueryMatcher = {}
 
 function TestQueryMatcher:TestSkippedCharacters()
