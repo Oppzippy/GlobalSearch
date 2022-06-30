@@ -6,7 +6,6 @@ local AceEvent = LibStub("AceEvent-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class SpellsSearchProvider : SearchProvider, AceEvent-3.0
----@field cache SearchItem[]
 local SpellsSearchProvider = {
 	localizedName = L.spells,
 }
