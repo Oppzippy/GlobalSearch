@@ -2,17 +2,26 @@
 local _, ns = ...
 
 local AceLocale = LibStub("AceLocale-3.0")
+local AceEvent = LibStub("AceEvent-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
----@class SpellsSearchProvider : SearchProvider
+---@class SpellsSearchProvider : SearchProvider, AceEvent-3.0
+---@field cache SearchItem[]
 local SpellsSearchProvider = {
 	localizedName = L.spells,
 }
+AceEvent:Embed(SpellsSearchProvider)
 
 ---@return SearchItem[]
 function SpellsSearchProvider:Get()
-	-- TODO cache spells
-	return self:Fetch()
+	if not self.cache then
+		self.cache = self:Fetch()
+	end
+	return self.cache
+end
+
+function SpellsSearchProvider:ClearCache()
+	self.cache = nil
 end
 
 ---@return SearchItem[]
@@ -75,4 +84,5 @@ function SpellsSearchProvider:IterateSpellTabs()
 	end
 end
 
+SpellsSearchProvider:RegisterEvent("SPELLS_CHANGED", "ClearCache")
 GlobalSearchAPI:RegisterProvider("spells", SpellsSearchProvider)
