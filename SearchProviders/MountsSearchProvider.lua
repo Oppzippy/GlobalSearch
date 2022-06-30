@@ -26,7 +26,6 @@ function MountsSearchProvider:Fetch()
 				name = name,
 				category = L.mounts,
 				texture = icon,
-				searchableText = name,
 				action = function()
 					C_MountJournal.SummonByID(mountID)
 				end,

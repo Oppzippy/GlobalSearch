@@ -37,7 +37,6 @@ function MacrosSearchProvider:GetItemByMacroIndex(index)
 		name = name,
 		category = L.macros,
 		texture = icon,
-		searchableText = name,
 		macroText = body,
 		pickup = function()
 			PickupMacro(index)

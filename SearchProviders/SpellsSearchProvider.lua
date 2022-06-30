@@ -36,7 +36,6 @@ function SpellsSearchProvider:Fetch()
 				name = name,
 				category = L.spells,
 				texture = icon,
-				searchableText = name,
 				macroText = "/cast " .. name,
 				pickup = function()
 					PickupSpell(spellID)

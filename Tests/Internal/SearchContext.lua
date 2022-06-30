@@ -8,11 +8,9 @@ function TestSearchContext:TestResultCaching()
 	local items = {
 		{
 			name = "abc",
-			searchableText = "abc",
 		},
 		{
 			name = "abcd",
-			searchableText = "abcd",
 		},
 	}
 	local context = SearchContext.Create(QueryMatcher.MatchesQuery, items)
@@ -27,62 +25,60 @@ end
 function TestSearchContext:TestSortingByNumMatches()
 	local items = {
 		{
-			searchableText = "abc",
+			name = "abc",
 		},
 		{
-			searchableText = "ac",
+			name = "ac",
 		},
 	}
 	local context = SearchContext.Create(QueryMatcher.MatchesQuery, items)
 	local results = context:Search("ac")
-	luaunit.assertEquals(results[1].item.searchableText, "ac")
-	luaunit.assertEquals(results[2].item.searchableText, "abc")
+	luaunit.assertEquals(results[1].item.name, "ac")
+	luaunit.assertEquals(results[2].item.name, "abc")
 end
 
 function TestSearchContext:TestSortingByEarliestMatch()
 	local items = {
 		{
 			-- first match starts later and ends earlier
-			searchableText = "_ab_cde",
+			name = "_ab_cde",
 		},
 		{
-			searchableText = "abcd___e",
+			name = "abcd___e",
 		},
 	}
 	local context = SearchContext.Create(QueryMatcher.MatchesQuery, items)
 	local results = context:Search("abcde")
-	luaunit.assertEquals(results[1].item.searchableText, "abcd___e")
-	luaunit.assertEquals(results[2].item.searchableText, "_ab_cde")
+	luaunit.assertEquals(results[1].item.name, "abcd___e")
+	luaunit.assertEquals(results[2].item.name, "_ab_cde")
 end
 
 function TestSearchContext:TestSortingByLongestFirstMatch()
 	local items = {
 		{
-			searchableText = "a_bc",
+			name = "a_bc",
 		},
 		{
-			searchableText = "abc",
+			name = "abc",
 		},
 	}
 	local context = SearchContext.Create(QueryMatcher.MatchesQuery, items)
 	local results = context:Search("abc")
-	luaunit.assertEquals(results[1].item.searchableText, "abc")
-	luaunit.assertEquals(results[2].item.searchableText, "a_bc")
+	luaunit.assertEquals(results[1].item.name, "abc")
+	luaunit.assertEquals(results[2].item.name, "a_bc")
 end
 
 function TestSearchContext:TestSortingByStringLength()
 	local items = {
 		{
 			name = "abcdefg",
-			searchableText = "abcdefg",
 		},
 		{
 			name = "abcd",
-			searchableText = "abcd",
 		},
 	}
 	local context = SearchContext.Create(QueryMatcher.MatchesQuery, items)
 	local results = context:Search("ab")
-	luaunit.assertEquals(results[1].item.searchableText, "abcd")
-	luaunit.assertEquals(results[2].item.searchableText, "abcdefg")
+	luaunit.assertEquals(results[1].item.name, "abcd")
+	luaunit.assertEquals(results[2].item.name, "abcdefg")
 end

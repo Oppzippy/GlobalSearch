@@ -77,7 +77,6 @@ function PetsSearchProvider:Fetch()
 				name = name,
 				category = L.pets,
 				texture = icon,
-				searchableText = name,
 				action = function()
 					C_PetJournal.SummonPetByGUID(petID)
 				end,

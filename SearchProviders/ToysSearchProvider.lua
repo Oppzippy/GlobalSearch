@@ -75,7 +75,6 @@ function ToysSearchProvider:Fetch()
 			name = name,
 			category = L.toys,
 			texture = icon,
-			searchableText = name,
 			macroText = "/use " .. name,
 			pickup = function()
 				C_ToyBox.PickupToyBoxItem(itemID)

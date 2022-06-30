@@ -5,7 +5,7 @@ local _, ns = ...
 ---@field name string
 ---@field category string
 ---@field texture number
----@field searchableText string
+---@field extraSearchText string
 ---@field action function
 ---@field macroText string
 ---@field pickup function

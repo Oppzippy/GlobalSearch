@@ -53,7 +53,7 @@ function SearchContextPrototype:SearchItems(query, items)
 	---@type SearchContextItem[]
 	local matches = {}
 	for _, item in ipairs(items) do
-		local isMatch, matchRanges = self.queryMatcher(query, item.searchableText)
+		local isMatch, matchRanges = self.queryMatcher(query, item.name .. (item.extraSearchText or ""))
 		if isMatch then
 			matches[#matches + 1] = {
 				item = item,

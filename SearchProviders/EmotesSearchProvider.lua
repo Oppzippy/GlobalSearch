@@ -28,7 +28,6 @@ function EmotesSearchProvider:Fetch()
 			name = emoteLowerCase,
 			category = L.emotes,
 			texture = 1019848, -- Interface/GossipFrame/ChatBubbleGossipIcon
-			searchableText = emoteLowerCase,
 			action = function()
 				DoEmote(emote)
 			end,

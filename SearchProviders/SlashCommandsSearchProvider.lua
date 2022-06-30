@@ -40,7 +40,6 @@ function SlashCommandsSearchProvider:Fetch()
 			name = command,
 			category = L.slash_commands,
 			texture = 136243, -- Interface/Icons/Trade_Engineering
-			searchableText = command,
 			macroText = command,
 		}
 	end

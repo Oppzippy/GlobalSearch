@@ -34,7 +34,6 @@ function BagsSearchProvider:Fetch()
 				name = itemName,
 				category = L.bags,
 				texture = icon,
-				searchableText = itemName,
 				macroText = "/use " .. itemName,
 				pickup = function()
 					PickupItem(itemString)
