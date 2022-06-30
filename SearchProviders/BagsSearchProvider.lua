@@ -19,7 +19,7 @@ function BagsSearchProvider:Get()
 	return self.cache
 end
 
-function BagsSearchProvider:ResetCache()
+function BagsSearchProvider:ClearCache()
 	self.cache = nil
 end
 
