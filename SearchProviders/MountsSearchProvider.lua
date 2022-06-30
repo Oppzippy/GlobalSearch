@@ -2,17 +2,25 @@
 local _, ns = ...
 
 local AceLocale = LibStub("AceLocale-3.0")
+local AceEvent = LibStub("AceEvent-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
----@class MountsSearchProvider : SearchProvider
+---@class MountsSearchProvider : SearchProvider, AceEvent-3.0
 local MountsSearchProvider = {
 	localizedName = L.mounts,
 }
+AceEvent:Embed(MountsSearchProvider)
 
 ---@return SearchItem[]
 function MountsSearchProvider:Get()
-	-- TODO cache mounts
-	return self:Fetch()
+	if not self.cache then
+		self.cache = self:Fetch()
+	end
+	return self.cache
+end
+
+function MountsSearchProvider:ClearCache()
+	self.cache = nil
 end
 
 ---@return SearchItem[]
@@ -37,5 +45,23 @@ function MountsSearchProvider:Fetch()
 	end
 	return items
 end
+
+do
+	local ridingSpellIDs = {
+		[33388] = true, -- Apprentice Riding
+		[33391] = true, -- Journeyman Riding
+		[34090] = true, -- Expert Riding
+		[90265] = true, -- Master Riding
+	}
+	function MountsSearchProvider:LEARNED_SPELL_IN_TAB(_, spellID)
+		if ridingSpellIDs[spellID] then
+			self:ClearCache()
+		end
+	end
+end
+
+MountsSearchProvider:RegisterEvent("NEW_MOUNT_ADDED", "ClearCache")
+MountsSearchProvider:RegisterEvent("MOUNT_JOURNAL_USABILITY_CHANGED", "ClearCache")
+MountsSearchProvider:RegisterEvent("LEARNED_SPELL_IN_TAB")
 
 GlobalSearchAPI:RegisterProvider("mounts", MountsSearchProvider)
