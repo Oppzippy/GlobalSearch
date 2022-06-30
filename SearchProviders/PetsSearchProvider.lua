@@ -2,12 +2,14 @@
 local _, ns = ...
 
 local AceLocale = LibStub("AceLocale-3.0")
+local AceEvent = LibStub("AceEvent-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
----@class PetsSearchProvider : SearchProvider
+---@class PetsSearchProvider : SearchProvider, AceEvent-3.0
 local PetsSearchProvider = {
 	localizedName = L.pets,
 }
+AceEvent:Embed(PetsSearchProvider)
 
 local petJournalSettings
 do
@@ -56,8 +58,14 @@ end
 
 ---@return SearchItem[]
 function PetsSearchProvider:Get()
-	-- TODO cache pets
-	return self:Fetch()
+	if not self.cache then
+		self.cache = self:Fetch()
+	end
+	return self.cache
+end
+
+function PetsSearchProvider:ClearCache()
+	self.cache = nil
 end
 
 ---@return SearchItem[]
@@ -89,5 +97,12 @@ function PetsSearchProvider:Fetch()
 	SetPetJournalBoxSettings(prevSettings)
 	return items
 end
+
+-- PET_JOURNAL_LIST_UPDATE is the only event that fires when a pet is released, but that event triggers whenever
+-- any of the search filters are changed as well. This is a slow provider, so we don't want to clear the cache unless
+-- absolutely necessary.
+-- Releasing a pet is a rare enough event that we'll ignore it.
+PetsSearchProvider:RegisterEvent("NEW_PET_ADDED", "ClearCache")
+PetsSearchProvider:RegisterEvent("PET_JOURNAL_PET_DELETED", "ClearCache")
 
 GlobalSearchAPI:RegisterProvider("pets", PetsSearchProvider)
