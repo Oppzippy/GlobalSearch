@@ -7,6 +7,7 @@
 ## SavedVariables: GlobalSearchDB
 ## X-Curse-Project-ID: 638729
 ## X-Wago-ID: vEGPPkG1
+## X-WoWI-ID: 26354
 
 Libs.xml
 Locales\Include.xml
