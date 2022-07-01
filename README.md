@@ -1,3 +1,5 @@
+# GlobalSearch
+
 Does not work in combat.
 
 The keybinding can be set in Keybindings > AddOns > GlobalSearch > Show.
