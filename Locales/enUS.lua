@@ -1,7 +1,7 @@
 local L = LibStub("AceLocale-3.0"):NewLocale("GlobalSearch", "enUS", true)
 
 L.global_search = "GlobalSearch"
-L.enabled_modules = "Enabled Modules"
+L.enabled_providers = "Enabled Providers"
 L.ui_panels = "UI Panels"
 L.calendar = "Calendar"
 L.toys = "Toys"

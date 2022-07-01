@@ -15,9 +15,9 @@ local module = addon:NewModule("Options", "AceEvent-3.0", "AceConsole-3.0")
 module.optionsTable = {
 	type = "group",
 	args = {
-		enabledSearchProviders = {
+		enabledProviders = {
 			type = "group",
-			name = L.enabled_modules,
+			name = L.enabled_providers,
 			get = function(info)
 				return not module.db.profile.disabledSearchProviders[ info[#info] ]
 			end,
@@ -52,7 +52,7 @@ end
 
 function module:OnProviderRegistered(_, name, provider)
 	self.numProviders = self.numProviders + 1
-	self.optionsTable.args.enabledModules.args[name] = self:RenderProvider(name, provider)
+	self.optionsTable.args.enabledProviders.args[name] = self:RenderProvider(name, provider)
 end
 
 function module:RenderEnabledProviders()
