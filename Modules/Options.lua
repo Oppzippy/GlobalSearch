@@ -63,7 +63,7 @@ function module:RenderEnabledProviders()
 		self.numProviders = self.numProviders + 1
 		options[name] = self:RenderProvider(name, provider)
 	end
-	self.optionsTable.args.enabledSearchProviders.args = options
+	self.optionsTable.args.enabledProviders.args = options
 end
 
 function module:RenderProvider(name, provider)
