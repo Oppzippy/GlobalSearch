@@ -5,6 +5,8 @@
 ## Version: @project-version@
 ## OptionalDeps: Ace3
 ## SavedVariables: GlobalSearchDB
+## X-Curse-Project-ID: 638729
+## X-Wago-ID: vEGPPkG1
 
 Libs.xml
 Locales\Include.xml
