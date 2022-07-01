@@ -16,5 +16,6 @@ GlobalSearch.lua
 Modules\Modules.xml
 
 GlobalSearchAPI.lua
-# All search providers are treated as third party
+
+# All search providers are treated as third party so they're loaded last
 SearchProviders\Include.xml
