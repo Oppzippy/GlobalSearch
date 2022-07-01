@@ -8,7 +8,7 @@
 
 Libs.xml
 Bindings.xml
-Locales\Locales.xml
+Locales\Include.xml
 Widgets\Include.xml
 Internal\Include.xml
 
