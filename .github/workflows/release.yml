@@ -16,7 +16,7 @@ jobs:
       - name: Run tests
         run: lua Tests/Test.lua
       - name: Package and release
-        uses: BigWigsMods/packager@master
+        uses: BigWigsMods/packager@v2
         env:
           GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
