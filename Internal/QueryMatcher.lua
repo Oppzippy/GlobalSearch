@@ -2,12 +2,12 @@
 local _, ns = ...
 
 ---@class MatchRange
----@field from number
----@field to number
+---@field from integer
+---@field to integer
 
 ---@param query string
 ---@param text string
----@return boolean, MatchRange[]
+---@return boolean, MatchRange[]?
 local function MatchesQuery(query, text)
 	if query == "" then
 		return true, {}
@@ -49,7 +49,7 @@ local function MatchesQuery(query, text)
 			queryIndex = queryIndex + 1
 		end
 	end
-	return false
+	return false, nil
 end
 
 local export = { MatchesQuery = MatchesQuery }
