@@ -9,6 +9,7 @@ L.slash_commands = "Slash Commands"
 L.emotes = "Emotes"
 L.bags = "Bags"
 
+L.show = SHOW
 L.mounts = MOUNTS
 L.pets = PETS
 L.game_menu = MAINMENU_BUTTON

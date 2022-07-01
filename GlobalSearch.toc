@@ -7,10 +7,11 @@
 ## SavedVariables: GlobalSearchDB
 
 Libs.xml
-Bindings.xml
 Locales\Include.xml
 Widgets\Include.xml
 Internal\Include.xml
+Bindings.xml
+Bindings.lua
 
 GlobalSearch.lua
 Modules\Modules.xml
