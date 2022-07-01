@@ -12,7 +12,7 @@ jobs:
       - name: Install luarocks
         run: sudo apt-get install luarocks
       - name: Installl luaunit
-        run: luarocks install luaunit
+        run: sudo luarocks install luaunit
       - name: Run tests
         run: lua Tests/Test.lua
       - name: Package and release
