@@ -26,7 +26,7 @@ function module:OnInitialize()
 end
 
 function module:Show()
-	if self:IsVisible() then return end
+	if self:IsVisible() or InCombatLockdown() then return end
 
 	self.searchContext = ns.SearchContext.Create(ns.QueryMatcher.MatchesQuery, self.providerCollection:Get())
 	self.searchUI:Show()
