@@ -5,7 +5,6 @@ local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class SlashCommandsSearchProvider : SearchProvider
----@field cache SearchItem[]
 local SlashCommandsSearchProvider = {
 	localizedName = L.slash_commands,
 }

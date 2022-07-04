@@ -5,7 +5,6 @@ local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class UIPanelsSearchProvider : SearchProvider
----@field cache SearchItem[]
 local UIPanelsSearchProvider = {
 	localizedName = L.ui_panels,
 }

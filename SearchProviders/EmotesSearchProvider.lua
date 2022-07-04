@@ -5,7 +5,6 @@ local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class EmotesSearchProvider : SearchProvider
----@field cache SearchItem[]
 local EmotesSearchProvider = {
 	localizedName = L.emotes,
 }
