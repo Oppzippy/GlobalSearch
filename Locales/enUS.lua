@@ -8,6 +8,7 @@ L.toys = "Toys"
 L.slash_commands = "Slash Commands"
 L.emotes = "Emotes"
 L.bags = "Bags"
+L.equipment_sets = "Equipment Sets"
 
 L.show = SHOW
 L.mounts = MOUNTS
