@@ -15,3 +15,7 @@ end
 function GlobalSearchAPI:HasProvider(name)
 	return GlobalSearch:HasSearchProvider(name)
 end
+
+function GlobalSearchAPI:Show()
+	GlobalSearch:GetModule("Search"):Show()
+end
