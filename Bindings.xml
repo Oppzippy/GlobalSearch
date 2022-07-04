@@ -1,5 +1,8 @@
 <Bindings>
 	<Binding name="GLOBALSEARCH_SHOW" header="GLOBALSEARCH" category="ADDONS" default="ALT-SPACE">
-		LibStub("AceAddon-3.0"):GetAddon("GlobalSearch"):GetModule("Search"):Show()
+		-- Show on the next frame to prevent the keypress event from reaching the search EditBox
+		C_Timer.After(0, function()
+			LibStub("AceAddon-3.0"):GetAddon("GlobalSearch"):GetModule("Search"):Show()
+		end)
 	</Binding>
 </Bindings>
