@@ -9,6 +9,7 @@ L.slash_commands = "Slash Commands"
 L.emotes = "Emotes"
 L.bags = "Bags"
 L.equipment_sets = "Equipment Sets"
+L.guilds_and_communities = "Guilds and Communities"
 
 L.show = SHOW
 L.mounts = MOUNTS
@@ -17,7 +18,6 @@ L.game_menu = MAINMENU_BUTTON
 L.adventure_guide = ADVENTURE_JOURNAL
 L.collections = COLLECTIONS
 L.group_finder = DUNGEONS_BUTTON
-L.guilds_and_communities = GUILD_AND_COMMUNITIES
 L.quest_log = QUESTLOG_BUTTON
 L.world_map = WORLDMAP_BUTTON
 L.achievements = ACHIEVEMENT_BUTTON

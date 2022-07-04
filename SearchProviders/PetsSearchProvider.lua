@@ -1,3 +1,6 @@
+-- Disable provider on classic
+if C_PetJournal == nil then return end
+
 ---@class ns
 local _, ns = ...
 
