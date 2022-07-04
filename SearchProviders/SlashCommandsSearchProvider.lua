@@ -26,11 +26,11 @@ function SlashCommandsSearchProvider:Fetch()
 	-- /reload or so), so it's not reliable to use that as a source of slash
 	-- commands.
 	local type, strfind = type, string.find
-	for k, v in next, _G do
-		if type(k) == "string" and strfind(k, "^SLASH_.+%d+$") then
+	for key, value in next, _G do
+		if type(key) == "string" and strfind(key, "^SLASH_.+%d+$") then
 			-- Filter out SLASH_TEXTTOSPEECH and other non-slash commands with the prefix
-			if type(v) == "string" and strfind(k, "/", nil, true) == 1 then
-				commands[v] = true
+			if type(value) == "string" and strfind(value, "/", nil, true) == 1 then
+				commands[value] = true
 			end
 		end
 	end
