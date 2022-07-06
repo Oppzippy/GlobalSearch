@@ -10,7 +10,10 @@ L.emotes = "Emotes"
 L.bags = "Bags"
 L.equipment_sets = "Equipment Sets"
 L.guilds_and_communities = "Guilds and Communities"
+L.does_show_keybind_toggle = "Keybind Hides When Shown"
+L.does_show_keybind_toggle_desc = "When the search bar is shown, the show keybind will instead hide the search bar."
 
+L.general = GENERAL
 L.show = SHOW
 L.mounts = MOUNTS
 L.pets = PETS

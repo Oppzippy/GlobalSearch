@@ -14,19 +14,40 @@ local addon = AceAddon:GetAddon("GlobalSearch")
 local module = addon:NewModule("Options", "AceEvent-3.0", "AceConsole-3.0")
 module.optionsTable = {
 	type = "group",
+	childGroups = "tab",
+	get = function(info)
+		return module.db.profile[info[#info]]
+	end,
+	set = function(info, val)
+		module.db.profile[info[#info]] = val
+	end,
 	args = {
+		general = {
+			type = "group",
+			name = L.general,
+			order = 1,
+			args = {
+				doesShowKeybindToggle = {
+					type = "toggle",
+					name = L.does_show_keybind_toggle,
+					desc = L.does_show_keybind_toggle_desc,
+					width = "full",
+					order = 1,
+				}
+			},
+		},
 		enabledProviders = {
 			type = "group",
 			name = L.enabled_providers,
 			get = function(info)
-				return not module.db.profile.disabledSearchProviders[ info[#info] ]
+				return not module.db.profile.disabledSearchProviders[info[#info]]
 			end,
 			set = function(info, val)
 				local providerName = info[#info]
 				module.db.profile.disabledSearchProviders[providerName] = not val
 				module:SendMessage("GlobalSearch_OnProviderStatusChanged", providerName, val)
 			end,
-			order = 1,
+			order = 2,
 			args = {},
 		}
 	},

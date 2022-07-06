@@ -17,9 +17,10 @@ do
 		error("attempt to update a read-only table")
 	end
 
-	---@param t table
+	---@generic T: table
+	---@param t T
 	---@param ignoreWrites? boolean
-	---@return table
+	---@return T
 	function Util.ReadOnlyTable(t, ignoreWrites)
 		local proxy = setmetatable({}, {
 			__index = t,
@@ -27,6 +28,17 @@ do
 		})
 		return proxy
 	end
+end
+
+---@generic T
+---@param list T[]
+---@return table<T, boolean>
+function Util.ListToSet(list)
+	local set = {}
+	for _, value in next, list do
+		set[value] = true
+	end
+	return set
 end
 
 if ns then

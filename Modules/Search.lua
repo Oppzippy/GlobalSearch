@@ -4,7 +4,7 @@ local _, ns = ...
 local AceAddon = LibStub("AceAddon-3.0")
 
 local addon = AceAddon:GetAddon("GlobalSearch")
----@class SearchModule : AceConsole-3.0
+---@class SearchModule : AceConsole-3.0, AceEvent-3.0
 ---@field RegisterEvent function
 local module = addon:NewModule("Search", "AceEvent-3.0", "AceConsole-3.0")
 local searchExecute = CreateFrame("Button", "GlobalSearchExecuteButton", nil, "InsecureActionButtonTemplate")
@@ -21,8 +21,16 @@ function module:OnInitialize()
 
 	self.searchUI.RegisterCallback(self, "OnTextChanged")
 	self.searchUI.RegisterCallback(self, "OnSelectionChanged")
+	self.searchUI.RegisterCallback(self, "OnKeyDown")
 	self.searchUI.RegisterCallback(self, "OnClose")
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "Hide")
+	self:RegisterMessage("GlobalSearch_OnDBAvailable", "OnDBAvailable")
+end
+
+---@param _ unknown
+---@param db AceDBObject-3.0
+function module:OnDBAvailable(_, db)
+	self.db = db
 end
 
 function module:Show()
@@ -50,6 +58,16 @@ end
 ---@param text string
 function module:OnTextChanged(_, text)
 	self:Search(text)
+end
+
+function module:OnKeyDown(_, key)
+	if self.db.profile.doesShowKeybindToggle then
+		local keyWithModifiers = ns.Bindings.GetCurrentModifiers() .. key
+		local showBindings = ns.Bindings.GetKeyBinding("SHOW")
+		if showBindings[keyWithModifiers] then
+			self:Hide()
+		end
+	end
 end
 
 function module:OnClose()

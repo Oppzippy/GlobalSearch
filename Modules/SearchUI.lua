@@ -54,6 +54,9 @@ function SearchUIPrototype:Show()
 		end
 		self:SetSelection(newSelectedIndex)
 	end)
+	searchBar:SetCallback("OnKeyDown", function(_, _, key)
+		self.callbacks:Fire("OnKeyDown", key)
+	end)
 	searchBar:SetFullWidth(true)
 	searchBar:SetHeight(40)
 

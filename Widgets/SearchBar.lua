@@ -33,6 +33,7 @@ do
 			frame:SetPropagateKeyboardInput(true)
 		else
 			frame:SetPropagateKeyboardInput(false)
+			frame.obj:Fire("OnKeyDown", button)
 		end
 	end
 
