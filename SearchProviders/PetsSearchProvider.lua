@@ -80,6 +80,7 @@ function PetsSearchProvider:Fetch()
 	for i = 1, numPets do
 		local petID, _, isOwned, customName, _, _, _, speciesName, icon = C_PetJournal.GetPetInfoByIndex(i)
 		if isOwned then
+			---@type string?
 			local name = speciesName
 			if customName then
 				name = string.format("%s (%s)", customName, speciesName)
@@ -88,6 +89,9 @@ function PetsSearchProvider:Fetch()
 				name = name,
 				category = L.pets,
 				texture = icon,
+				tooltip = function(tooltip)
+					tooltip:SetCompanionPet(petID)
+				end,
 				action = function()
 					C_PetJournal.SummonPetByGUID(petID)
 				end,

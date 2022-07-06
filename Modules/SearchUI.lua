@@ -75,9 +75,50 @@ function SearchUIPrototype:Show()
 	self.widgets.resultsContainer = resultsContainer
 end
 
+function SearchUIPrototype:UpdateTooltip()
+	local selection = self.widgets.results[self.selectedIndex]
+	if selection then
+		local item = selection:GetUserData("item")
+		local tooltipType = type(item.tooltip)
+		-- TODO add string tooltip type
+		if tooltipType == "function" then
+			self:ShowTooltip(item.tooltip)
+			return
+		end
+	end
+	self:HideTooltip()
+end
+
+function SearchUIPrototype:ShowTooltip(tooltipFunc)
+	self:HideTooltip()
+
+	local tooltip = AceGUI:Create("GlobalSearch-Tooltip")
+	self.widgets.tooltip = tooltip
+
+	tooltip:ClearAllPoints()
+	tooltip.frame:SetOwner(UIParent, "ANCHOR_NONE")
+	tooltip:SetPoint("TOPLEFT", self.widgets.resultsContainer.frame, "TOPRIGHT", 4, 0)
+
+	local limitedTooltip = ns.LimitedTooltip.Limit(tooltip.frame)
+	xpcall(function()
+		tooltipFunc(limitedTooltip)
+	end, function(err)
+		geterrorhandler()(err)
+		self:HideTooltip()
+	end)
+end
+
+function SearchUIPrototype:HideTooltip()
+	if self.widgets.tooltip then
+		self.widgets.tooltip:Release()
+		self.widgets.tooltip = nil
+	end
+end
+
 function SearchUIPrototype:Hide()
 	if not self.widgets.container then return end
 
+	self:HideTooltip()
 	self.widgets.container:Release()
 	self.widgets = { results = {} }
 end
@@ -97,6 +138,8 @@ function SearchUIPrototype:SetSelection(index)
 	local newSelection = self.widgets.results[index]
 	newSelection:SetIsSelected(true)
 	self.selectedIndex = index
+
+	self:UpdateTooltip()
 	self:FireSelectionChange()
 end
 
@@ -142,6 +185,7 @@ function SearchUIPrototype:RenderResults(results)
 	self.widgets.resultsContainer:ResumeLayout()
 	self.widgets.resultsContainer:DoLayout()
 
+	self:UpdateTooltip()
 	self:FireSelectionChange()
 end
 

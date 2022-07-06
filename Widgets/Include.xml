@@ -2,4 +2,5 @@
 ..\FrameXML\UI.xsd">
 	<Script file="SearchBar.lua" />
 	<Script file="SearchResult.lua" />
+	<Script file="Tooltip.lua" />
 </Ui>

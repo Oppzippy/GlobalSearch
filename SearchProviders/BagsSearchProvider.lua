@@ -35,6 +35,9 @@ function BagsSearchProvider:Fetch()
 				category = L.bags,
 				texture = icon,
 				macroText = "/use " .. itemName,
+				tooltip = function(tooltip)
+					tooltip:SetItemByID(itemID)
+				end,
 				pickup = function()
 					PickupItem(itemString)
 				end

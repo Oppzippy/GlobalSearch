@@ -86,6 +86,9 @@ function ToysSearchProvider:Fetch()
 			name = name,
 			category = L.toys,
 			texture = icon,
+			tooltip = function(tooltip)
+				tooltip:SetToyByItemID(itemID)
+			end,
 			macroText = "/use " .. name,
 			pickup = function()
 				C_ToyBox.PickupToyBoxItem(itemID)

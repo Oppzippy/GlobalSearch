@@ -37,6 +37,9 @@ function MountsSearchProvider:Fetch()
 				name = name,
 				category = L.mounts,
 				texture = icon,
+				tooltip = function(tooltip)
+					tooltip:SetMountBySpellID(spellID)
+				end,
 				action = function()
 					C_MountJournal.SummonByID(mountID)
 				end,

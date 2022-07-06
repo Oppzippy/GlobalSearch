@@ -40,6 +40,9 @@ function SpellsSearchProvider:Fetch()
 				category = L.spells,
 				texture = icon,
 				extraSearchText = description,
+				tooltip = function(tooltip)
+					tooltip:SetSpellByID(spellID)
+				end,
 				macroText = "/cast " .. name,
 				pickup = function()
 					PickupSpell(spellID)

@@ -37,6 +37,9 @@ function EquipmentSetsSearchProvider:Fetch()
 			name = setName,
 			category = L.equipment_sets,
 			texture = icon,
+			tooltip = function(tooltip)
+				tooltip:SetEquipmentSet(setName)
+			end,
 			action = function()
 				C_EquipmentSet.UseEquipmentSet(setID)
 			end,
