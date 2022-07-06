@@ -50,4 +50,4 @@ function EquipmentSetsSearchProvider:Fetch()
 end
 
 EquipmentSetsSearchProvider:RegisterEvent("EQUIPMENT_SETS_CHANGED", "ClearCache")
-GlobalSearchAPI:RegisterProvider("equipmentSets", EquipmentSetsSearchProvider)
+GlobalSearchAPI:RegisterProvider("GlobalSearch_EquipmentSets", EquipmentSetsSearchProvider)

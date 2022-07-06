@@ -91,4 +91,4 @@ function SpellsSearchProvider:IterateSpellTabs()
 end
 
 SpellsSearchProvider:RegisterEvent("SPELLS_CHANGED", "ClearCache")
-GlobalSearchAPI:RegisterProvider("spells", SpellsSearchProvider)
+GlobalSearchAPI:RegisterProvider("GlobalSearch_Spells", SpellsSearchProvider)

@@ -79,5 +79,5 @@ function BagsSearchProvider:IterateBagItems()
 	end
 end
 
-GlobalSearchAPI:RegisterProvider("bags", BagsSearchProvider)
+GlobalSearchAPI:RegisterProvider("GlobalSearch_Bags", BagsSearchProvider)
 BagsSearchProvider:RegisterEvent("BAG_UPDATE_DELAYED", "ClearCache")

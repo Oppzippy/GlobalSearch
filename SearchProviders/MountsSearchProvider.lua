@@ -70,4 +70,4 @@ MountsSearchProvider:RegisterEvent("NEW_MOUNT_ADDED", "ClearCache")
 MountsSearchProvider:RegisterEvent("MOUNT_JOURNAL_USABILITY_CHANGED", "ClearCache")
 MountsSearchProvider:RegisterEvent("LEARNED_SPELL_IN_TAB")
 
-GlobalSearchAPI:RegisterProvider("mounts", MountsSearchProvider)
+GlobalSearchAPI:RegisterProvider("GlobalSearch_Mounts", MountsSearchProvider)

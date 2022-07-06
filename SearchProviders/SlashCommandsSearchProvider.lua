@@ -46,4 +46,4 @@ function SlashCommandsSearchProvider:Fetch()
 	return items
 end
 
-GlobalSearchAPI:RegisterProvider("slashCommands", SlashCommandsSearchProvider)
+GlobalSearchAPI:RegisterProvider("GlobalSearch_SlashCommands", SlashCommandsSearchProvider)

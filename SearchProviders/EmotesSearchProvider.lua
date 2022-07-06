@@ -35,4 +35,4 @@ function EmotesSearchProvider:Fetch()
 	return items
 end
 
-GlobalSearchAPI:RegisterProvider("emotes", EmotesSearchProvider)
+GlobalSearchAPI:RegisterProvider("GlobalSearch_Emotes", EmotesSearchProvider)

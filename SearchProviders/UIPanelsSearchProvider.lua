@@ -142,4 +142,4 @@ function UIPanelsSearchProvider:Fetch()
 	}
 end
 
-GlobalSearchAPI:RegisterProvider("defaultUIPanels", UIPanelsSearchProvider)
+GlobalSearchAPI:RegisterProvider("GlobalSearch_DefaultUIPanels", UIPanelsSearchProvider)

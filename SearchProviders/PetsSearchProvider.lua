@@ -112,4 +112,4 @@ end
 PetsSearchProvider:RegisterEvent("NEW_PET_ADDED", "ClearCache")
 PetsSearchProvider:RegisterEvent("PET_JOURNAL_PET_DELETED", "ClearCache")
 
-GlobalSearchAPI:RegisterProvider("pets", PetsSearchProvider)
+GlobalSearchAPI:RegisterProvider("GlobalSearch_Pets", PetsSearchProvider)

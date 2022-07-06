@@ -100,4 +100,4 @@ function ToysSearchProvider:Fetch()
 end
 
 ToysSearchProvider:RegisterEvent("NEW_TOY_ADDED", "ClearCache")
-GlobalSearchAPI:RegisterProvider("toys", ToysSearchProvider)
+GlobalSearchAPI:RegisterProvider("GlobalSearch_Toys", ToysSearchProvider)

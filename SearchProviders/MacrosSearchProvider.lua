@@ -54,4 +54,4 @@ function MacrosSearchProvider:GetItemByMacroIndex(index)
 end
 
 MacrosSearchProvider:RegisterEvent("UPDATE_MACROS", "ClearCache")
-GlobalSearchAPI:RegisterProvider("macros", MacrosSearchProvider)
+GlobalSearchAPI:RegisterProvider("GlobalSearch_Macros", MacrosSearchProvider)
