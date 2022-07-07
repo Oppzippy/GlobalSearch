@@ -2,6 +2,7 @@
 local _, ns = ...
 
 local AceAddon = LibStub("AceAddon-3.0")
+local CallbackHandler = LibStub("CallbackHandler-1.0")
 
 local addon = AceAddon:GetAddon("GlobalSearch")
 ---@class SearchModule : AceConsole-3.0, AceEvent-3.0
@@ -21,10 +22,19 @@ function module:OnInitialize()
 
 	self.searchUI.RegisterCallback(self, "OnTextChanged")
 	self.searchUI.RegisterCallback(self, "OnSelectionChanged")
-	self.searchUI.RegisterCallback(self, "OnKeyDown")
-	self.searchUI.RegisterCallback(self, "OnClose")
+
+	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnClose", "Hide")
+	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnSelectNextItem")
+	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnSelectPreviousItem")
+	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnToggle")
+
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "Hide")
 	self:RegisterMessage("GlobalSearch_OnDBAvailable", "OnDBAvailable")
+	self:RegisterMessage("GlobalSearch_OnKeybindingModified", "RegisterKeybindings")
+end
+
+function module:OnEnable()
+	self:RegisterKeybindings()
 end
 
 ---@param _ unknown
@@ -54,24 +64,34 @@ function module:IsVisible()
 	return self.searchUI:IsVisible()
 end
 
+function module:RegisterKeybindings()
+	self.searchUI.keybindingRegistry:ClearAllKeybindings()
+	local keybindings = self.db.profile.keybindings
+
+	self.searchUI.keybindingRegistry:RegisterKeybinding(keybindings.selectNextItem, "OnSelectNextItem")
+	self.searchUI.keybindingRegistry:RegisterKeybinding(keybindings.selectPreviousItem, "OnSelectPreviousItem")
+	self.searchUI.keybindingRegistry:RegisterKeybinding(ns.Bindings.GetKeyBinding("SHOW"), "OnToggle")
+	self.searchUI.keybindingRegistry:RegisterKeybinding("ESCAPE", "OnClose")
+end
+
+function module:OnSelectNextItem()
+	self.searchUI:SelectNextItem()
+end
+
+function module:OnSelectPreviousItem()
+	self.searchUI:SelectPreviousItem()
+end
+
+function module:OnToggle()
+	if self.db.profile.doesShowKeybindToggle then
+		self:Hide()
+	end
+end
+
 ---@param _ any
 ---@param text string
 function module:OnTextChanged(_, text)
 	self:Search(text)
-end
-
-function module:OnKeyDown(_, key)
-	if self.db.profile.doesShowKeybindToggle then
-		local keyWithModifiers = ns.Bindings.GetCurrentModifiers() .. key
-		local showBindings = ns.Bindings.GetKeyBinding("SHOW")
-		if showBindings[keyWithModifiers] then
-			self:Hide()
-		end
-	end
-end
-
-function module:OnClose()
-	self:Hide()
 end
 
 ---@param _ any

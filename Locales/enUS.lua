@@ -12,7 +12,11 @@ L.equipment_sets = "Equipment Sets"
 L.guilds_and_communities = "Guilds and Communities"
 L.does_show_keybind_toggle = "Keybind Hides When Shown"
 L.does_show_keybind_toggle_desc = "When the search bar is shown, the show keybind will instead hide the search bar."
+L.select_next_item = "Select Next Item"
+L.select_previous_item = "Select Previous Item"
+L.keybinding_in_use = "Keybinding %s is already in use by GlobalSearch."
 
+L.key_bindings = KEY_BINDINGS
 L.general = GENERAL
 L.show = SHOW
 L.mounts = MOUNTS

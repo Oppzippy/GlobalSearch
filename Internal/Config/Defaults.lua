@@ -5,5 +5,9 @@ ns.dbDefaults = {
 	profile = {
 		doesShowKeybindToggle = false,
 		disabledSearchProviders = {},
+		keybindings = {
+			selectNextItem = "DOWN",
+			selectPreviousItem = "UP",
+		},
 	},
 }

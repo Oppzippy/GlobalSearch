@@ -6,6 +6,7 @@ local CallbackHandler = LibStub("CallbackHandler-1.0")
 
 ---@class SearchUI
 ---@field callbacks table
+---@field keybindingRegistry KeybindingRegistry
 ---@field RegisterCallback function
 local SearchUIPrototype = {
 	maxResults = 10,
@@ -15,6 +16,7 @@ local function CreateSearchUI()
 	local searchUI = setmetatable({
 		widgets = { results = {} },
 		selectedIndex = 1,
+		keybindingRegistry = ns.KeybindingRegistry.Create(CallbackHandler),
 	}, { __index = SearchUIPrototype })
 	searchUI.callbacks = CallbackHandler:New(searchUI)
 	return searchUI
@@ -32,30 +34,14 @@ function SearchUIPrototype:Show()
 	container:SetAutoAdjustHeight(true)
 
 	local searchBar = AceGUI:Create("GlobalSearch-SearchBar")
-	searchBar:SetCallback("OnClose", function()
-		self.callbacks:Fire("OnClose")
-	end)
 	searchBar:SetCallback("OnTextChanged", function()
 		local text = searchBar:GetText()
 		text = strtrim(text) -- XXX Temporary fix for the search bar starting with a space in it due to the keybind
 		self.callbacks:Fire("OnTextChanged", text)
 	end)
-	searchBar:SetCallback("OnSelectNextItem", function()
-		local newSelectedIndex = self.selectedIndex + 1
-		if newSelectedIndex > math.min(#self.widgets.results, self.maxResults) then
-			newSelectedIndex = 1
-		end
-		self:SetSelection(newSelectedIndex)
-	end)
-	searchBar:SetCallback("OnSelectPreviousItem", function()
-		local newSelectedIndex = self.selectedIndex - 1
-		if newSelectedIndex < 1 then
-			newSelectedIndex = math.min(#self.widgets.results, self.maxResults)
-		end
-		self:SetSelection(newSelectedIndex)
-	end)
 	searchBar:SetCallback("OnKeyDown", function(_, _, key)
-		self.callbacks:Fire("OnKeyDown", key)
+		local keyWithModifiers = ns.Bindings.GetCurrentModifiers() .. key
+		self.keybindingRegistry:OnKeyDown(keyWithModifiers)
 	end)
 	searchBar:SetFullWidth(true)
 	searchBar:SetHeight(40)
@@ -76,6 +62,22 @@ function SearchUIPrototype:Show()
 	self.widgets.container = container
 	self.widgets.searchBar = searchBar
 	self.widgets.resultsContainer = resultsContainer
+end
+
+function SearchUIPrototype:SelectNextItem()
+	local newSelectedIndex = self.selectedIndex + 1
+	if newSelectedIndex > math.min(#self.widgets.results, self.maxResults) then
+		newSelectedIndex = 1
+	end
+	self:SetSelection(newSelectedIndex)
+end
+
+function SearchUIPrototype:SelectPreviousItem()
+	local newSelectedIndex = self.selectedIndex - 1
+	if newSelectedIndex < 1 then
+		newSelectedIndex = math.min(#self.widgets.results, self.maxResults)
+	end
+	self:SetSelection(newSelectedIndex)
 end
 
 function SearchUIPrototype:UpdateTooltip()
@@ -139,7 +141,9 @@ function SearchUIPrototype:SetSelection(index)
 	end
 
 	local newSelection = self.widgets.results[index]
-	newSelection:SetIsSelected(true)
+	if newSelection then
+		newSelection:SetIsSelected(true)
+	end
 	self.selectedIndex = index
 
 	self:UpdateTooltip()
