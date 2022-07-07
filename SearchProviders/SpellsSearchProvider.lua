@@ -30,20 +30,28 @@ function SpellsSearchProvider:Fetch()
 	for spellID in self:IterateKnownSpells() do
 		if not IsPassiveSpell(spellID) then
 			local name, _, icon = GetSpellInfo(spellID)
+			local subtext = GetSpellSubtext(spellID)
+			local displayName, castName = name, name
+
+			if subtext and subtext ~= "" then
+				displayName = string.format("%s (%s)", name, subtext)
+				castName = string.format("%s(%s)", name, subtext)
+			end
+
 			local description = GetSpellDescription(spellID)
 			if description and description ~= "" then
 				description = ns.Util.StripColorCodes(description)
 			end
 
 			items[#items + 1] = {
-				name = name,
+				name = displayName,
 				category = L.spells,
 				texture = icon,
 				extraSearchText = description,
 				tooltip = function(tooltip)
 					tooltip:SetSpellByID(spellID)
 				end,
-				macroText = "/cast " .. name,
+				macroText = "/cast " .. castName,
 				pickup = function()
 					PickupSpell(spellID)
 				end,
