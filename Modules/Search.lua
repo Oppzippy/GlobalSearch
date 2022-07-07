@@ -28,11 +28,13 @@ function module:OnInitialize()
 	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnSelectPreviousItem")
 	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnToggle")
 
-	self:RegisterKeybindings()
-
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "Hide")
 	self:RegisterMessage("GlobalSearch_OnKeybindingModified", "RegisterKeybindings")
 	self:RegisterMessage("GlobalSearch_OnProviderStatusChanged", "UpdateProviderCollection")
+end
+
+function module:OnEnable()
+	self:RegisterKeybindings()
 end
 
 function module:UpdateProviderCollection()
@@ -67,7 +69,9 @@ function module:RegisterKeybindings()
 
 	self.searchUI.keybindingRegistry:RegisterKeybinding(keybindings.selectNextItem, "OnSelectNextItem")
 	self.searchUI.keybindingRegistry:RegisterKeybinding(keybindings.selectPreviousItem, "OnSelectPreviousItem")
-	self.searchUI.keybindingRegistry:RegisterKeybinding(ns.Bindings.GetKeyBinding("SHOW"), "OnToggle")
+	for key in next, ns.Bindings.GetKeyBinding("SHOW") do
+		self.searchUI.keybindingRegistry:RegisterKeybinding(key, "OnToggle")
+	end
 	self.searchUI.keybindingRegistry:RegisterKeybinding("ESCAPE", "OnClose")
 end
 
