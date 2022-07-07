@@ -38,7 +38,7 @@ function module:OnEnable()
 end
 
 function module:UpdateProviderCollection()
-	local disabledProviders = self:GetDB().profile.disabledSearchProviders
+	local disabledProviders = self:GetDB().profile.options.disabledSearchProviders
 	self.providerCollection = self:GetSearchProviderRegistry():GetProviderCollection(disabledProviders)
 end
 
@@ -65,7 +65,7 @@ end
 
 function module:RegisterKeybindings()
 	self.searchUI.keybindingRegistry:ClearAllKeybindings()
-	local keybindings = self:GetDB().profile.keybindings
+	local keybindings = self:GetDB().profile.options.keybindings
 
 	self.searchUI.keybindingRegistry:RegisterKeybinding(keybindings.selectNextItem, "OnSelectNextItem")
 	self.searchUI.keybindingRegistry:RegisterKeybinding(keybindings.selectPreviousItem, "OnSelectPreviousItem")
@@ -84,7 +84,7 @@ function module:OnSelectPreviousItem()
 end
 
 function module:OnToggle()
-	if self:GetDB().profile.doesShowKeybindToggle then
+	if self:GetDB().profile.options.doesShowKeybindToggle then
 		self:Hide()
 	end
 end

@@ -91,19 +91,19 @@ function module:RenderProvider(name, provider)
 end
 
 function module:Get(info, val)
-	return self:GetDB().profile[info[#info]]
+	return self:GetOptions()[info[#info]]
 end
 
 function module:Set(info, val)
-	self:GetDB().profile[info[#info]] = val
+	self:GetOptions()[info[#info]] = val
 end
 
 function module:GetKeybinding(info)
-	return self:GetDB().profile.keybindings[info[#info]]
+	return self:GetOptions().keybindings[info[#info]]
 end
 
 function module:SetKeybinding(info, val)
-	self:GetDB().profile.keybindings[info[#info]] = val
+	self:GetOptions().keybindings[info[#info]] = val
 	self:SendMessage("GlobalSearch_OnKeybindingModified", info[#info], val)
 end
 
@@ -125,7 +125,7 @@ function module:DoesKeybindingExist(name, key)
 		return true
 	end
 
-	for existingName, existingKey in next, self:GetDB().profile.keybindings do
+	for existingName, existingKey in next, self:GetOptions().keybindings do
 		if key == existingKey and name ~= existingName then
 			return true
 		end
@@ -134,11 +134,15 @@ function module:DoesKeybindingExist(name, key)
 end
 
 function module:IsProviderEnabled(info)
-	return not self:GetDB().profile.disabledSearchProviders[info[#info]]
+	return not self:GetOptions().disabledSearchProviders[info[#info]]
 end
 
 function module:SetProviderEnabled(info, val)
 	local providerName = info[#info]
-	self:GetDB().profile.disabledSearchProviders[providerName] = not val
+	self:GetOptions().disabledSearchProviders[providerName] = not val
 	module:SendMessage("GlobalSearch_OnProviderStatusChanged", providerName, val)
+end
+
+function module:GetOptions()
+	return self:GetDB().profile.options
 end
