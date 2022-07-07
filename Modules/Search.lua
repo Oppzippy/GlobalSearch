@@ -2,22 +2,22 @@
 local _, ns = ...
 
 local AceAddon = LibStub("AceAddon-3.0")
-local CallbackHandler = LibStub("CallbackHandler-1.0")
 
 local addon = AceAddon:GetAddon("GlobalSearch")
----@class SearchModule : AceConsole-3.0, AceEvent-3.0
+---@class SearchModule : AceConsole-3.0, AceEvent-3.0, ModulePrototype
 ---@field RegisterEvent function
 local module = addon:NewModule("Search", "AceEvent-3.0", "AceConsole-3.0")
 local searchExecute = CreateFrame("Button", "GlobalSearchExecuteButton", nil, "InsecureActionButtonTemplate")
 searchExecute:RegisterForClicks("AnyDown")
 
 function module:OnInitialize()
-	-- Start with an empty provider collection
-	self.providerCollection = ns.SearchProviderCollection.Create({})
-
 	self.searchQuery = ""
 	self.selectedIndex = 1
 	self.maxResults = 10
+
+	self.providerCollection = ns.SearchProviderCollection.Create({})
+	self:UpdateProviderCollection()
+
 	self.searchUI = ns.SearchUI.Create()
 
 	self.searchUI.RegisterCallback(self, "OnTextChanged")
@@ -28,19 +28,16 @@ function module:OnInitialize()
 	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnSelectPreviousItem")
 	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnToggle")
 
-	self:RegisterEvent("PLAYER_REGEN_DISABLED", "Hide")
-	self:RegisterMessage("GlobalSearch_OnDBAvailable", "OnDBAvailable")
-	self:RegisterMessage("GlobalSearch_OnKeybindingModified", "RegisterKeybindings")
-end
-
-function module:OnEnable()
 	self:RegisterKeybindings()
+
+	self:RegisterEvent("PLAYER_REGEN_DISABLED", "Hide")
+	self:RegisterMessage("GlobalSearch_OnKeybindingModified", "RegisterKeybindings")
+	self:RegisterMessage("GlobalSearch_OnProviderStatusChanged", "UpdateProviderCollection")
 end
 
----@param _ unknown
----@param db AceDBObject-3.0
-function module:OnDBAvailable(_, db)
-	self.db = db
+function module:UpdateProviderCollection()
+	local disabledProviders = self:GetDB().profile.disabledSearchProviders
+	self.providerCollection = self:GetSearchProviderRegistry():GetProviderCollection(disabledProviders)
 end
 
 function module:Show()
@@ -66,7 +63,7 @@ end
 
 function module:RegisterKeybindings()
 	self.searchUI.keybindingRegistry:ClearAllKeybindings()
-	local keybindings = self.db.profile.keybindings
+	local keybindings = self:GetDB().profile.keybindings
 
 	self.searchUI.keybindingRegistry:RegisterKeybinding(keybindings.selectNextItem, "OnSelectNextItem")
 	self.searchUI.keybindingRegistry:RegisterKeybinding(keybindings.selectPreviousItem, "OnSelectPreviousItem")
@@ -83,7 +80,7 @@ function module:OnSelectPreviousItem()
 end
 
 function module:OnToggle()
-	if self.db.profile.doesShowKeybindToggle then
+	if self:GetDB().profile.doesShowKeybindToggle then
 		self:Hide()
 	end
 end

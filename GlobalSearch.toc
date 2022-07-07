@@ -18,6 +18,7 @@ Internal\Include.xml
 Bindings.xml
 Bindings.lua
 
+ModulePrototype.lua
 GlobalSearch.lua
 Modules\Modules.xml
 

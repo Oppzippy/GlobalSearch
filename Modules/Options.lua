@@ -8,10 +8,8 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
 local addon = AceAddon:GetAddon("GlobalSearch")
----@class OptionsModule : AceConsole-3.0, AceEvent-3.0
+---@class OptionsModule : AceConsole-3.0, AceEvent-3.0, ModulePrototype
 ---@field RegisterEvent function
----@field db AceDBObject-3.0
----@field searchProviderRegistry SearchProviderRegistry
 local module = addon:NewModule("Options", "AceEvent-3.0", "AceConsole-3.0")
 module.optionsTable = {
 	type = "group",
@@ -64,21 +62,8 @@ module.optionsTable = {
 }
 
 function module:OnInitialize()
-	self:RegisterMessage("GlobalSearch_OnDBAvailable", "OnDBAvailable")
-	self:RegisterMessage("GlobalSearch_OnSearchProviderRegistryAvailable", "OnSearchProviderRegistryAvailable")
-end
-
-function module:OnEnable()
 	self:RenderEnabledProviders()
 	self:RegisterMessage("GlobalSearch_OnProviderRegistered", "RenderEnabledProviders")
-end
-
-function module:OnSearchProviderRegistryAvailable(_, searchProviderRegistry)
-	self.searchProviderRegistry = searchProviderRegistry
-end
-
-function module:OnDBAvailable(_, db)
-	self.db = db
 end
 
 function module:OnProviderRegistered(_, name, provider)
@@ -88,7 +73,7 @@ end
 
 function module:RenderEnabledProviders()
 	self.numProviders = 0
-	local providers = self.searchProviderRegistry:GetProviders()
+	local providers = self:GetSearchProviderRegistry():GetProviders()
 	local options = {}
 	for name, provider in next, providers do
 		self.numProviders = self.numProviders + 1
@@ -106,19 +91,19 @@ function module:RenderProvider(name, provider)
 end
 
 function module:Get(info, val)
-	return self.db.profile[info[#info]]
+	return self:GetDB().profile[info[#info]]
 end
 
 function module:Set(info, val)
-	self.db.profile[info[#info]] = val
+	self:GetDB().profile[info[#info]] = val
 end
 
 function module:GetKeybinding(info)
-	return self.db.profile.keybindings[info[#info]]
+	return self:GetDB().profile.keybindings[info[#info]]
 end
 
 function module:SetKeybinding(info, val)
-	self.db.profile.keybindings[info[#info]] = val
+	self:GetDB().profile.keybindings[info[#info]] = val
 	self:SendMessage("GlobalSearch_OnKeybindingModified", info[#info], val)
 end
 
@@ -140,7 +125,7 @@ function module:DoesKeybindingExist(name, key)
 		return true
 	end
 
-	for existingName, existingKey in next, module.db.profile.keybindings do
+	for existingName, existingKey in next, self:GetDB().profile.keybindings do
 		if key == existingKey and name ~= existingName then
 			return true
 		end
@@ -149,11 +134,11 @@ function module:DoesKeybindingExist(name, key)
 end
 
 function module:IsProviderEnabled(info)
-	return not module.db.profile.disabledSearchProviders[info[#info]]
+	return not self:GetDB().profile.disabledSearchProviders[info[#info]]
 end
 
 function module:SetProviderEnabled(info, val)
 	local providerName = info[#info]
-	module.db.profile.disabledSearchProviders[providerName] = not val
+	self:GetDB().profile.disabledSearchProviders[providerName] = not val
 	module:SendMessage("GlobalSearch_OnProviderStatusChanged", providerName, val)
 end

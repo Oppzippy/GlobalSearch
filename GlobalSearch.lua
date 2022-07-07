@@ -11,32 +11,16 @@ local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class GlobalSearch : AceAddon, AceEvent-3.0, AceConsole-3.0
 local GlobalSearch = AceAddon:NewAddon("GlobalSearch", "AceEvent-3.0", "AceConsole-3.0")
-GlobalSearch:SetDefaultModuleState(false)
-
+GlobalSearch:SetDefaultModulePrototype(ns.ModulePrototype.Create(GlobalSearch))
 GlobalSearch.providerRegistry = ns.SearchProviderRegistry.Create()
 
 function GlobalSearch:OnInitialize()
-	self.db = AceDB:New("GlobalSearchDB", ns.dbDefaults, true)
+	GlobalSearch.db = AceDB:New("GlobalSearchDB", ns.dbDefaults, true)
+
 	self:RegisterChatCommand("globalsearchprofile", "ProfilingResults")
-end
-
-function GlobalSearch:OnEnable()
-	-- These events are guaranteed to fire between initialize and enable
-	self:SendMessage("GlobalSearch_OnDBAvailable", self.db)
-	self:SendMessage("GlobalSearch_OnSearchProviderRegistryAvailable", self.providerRegistry)
-	self:EnableModules()
-
-	self:UpdateProviderCollection()
-	self:RegisterMessage("GlobalSearch_OnProviderStatusChanged", "UpdateProviderCollection")
 
 	AceConfig:RegisterOptionsTable("GlobalSearch", self:GetModule("Options").optionsTable)
 	AceConfigDialog:AddToBlizOptions("GlobalSearch", L.global_search)
-end
-
-function GlobalSearch:EnableModules()
-	for _, module in self:IterateModules() do
-		module:Enable()
-	end
 end
 
 ---@param name string
@@ -49,12 +33,6 @@ end
 ---@return boolean
 function GlobalSearch:HasSearchProvider(name)
 	return self.providerRegistry:Has(name)
-end
-
-function GlobalSearch:UpdateProviderCollection()
-	---@type SearchModule
-	local searchModule = self:GetModule("Search")
-	searchModule.providerCollection = self.providerRegistry:GetProviderCollection(self.db.profile.disabledSearchProviders)
 end
 
 function GlobalSearch:ProfilingResults()
