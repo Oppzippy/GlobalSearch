@@ -7,7 +7,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class BagsSearchProvider : SearchProvider, AceEvent-3.0
 local BagsSearchProvider = {
-	localizedName = L.bags
+	localizedName = L.bags,
 }
 AceEvent:Embed(BagsSearchProvider)
 
@@ -29,7 +29,7 @@ function BagsSearchProvider:Fetch()
 	for itemID in next, self:GetItemSet() do
 		local itemName, itemString, _, _, _, _, _, _, _, icon = GetItemInfo(itemID)
 		local spellName = GetItemSpell(itemString)
-		if itemName ~= nil and spellName ~= nil then
+		if itemName and spellName then
 			items[#items + 1] = {
 				name = itemName,
 				category = L.bags,
@@ -40,7 +40,7 @@ function BagsSearchProvider:Fetch()
 				end,
 				pickup = function()
 					PickupItem(itemString)
-				end
+				end,
 			}
 		end
 	end

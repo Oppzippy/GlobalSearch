@@ -33,7 +33,7 @@ module.optionsTable = {
 					desc = L.does_show_keybind_toggle_desc,
 					width = "full",
 					order = 1,
-				}
+				},
 			},
 		},
 		enabledProviders = {
@@ -49,7 +49,7 @@ module.optionsTable = {
 			end,
 			order = 2,
 			args = {},
-		}
+		},
 	},
 }
 

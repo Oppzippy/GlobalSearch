@@ -30,7 +30,7 @@ function TestSearchProviderCollection:TestCombinesAllChildren()
 			},
 			{
 				name = "3",
-			}
+			},
 		}),
 	})
 

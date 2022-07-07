@@ -19,7 +19,7 @@ do
 	local trueTable = setmetatable({}, {
 		__index = function()
 			return true
-		end
+		end,
 	})
 	toyBoxSettings = {
 		search = "",

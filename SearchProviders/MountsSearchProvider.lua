@@ -45,7 +45,7 @@ function MountsSearchProvider:Fetch()
 				end,
 				pickup = function()
 					PickupSpell(spellID)
-				end
+				end,
 			}
 		end
 	end

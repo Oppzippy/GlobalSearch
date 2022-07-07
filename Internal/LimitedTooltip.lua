@@ -108,7 +108,7 @@ do
 end
 
 local export = { Limit = Limit }
-if ns ~= nil then
+if ns then
 	ns.LimitedTooltip = export
 end
 return export

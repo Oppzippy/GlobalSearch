@@ -67,7 +67,7 @@ function SpellsSearchProvider:IterateKnownSpells()
 	local _, offset, numEntries = tabIterator()
 	local index = 1
 	return function()
-		while numEntries ~= nil do
+		while numEntries do
 			local _, _, spellID = GetSpellBookItemName(offset + index, BOOKTYPE_SPELL)
 			index = index + 1
 			if index > numEntries then
