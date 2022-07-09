@@ -4,7 +4,7 @@ local _, ns = ...
 ---@class SearchContextPrototype
 ---@field prevQuery string
 ---@field items SearchItem[]
----@field queryMatcher fun(string, string): boolean, MatchRange[]
+---@field queryMatcher fun(query: string, text: string): boolean, MatchRange[]
 ---@field prevResults SearchContextItem[]
 local SearchContextPrototype = {}
 
@@ -12,7 +12,7 @@ local SearchContextPrototype = {}
 ---@field item SearchItem
 ---@field matchRanges MatchRange[]
 
----@param queryMatcher fun(string, string): boolean, MatchRange[]
+---@param queryMatcher fun(query: string, text: string): boolean, MatchRange[]
 ---@param items SearchItem[]
 local function CreateSearchContext(queryMatcher, items)
 	local searchContext = setmetatable({
