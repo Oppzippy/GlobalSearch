@@ -28,6 +28,7 @@ function SearchUIPrototype:Show()
 	self.selectedIndex = 1
 
 	local container = AceGUI:Create("SimpleGroup")
+	---@cast container AceGUISimpleGroup
 	container:SetLayout("List")
 	container:SetPoint("TOP", 0, -20)
 	container:SetWidth(350)
@@ -47,6 +48,7 @@ function SearchUIPrototype:Show()
 	searchBar:SetHeight(40)
 
 	local resultsContainer = AceGUI:Create("SimpleGroup")
+	---@cast resultsContainer AceGUISimpleGroup
 	resultsContainer:SetLayout("List")
 	resultsContainer:SetFullWidth(true)
 	resultsContainer:SetAutoAdjustHeight(true)
