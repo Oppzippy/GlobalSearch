@@ -1,15 +1,40 @@
 ---@class ns
 local _, ns = ...
 
+local AceAddon = LibStub("AceAddon-3.0")
 local AceLocale = LibStub("AceLocale-3.0")
 local AceEvent = LibStub("AceEvent-3.0")
+
 local L = AceLocale:GetLocale("GlobalSearch")
+local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
+---@cast GlobalSearch GlobalSearch
+
+local providerName = "GlobalSearch_Spells"
 
 ---@class SpellsSearchProvider : SearchProvider, AceEvent-3.0
 local SpellsSearchProvider = {
 	localizedName = L.spells,
 }
 AceEvent:Embed(SpellsSearchProvider)
+SpellsSearchProvider.optionsTable = {
+	type = "group",
+	get = function(info)
+		local options = GlobalSearch:GetProviderOptionsDB(providerName)
+		return options[info[#info]]
+	end,
+	set = function(info, val)
+		local options = GlobalSearch:GetProviderOptionsDB(providerName)
+		SpellsSearchProvider:ClearCache()
+		options[info[#info]] = val
+	end,
+	args = {
+		useSpellDescriptions = {
+			name = L.use_spell_descriptions,
+			desc = L.use_spell_descriptions_desc,
+			type = "toggle",
+		},
+	},
+}
 
 ---@return SearchItem[]
 function SpellsSearchProvider:Get()
@@ -25,6 +50,7 @@ end
 
 ---@return SearchItem[]
 function SpellsSearchProvider:Fetch()
+	local options = GlobalSearch:GetProviderOptionsDB(providerName)
 	local items = {}
 
 	for spellID in self:IterateKnownSpells() do
@@ -38,9 +64,12 @@ function SpellsSearchProvider:Fetch()
 				castName = string.format("%s(%s)", name, subtext)
 			end
 
-			local description = GetSpellDescription(spellID)
-			if description and description ~= "" then
-				description = ns.Util.StripColorCodes(description)
+			local description
+			if options.useSpellDescriptions then
+				description = GetSpellDescription(spellID)
+				if description and description ~= "" then
+					description = ns.Util.StripColorCodes(description)
+				end
 			end
 
 			items[#items + 1] = {
@@ -99,4 +128,4 @@ function SpellsSearchProvider:IterateSpellTabs()
 end
 
 SpellsSearchProvider:RegisterEvent("SPELLS_CHANGED", "ClearCache")
-GlobalSearchAPI:RegisterProvider("GlobalSearch_Spells", SpellsSearchProvider)
+GlobalSearchAPI:RegisterProvider(providerName, SpellsSearchProvider)

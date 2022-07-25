@@ -15,7 +15,7 @@ GlobalSearch:SetDefaultModulePrototype(ns.ModulePrototype.Create(GlobalSearch))
 GlobalSearch.providerRegistry = ns.SearchProviderRegistry.Create()
 
 function GlobalSearch:OnInitialize()
-	GlobalSearch.db = AceDB:New("GlobalSearchDB", ns.dbDefaults, true)
+	self.db = AceDB:New("GlobalSearchDB", ns.dbDefaults, true)
 
 	self:RegisterChatCommand("globalsearchprofile", "ProfilingResults")
 
@@ -40,4 +40,12 @@ function GlobalSearch:ProfilingResults()
 		local time, count = GetFunctionCPUUsage(provider.Get, true)
 		self:Printf("%s: %d / %d", name, time, count)
 	end
+end
+
+function GlobalSearch:GetProviderOptionsDB(name)
+	local providerOptions = self.db.profile.options.providers
+	if not providerOptions[name] then
+		providerOptions[name] = {}
+	end
+	return providerOptions[name]
 end

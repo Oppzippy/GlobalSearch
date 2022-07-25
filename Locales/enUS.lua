@@ -2,6 +2,7 @@ local L = LibStub("AceLocale-3.0"):NewLocale("GlobalSearch", "enUS", true)
 
 L.global_search = "GlobalSearch"
 L.enabled_providers = "Enabled Providers"
+L.provider_options = "Provider Options"
 L.ui_panels = "UI Panels"
 L.calendar = "Calendar"
 L.toys = "Toys"
@@ -15,6 +16,8 @@ L.does_show_keybind_toggle_desc = "When the search bar is shown, the show keybin
 L.select_next_item = "Select Next Item"
 L.select_previous_item = "Select Previous Item"
 L.keybinding_in_use = "Keybinding %s is already in use by GlobalSearch."
+L.use_spell_descriptions = "Use Spell Descriptions"
+L.use_spell_descriptions_desc = "If enabled, spell descriptions will be searched in addition to the spell name."
 
 L.key_bindings = KEY_BINDINGS
 L.general = GENERAL

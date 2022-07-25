@@ -58,36 +58,65 @@ module.optionsTable = {
 			order = 3,
 			args = {},
 		},
+		providerOptions = {
+			type = "group",
+			name = L.provider_options,
+			get = function() end,
+			set = function() end,
+			handler = {},
+			order = 4,
+			args = {},
+		},
 	},
 }
 
 function module:OnInitialize()
-	self:RenderEnabledProviders()
-	self:RegisterMessage("GlobalSearch_OnProviderRegistered", "RenderEnabledProviders")
+	self:RenderRegisteredProviders()
+	self:RegisterMessage("GlobalSearch_OnProviderRegistered", "OnProviderRegistered")
 end
 
 function module:OnProviderRegistered(_, name, provider)
 	self.numProviders = self.numProviders + 1
-	self.optionsTable.args.enabledProviders.args[name] = self:RenderProvider(name, provider)
+	self.optionsTable.args.enabledProviders.args[name] = self:RenderProviderEnableOption(name, provider)
+	self.optionsTable.args.providerOptions.args[name] = self:RenderProviderOptions(name, provider)
 end
 
-function module:RenderEnabledProviders()
+function module:RenderRegisteredProviders()
 	self.numProviders = 0
 	local providers = self:GetSearchProviderRegistry():GetProviders()
-	local options = {}
+	local enableOptions = {}
+	local providerOptions = {}
 	for name, provider in next, providers do
 		self.numProviders = self.numProviders + 1
-		options[name] = self:RenderProvider(name, provider)
+		enableOptions[name] = self:RenderProviderEnableOption(name, provider)
+		providerOptions[name] = self:RenderProviderOptions(name, provider)
 	end
-	self.optionsTable.args.enabledProviders.args = options
+	self.optionsTable.args.enabledProviders.args = enableOptions
+	self.optionsTable.args.providerOptions.args = providerOptions
 end
 
-function module:RenderProvider(name, provider)
+function module:RenderProviderEnableOption(name, provider)
 	return {
 		type = "toggle",
 		name = provider.localizedName or name,
 		order = self.numProviders,
 	}
+end
+
+function module:RenderProviderOptions(name, provider)
+	local optionsTable = provider.optionsTable
+	if optionsTable then
+		return {
+			type = "group",
+			name = provider.localizedName or name,
+			order = self.numProviders,
+			set = optionsTable.set,
+			get = optionsTable.get,
+			handler = optionsTable.handler,
+			args = optionsTable.args,
+			plugins = optionsTable.plugins,
+		}
+	end
 end
 
 function module:Get(info, val)
