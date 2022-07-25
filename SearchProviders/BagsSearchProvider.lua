@@ -27,8 +27,8 @@ end
 function BagsSearchProvider:Fetch()
 	local items = {}
 	for itemID in next, self:GetItemSet() do
-		local itemName, itemString, _, _, _, _, _, _, _, icon = GetItemInfo(itemID)
-		local spellName = GetItemSpell(itemString)
+		local itemName, itemLink, _, _, _, _, _, _, _, icon = GetItemInfo(itemID)
+		local spellName = GetItemSpell(itemLink)
 		if itemName and spellName then
 			items[#items + 1] = {
 				name = itemName,
@@ -39,8 +39,9 @@ function BagsSearchProvider:Fetch()
 					tooltip:SetItemByID(itemID)
 				end,
 				pickup = function()
-					PickupItem(itemString)
+					PickupItem(itemLink)
 				end,
+				hyperlink = itemLink,
 			}
 		end
 	end

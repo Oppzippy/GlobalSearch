@@ -98,6 +98,7 @@ function PetsSearchProvider:Fetch()
 				pickup = function()
 					C_PetJournal.PickupPet(petID)
 				end,
+				hyperlink = C_PetJournal.GetBattlePetLink(petID),
 			}
 		end
 	end

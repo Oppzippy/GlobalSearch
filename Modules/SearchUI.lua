@@ -152,6 +152,12 @@ function SearchUIPrototype:SetSelection(index)
 	self:FireSelectionChange()
 end
 
+---@return SearchItem
+function SearchUIPrototype:GetSelection()
+	local widget = self.widgets.results[self.selectedIndex]
+	return widget and widget:GetUserData("item")
+end
+
 function SearchUIPrototype:FireSelectionChange()
 	local widget = self.widgets.results[self.selectedIndex]
 	local item = widget and widget:GetUserData("item")

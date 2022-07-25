@@ -92,7 +92,8 @@ function ToysSearchProvider:Fetch()
 			macroText = "/use " .. name,
 			pickup = function()
 				C_ToyBox.PickupToyBoxItem(itemID)
-			end
+			end,
+			hyperlink = C_ToyBox.GetToyLink(itemID),
 		}
 	end
 	SetToyBoxSettings(prevSettings)

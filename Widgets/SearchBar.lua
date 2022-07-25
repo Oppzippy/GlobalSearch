@@ -29,7 +29,7 @@ do
 	end
 
 	local function onKeyDown(frame, button)
-		if button == "ENTER" then
+		if button == "ENTER" and not IsAltKeyDown() and not IsShiftKeyDown() and not IsControlKeyDown() then
 			frame:SetPropagateKeyboardInput(true)
 		else
 			frame:SetPropagateKeyboardInput(false)

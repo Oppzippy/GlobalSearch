@@ -27,6 +27,7 @@ function module:OnInitialize()
 	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnSelectNextItem")
 	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnSelectPreviousItem")
 	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnToggle")
+	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnCreateHyperlink")
 
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "Hide")
 	self:RegisterMessage("GlobalSearch_OnKeybindingModified", "RegisterKeybindings")
@@ -72,6 +73,7 @@ function module:RegisterKeybindings()
 	for key in next, ns.Bindings.GetKeyBinding("SHOW") do
 		self.searchUI.keybindingRegistry:RegisterKeybinding(key, "OnToggle")
 	end
+	self.searchUI.keybindingRegistry:RegisterKeybinding("SHIFT-ENTER", "OnCreateHyperlink")
 	self.searchUI.keybindingRegistry:RegisterKeybinding("ESCAPE", "OnClose")
 end
 
@@ -139,4 +141,13 @@ function module:Search(query)
 
 	self.searchUI:Show()
 	self.searchUI:RenderResults(results)
+end
+
+function module:OnCreateHyperlink()
+	local item = self.searchUI:GetSelection()
+	if item then
+		self:Hide()
+		ChatEdit_ActivateChat(ChatFrame1EditBox)
+		ChatFrame1EditBox:Insert(item.hyperlink or item.name)
+	end
 end

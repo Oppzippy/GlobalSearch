@@ -46,6 +46,7 @@ function MountsSearchProvider:Fetch()
 				pickup = function()
 					PickupSpell(spellID)
 				end,
+				hyperlink = GetSpellLink(spellID),
 			}
 		end
 	end
