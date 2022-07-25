@@ -1,0 +1,19 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - "*"
+      - "!master"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install luarocks
+        run: sudo apt-get install luarocks
+      - name: Installl luaunit
+        run: sudo luarocks install luaunit
+      - name: Run tests
+        run: lua Tests/Test.lua
