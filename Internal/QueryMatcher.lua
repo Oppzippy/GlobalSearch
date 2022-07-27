@@ -1,5 +1,5 @@
 ---@class ns
-local _, ns = ...
+local ns = select(2, ...)
 
 ---@class MatchRange
 ---@field from integer

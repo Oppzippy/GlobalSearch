@@ -1,5 +1,5 @@
 ---@class ns
-local _, ns = ...
+local ns = select(2, ...)
 
 local AceGUI = LibStub("AceGUI-3.0")
 local CallbackHandler = LibStub("CallbackHandler-1.0")

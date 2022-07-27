@@ -1,5 +1,5 @@
 ---@class ns
-local _, ns = ...
+local ns = select(2, ...)
 
 ---@class KeybindingRegistry
 ---@field keybindings table<string, string>

@@ -1,5 +1,5 @@
 ---@class ns
-local _, ns = ...
+local ns = select(2, ...)
 
 local AceLocale = LibStub("AceLocale-3.0")
 local AceEvent = LibStub("AceEvent-3.0")

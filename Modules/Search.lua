@@ -1,5 +1,5 @@
 ---@class ns
-local _, ns = ...
+local ns = select(2, ...)
 
 local AceAddon = LibStub("AceAddon-3.0")
 

@@ -1,5 +1,5 @@
 ---@class ns
-local _, ns = ...
+local ns = select(2, ...)
 
 -- List taken from https://wow.tools/dbc/?dbc=emotestext
 ---@type string[]
