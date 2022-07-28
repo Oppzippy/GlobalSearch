@@ -11,4 +11,5 @@
 	<Script file="EmotesSearchProvider.lua" />
 	<Script file="BagsSearchProvider.lua" />
 	<Script file="EquipmentSetsSearchProvider.lua" />
+	<Script file="AchievementsProvider.lua" />
 </Ui>
