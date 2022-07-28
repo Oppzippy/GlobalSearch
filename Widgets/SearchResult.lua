@@ -55,12 +55,16 @@ do
 		texture:SetPoint("LEFT", 4, 0)
 		texture:SetSize(32, 32)
 
-		local fontString = frame:CreateFontString(nil, "OVERLAY", "GameFontWhite")
-		fontString:SetPoint("LEFT", frame, "LEFT", 45, 0)
-
 		local categoryFontString = frame:CreateFontString(nil, "OVERLAY", "GameFontWhite")
-		categoryFontString:SetPoint("right", frame, "RIGHT", -5, 0)
+		categoryFontString:SetPoint("RIGHT", frame, "RIGHT", -5, 0)
 		categoryFontString:SetTextColor(0.8, 0.8, 0.8, 1)
+		categoryFontString:SetJustifyH("RIGHT")
+
+		local fontString = frame:CreateFontString(nil, "OVERLAY", "GameFontWhite")
+		fontString:SetPoint("LEFT", texture, "RIGHT", 6, 0)
+		fontString:SetPoint("RIGHT", categoryFontString, "LEFT", -6, 0)
+		fontString:SetJustifyH("LEFT")
+		fontString:SetMaxLines(2)
 
 		local widget = {
 			type = widgetType,
