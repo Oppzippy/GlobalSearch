@@ -28,7 +28,9 @@ function AchievementsSearchProvider:Fetch()
 			category = L.achievements,
 			texture = achievement[10],
 			action = function()
-
+				AchievementFrame_LoadUI()
+				ShowUIPanel(AchievementFrame)
+				AchievementFrame_SelectSearchItem(achievement[1])
 			end,
 		}
 	end
