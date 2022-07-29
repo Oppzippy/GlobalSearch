@@ -58,26 +58,16 @@ end
 
 -- Skips empty slots
 function BagsSearchProvider:IterateBagItems()
-	local bagID = 0
-	local slot = 1
-	local numContainerSlots = GetContainerNumSlots(bagID)
-	return function()
-		local itemID
-		while not itemID do
-			if slot > numContainerSlots then
-				bagID = bagID + 1
-				if bagID > NUM_BAG_SLOTS then
-					return
+	return coroutine.wrap(function()
+		for bagID = 0, NUM_BAG_SLOTS do
+			for slot = 1, GetContainerNumSlots(bagID) do
+				local itemID = GetContainerItemID(bagID, slot)
+				if itemID then
+					coroutine.yield(itemID)
 				end
-				slot = 1
-				numContainerSlots = GetContainerNumSlots(bagID)
 			end
-
-			itemID = GetContainerItemID(bagID, slot)
-			slot = slot + 1
 		end
-		return itemID
-	end
+	end)
 end
 
 GlobalSearchAPI:RegisterProvider("GlobalSearch_Bags", BagsSearchProvider)
