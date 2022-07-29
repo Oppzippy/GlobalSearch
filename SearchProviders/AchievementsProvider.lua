@@ -46,12 +46,19 @@ function AchievementsSearchProvider:IterateAchievements()
 		GetCategoryNumAchievements
 
 	return coroutine.wrap(function()
+		---@type table<number, boolean>
+		local seenAchievements = {}
 		for _, categoryID in next, categoryIDs do
 			for i = 1, GetCategoryNumAchievements(categoryID, false) do
 				local achievement = { GetAchievementInfo(categoryID, i) }
-				coroutine.yield(unpack(achievement))
-				for sibling in self:IterateSiblingAchievements(achievement[1]) do
-					coroutine.yield(GetAchievementInfo(sibling))
+				-- If the achievement was already seen through a sibling, it should be skipped
+				if not seenAchievements[achievement[1]] then
+					seenAchievements[achievement[1]] = true
+					coroutine.yield(unpack(achievement))
+					for siblingID in self:IterateSiblingAchievements(achievement[1]) do
+						seenAchievements[siblingID] = true
+						coroutine.yield(GetAchievementInfo(siblingID))
+					end
 				end
 			end
 		end
