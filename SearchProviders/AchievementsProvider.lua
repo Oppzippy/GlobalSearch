@@ -31,6 +31,9 @@ function AchievementsSearchProvider:Fetch()
 				ShowUIPanel(AchievementFrame)
 				AchievementFrame_SelectSearchItem(id)
 			end,
+			tooltip = function(tooltip)
+				tooltip:SetAchievementByID(id)
+			end,
 		}
 	end
 	return items
