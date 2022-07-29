@@ -19,37 +19,24 @@ local function MatchesQuery(query, text)
 	local matchRanges = {}
 	---@type MatchRange
 	local range
-	local queryIndex = 1
-	for i = 1, #text do
-		local char = string.sub(text, i, i)
-		local queryChar = string.sub(query, queryIndex, queryIndex)
-		if char == queryChar then
-			if range and range.to == i - 1 then
-				-- extend previous range
-				range.to = i
-			else
-				-- finalize the previous range and create a new one
-				if range then
-					matchRanges[#matchRanges + 1] = range
-				end
-				range = {
-					from = i,
-					to = i,
-				}
-			end
+	local prevIndex = -1
+	for i = 1, #query do
+		local char = query:sub(i, i)
+		local index = text:find(char, prevIndex + 1, true)
+		if not index then return false, nil end
 
-
-			if queryIndex == #query then
-				-- finalize last range
-				if range then
-					matchRanges[#matchRanges + 1] = range
-				end
-				return true, matchRanges
-			end
-			queryIndex = queryIndex + 1
+		if index == prevIndex + 1 then
+			range.to = index
+		else
+			range = {
+				from = index,
+				to = index,
+			}
+			matchRanges[#matchRanges + 1] = range
 		end
+		prevIndex = index
 	end
-	return false, nil
+	return true, matchRanges
 end
 
 local export = { MatchesQuery = MatchesQuery }
