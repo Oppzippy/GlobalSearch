@@ -21,92 +21,64 @@ end
 ---@return SearchItem[]
 function AchievementsSearchProvider:Fetch()
 	local items = {}
-
-	for achievement in self:IterateAchievements() do
+	for id, name, _, _, _, _, _, _, _, icon in self:IterateAchievements() do
 		items[#items + 1] = {
-			name = achievement[2],
+			name = name,
 			category = L.achievements,
-			texture = achievement[10],
+			texture = icon,
 			action = function()
 				AchievementFrame_LoadUI()
 				ShowUIPanel(AchievementFrame)
-				AchievementFrame_SelectSearchItem(achievement[1])
+				AchievementFrame_SelectSearchItem(id)
 			end,
 		}
 	end
-
 	return items
 end
 
 function AchievementsSearchProvider:IterateAchievements()
 	local categoryIDs = GetCategoryList()
-	local numCategories = #categoryIDs
-	local categoryIndex = 1
-	local achievementIndex = 0
-
-	local siblingAchievementIterator
 
 	local GetAchievementInfo, GetCategoryNumAchievements = GetAchievementInfo,
 		GetCategoryNumAchievements
-	return function()
-		if siblingAchievementIterator then
-			local achievement = siblingAchievementIterator()
-			if achievement then
-				return achievement
-			end
-			siblingAchievementIterator = nil
-		end
 
-		achievementIndex = achievementIndex + 1
-		if achievementIndex > GetCategoryNumAchievements(categoryIDs[categoryIndex], false) then
-			achievementIndex = 1
-			repeat
-				categoryIndex = categoryIndex + 1
-			until categoryIndex > numCategories or GetCategoryNumAchievements(categoryIDs[categoryIndex], false) ~= 0
-			if categoryIndex > numCategories then
-				return
+	return coroutine.wrap(function()
+		for _, categoryID in next, categoryIDs do
+			for i = 1, GetCategoryNumAchievements(categoryID, false) do
+				coroutine.yield(GetAchievementInfo(categoryID, i))
+				for sibling in self:IterateSiblingAchievements() do
+					coroutine.yield(sibling)
+				end
 			end
 		end
-		local achievement = { GetAchievementInfo(categoryIDs[categoryIndex], achievementIndex) }
-		siblingAchievementIterator = self:IterateSiblingAchievements(achievement[1])
-		return achievement
-	end
+	end)
 end
 
 function AchievementsSearchProvider:IterateSiblingAchievements(achievementId)
-	local iterator = self:IterateNextAchievements(achievementId)
-	local stage = 1
-	return function()
-		local achievement = iterator()
-		if not achievement then
-			if stage == 1 then
-				iterator = self:IteratePreviousAchievements(achievementId)
-				stage = 2
-				return iterator()
-			else
-				return
-			end
+	return coroutine.wrap(function()
+		for achievement in self:IterateNextAchievements(achievementId) do
+			coroutine.yield(achievement)
 		end
-		return achievement
-	end
+		for achievement in self:IteratePreviousAchievements(achievementId) do
+			coroutine.yield(achievement)
+		end
+	end)
 end
 
 function AchievementsSearchProvider:IteratePreviousAchievements(achievementId)
-	return function()
-		achievementId = GetPreviousAchievement(achievementId)
-		if achievementId then
-			return { GetAchievementInfo(achievementId) }
+	return coroutine.wrap(function()
+		while achievementId do
+			coroutine.yield(GetPreviousAchievement(achievementId))
 		end
-	end
+	end)
 end
 
 function AchievementsSearchProvider:IterateNextAchievements(achievementId)
-	return function()
-		achievementId = GetNextAchievement(achievementId)
-		if achievementId then
-			return { GetAchievementInfo(achievementId) }
+	return coroutine.wrap(function()
+		while achievementId do
+			coroutine.yield(GetNextAchievement(achievementId))
 		end
-	end
+	end)
 end
 
 GlobalSearchAPI:RegisterProvider("GlobalSearch_Achievements", AchievementsSearchProvider)
