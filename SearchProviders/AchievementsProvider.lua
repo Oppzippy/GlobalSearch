@@ -32,7 +32,6 @@ function AchievementsSearchProvider:Fetch()
 			end,
 		}
 	end
-	print(#items)
 
 	return items
 end
