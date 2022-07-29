@@ -48,38 +48,41 @@ function AchievementsSearchProvider:IterateAchievements()
 	return coroutine.wrap(function()
 		for _, categoryID in next, categoryIDs do
 			for i = 1, GetCategoryNumAchievements(categoryID, false) do
-				coroutine.yield(GetAchievementInfo(categoryID, i))
-				for sibling in self:IterateSiblingAchievements() do
-					coroutine.yield(sibling)
+				local achievement = { GetAchievementInfo(categoryID, i) }
+				coroutine.yield(unpack(achievement))
+				for sibling in self:IterateSiblingAchievements(achievement[1]) do
+					coroutine.yield(GetAchievementInfo(sibling))
 				end
 			end
 		end
 	end)
 end
 
-function AchievementsSearchProvider:IterateSiblingAchievements(achievementId)
+function AchievementsSearchProvider:IterateSiblingAchievements(achievementID)
 	return coroutine.wrap(function()
-		for achievement in self:IterateNextAchievements(achievementId) do
+		for achievement in self:IterateNextAchievements(achievementID) do
 			coroutine.yield(achievement)
 		end
-		for achievement in self:IteratePreviousAchievements(achievementId) do
+		for achievement in self:IteratePreviousAchievements(achievementID) do
 			coroutine.yield(achievement)
 		end
 	end)
 end
 
-function AchievementsSearchProvider:IteratePreviousAchievements(achievementId)
+function AchievementsSearchProvider:IteratePreviousAchievements(achievementID)
 	return coroutine.wrap(function()
-		while achievementId do
-			coroutine.yield(GetPreviousAchievement(achievementId))
+		while achievementID do
+			achievementID = GetPreviousAchievement(achievementID)
+			coroutine.yield(achievementID)
 		end
 	end)
 end
 
-function AchievementsSearchProvider:IterateNextAchievements(achievementId)
+function AchievementsSearchProvider:IterateNextAchievements(achievementID)
 	return coroutine.wrap(function()
-		while achievementId do
-			coroutine.yield(GetNextAchievement(achievementId))
+		while achievementID do
+			achievementID = GetNextAchievement(achievementID)
+			coroutine.yield(achievementID)
 		end
 	end)
 end
