@@ -1,12 +1,31 @@
 ---@class ns
 local ns = select(2, ...)
 
+local AceAddon = LibStub("AceAddon-3.0")
 local AceLocale = LibStub("AceLocale-3.0")
+
 local L = AceLocale:GetLocale("GlobalSearch")
+local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
+---@cast GlobalSearch GlobalSearch
+local AchievementStorage = GlobalSearch:GetModule("AchievementStorage")
+---@cast AchievementStorage AchievementStorageModule
 
 ---@class AchievementsSearchProvider : SearchProvider
 local AchievementsSearchProvider = {
 	localizedName = L.achievements,
+}
+AchievementsSearchProvider.optionsTable = {
+	type = "group",
+	args = {
+		rebuildCache = {
+			name = L.rebuild_cache,
+			type = "execute",
+			func = function()
+				AchievementsSearchProvider.cache = nil
+				AchievementStorage:RebuildCache()
+			end,
+		},
+	},
 }
 
 ---@return SearchItem[]
@@ -15,83 +34,31 @@ function AchievementsSearchProvider:Get()
 		self.cache = self:Fetch()
 	end
 
-	return self.cache
+	return self.cache or {}
 end
 
----@return SearchItem[]
+---@return SearchItem[]?
 function AchievementsSearchProvider:Fetch()
+	local achievements = AchievementStorage:GetAchievements()
+	if not achievements then return end
+
 	local items = {}
-	for id, name, _, _, _, _, _, _, _, icon in self:IterateAchievements() do
+	for _, achievement in next, achievements do
 		items[#items + 1] = {
-			name = name,
+			name = achievement[2],
 			category = L.achievements,
-			texture = icon,
+			texture = achievement[10],
 			action = function()
 				AchievementFrame_LoadUI()
 				ShowUIPanel(AchievementFrame)
-				AchievementFrame_SelectSearchItem(id)
+				AchievementFrame_SelectSearchItem(achievement[1])
 			end,
 			tooltip = function(tooltip)
-				tooltip:SetAchievementByID(id)
+				tooltip:SetAchievementByID(achievement[1])
 			end,
 		}
 	end
 	return items
-end
-
-function AchievementsSearchProvider:IterateAchievements()
-	local categoryIDs = GetCategoryList()
-
-	local GetAchievementInfo, GetCategoryNumAchievements = GetAchievementInfo,
-		GetCategoryNumAchievements
-
-	return coroutine.wrap(function()
-		---@type table<number, boolean>
-		local seenAchievements = {}
-		for _, categoryID in next, categoryIDs do
-			for i = 1, GetCategoryNumAchievements(categoryID, false) do
-				local achievement = { GetAchievementInfo(categoryID, i) }
-				-- If the achievement was already seen through a sibling, it should be skipped
-				if not seenAchievements[achievement[1]] then
-					seenAchievements[achievement[1]] = true
-					coroutine.yield(unpack(achievement))
-					for siblingID in self:IterateSiblingAchievements(achievement[1]) do
-						seenAchievements[siblingID] = true
-						coroutine.yield(GetAchievementInfo(siblingID))
-					end
-				end
-			end
-		end
-	end)
-end
-
-function AchievementsSearchProvider:IterateSiblingAchievements(achievementID)
-	return coroutine.wrap(function()
-		for achievement in self:IterateNextAchievements(achievementID) do
-			coroutine.yield(achievement)
-		end
-		for achievement in self:IteratePreviousAchievements(achievementID) do
-			coroutine.yield(achievement)
-		end
-	end)
-end
-
-function AchievementsSearchProvider:IteratePreviousAchievements(achievementID)
-	return coroutine.wrap(function()
-		while achievementID do
-			achievementID = GetPreviousAchievement(achievementID)
-			coroutine.yield(achievementID)
-		end
-	end)
-end
-
-function AchievementsSearchProvider:IterateNextAchievements(achievementID)
-	return coroutine.wrap(function()
-		while achievementID do
-			achievementID = GetNextAchievement(achievementID)
-			coroutine.yield(achievementID)
-		end
-	end)
 end
 
 GlobalSearchAPI:RegisterProvider("GlobalSearch_Achievements", AchievementsSearchProvider)
