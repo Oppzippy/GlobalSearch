@@ -178,15 +178,20 @@ function SearchUIPrototype:RenderResults(results)
 	self.widgets.resultsContainer:PauseLayout()
 	for i, result in ipairs(results) do
 		local resultWidget = AceGUI:Create("GlobalSearch-SearchResult")
-		resultWidget:SetText(self:HighlightRanges(result.item.name, result.matchRanges))
-		resultWidget:SetCategory(result.item.category)
-		resultWidget:SetTexture(result.item.texture)
-		if result.item.pickup then
-			resultWidget:SetCallback("OnPickup", result.item.pickup)
+		local item = result.item or result
+		if result.matchRanges then
+			resultWidget:SetText(self:HighlightRanges(item.name, result.matchRanges))
+		else
+			resultWidget:SetText(item.name)
+		end
+		resultWidget:SetCategory(item.category)
+		resultWidget:SetTexture(item.texture)
+		if item.pickup then
+			resultWidget:SetCallback("OnPickup", item.pickup)
 		end
 		resultWidget:SetFullWidth(true)
 		resultWidget:SetHeight(40)
-		resultWidget:SetUserData("item", result.item)
+		resultWidget:SetUserData("item", item)
 
 		if i == self.selectedIndex then
 			resultWidget:SetIsSelected(true)

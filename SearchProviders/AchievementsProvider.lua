@@ -48,6 +48,7 @@ function AchievementsSearchProvider:Fetch()
 			name = achievement[2],
 			category = L.achievements,
 			texture = achievement[10],
+			extraSearchText = achievement[8],
 			action = function()
 				AchievementFrame_LoadUI()
 				ShowUIPanel(AchievementFrame)
