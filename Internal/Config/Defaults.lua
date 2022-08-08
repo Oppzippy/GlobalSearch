@@ -2,6 +2,11 @@
 local ns = select(2, ...)
 
 ns.dbDefaults = {
+	global = {
+		cache = {
+			achievements = {},
+		},
+	},
 	profile = {
 		options = {
 			doesShowKeybindToggle = false,
