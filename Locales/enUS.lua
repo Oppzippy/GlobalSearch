@@ -18,7 +18,7 @@ L.select_previous_item = "Select Previous Item"
 L.keybinding_in_use = "Keybinding %s is already in use by GlobalSearch."
 L.use_spell_descriptions = "Use Spell Descriptions"
 L.use_spell_descriptions_desc = "If enabled, spell descriptions will be searched in addition to the spell name."
-L.building_achievement_cache = "Building achievement cache. Your frame rate will be affected until this completes. On modern hardware, expect this to be done within 15 seconds."
+L.building_achievement_cache = "Building achievement cache. Your frame rate will be affected until this completes. This is usually done within 15 seconds."
 L.rebuild_cache = "Rebuild Cache"
 L.done = "Done"
 
