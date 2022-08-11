@@ -49,46 +49,49 @@ end
 ---@return SearchContextItem[]
 function SearchContextPrototype:SearchItems(query, items)
 	if query == "" then return {} end
-
 	---@type SearchContextItem[]
 	local matches = {}
+	---@type table<SearchContextItem, number>
+	local scores = {}
 	for _, item in ipairs(items) do
 		local isMatch, matchRanges = self.queryMatcher(query, item.name .. (item.extraSearchText or ""))
 		if isMatch then
-			matches[#matches + 1] = {
+			local match = {
 				item = item,
 				matchRanges = matchRanges,
 			}
+			matches[#matches + 1] = match
+			scores[match] = self:GetMatchScore(match)
 		end
 	end
 
 	table.sort(matches, function(a, b)
-		local aNumRanges, bNumRanges = #a.matchRanges, #b.matchRanges
-
-		-- If one of the matches uses extraSearchText, it should come last
-		local isAMatchEntirelyWithinName = a.matchRanges[aNumRanges].to <= #a.item.name
-		local isBMatchEntirelyWithinName = b.matchRanges[bNumRanges].to <= #b.item.name
-		if isAMatchEntirelyWithinName ~= isBMatchEntirelyWithinName then
-			return isAMatchEntirelyWithinName
+		if scores[a] ~= scores[b] then
+			return scores[a] > scores[b]
 		end
-
-		-- Fewest total matches
-		if aNumRanges ~= bNumRanges then
-			return aNumRanges < bNumRanges
-		end
-		-- Which starts first
-		local aFirstRange, bFirstRange = a.matchRanges[1], b.matchRanges[1]
-		if aFirstRange.from ~= bFirstRange.from then
-			return aFirstRange.from < bFirstRange.from
-		end
-		-- Which ends later
-		if aFirstRange.to ~= bFirstRange.to then
-			return aFirstRange.to < bFirstRange.to
-		end
-		return #a.item.name < #b.item.name
+		return a.item.name < b.item.name
 	end)
-
 	return matches
+end
+
+---@param match SearchContextItem
+---@return number
+function SearchContextPrototype:GetMatchScore(match)
+	local numMatchRanges = #match.matchRanges
+
+	-- Prioritize shorter names
+	local score = -(#match.item.name)
+
+	-- Prioritize earlier first match
+	score = score - match.matchRanges[1].from * 10
+
+	-- Prioritize fewer matches
+	score = score - numMatchRanges * 100
+
+	-- Prioritize smaller distance between the first and last match
+	score = score - (match.matchRanges[#match.matchRanges].to - match.matchRanges[1].from) * 100
+
+	return score
 end
 
 local export = { Create = CreateSearchContext }
