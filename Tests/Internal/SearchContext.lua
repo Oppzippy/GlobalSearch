@@ -58,16 +58,16 @@ function TestSearchContext:TestSortingByEarliestMatch()
 	local items = {
 		{
 			-- first match starts later and ends earlier
-			name = "_ab_cde",
+			name = "_____abcde",
 		},
 		{
-			name = "abcd___e",
+			name = "abcde",
 		},
 	}
 	local context = SearchContext.Create(QueryMatcher.MatchesQuery, items)
 	local results = context:Search("abcde")
-	luaunit.assertEquals(results[1].item.name, "abcd___e")
-	luaunit.assertEquals(results[2].item.name, "_ab_cde")
+	luaunit.assertEquals(results[1].item.name, "abcde")
+	luaunit.assertEquals(results[2].item.name, "_____abcde")
 end
 
 function TestSearchContext:TestSortingByLongestFirstMatch()
@@ -98,4 +98,20 @@ function TestSearchContext:TestSortingByStringLength()
 	local results = context:Search("ab")
 	luaunit.assertEquals(results[1].item.name, "abcd")
 	luaunit.assertEquals(results[2].item.name, "abcdefg")
+end
+
+function TestSearchContext:TestSortingBySmallestRange()
+	local items = {
+		{
+			-- larger distance between the start and end
+			name = "abc_____de",
+		},
+		{
+			name = "abc_de________",
+		},
+	}
+	local context = SearchContext.Create(QueryMatcher.MatchesQuery, items)
+	local results = context:Search("abcde")
+	luaunit.assertEquals(results[1].item.name, "abc_de________")
+	luaunit.assertEquals(results[2].item.name, "abc_____de")
 end
