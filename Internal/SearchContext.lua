@@ -91,6 +91,10 @@ function SearchContextPrototype:GetMatchScore(match)
 	-- Prioritize smaller distance between the first and last match
 	score = score - (match.matchRanges[#match.matchRanges].to - match.matchRanges[1].from) * 100
 
+	if match.matchRanges[#match.matchRanges].to > #match.item.name then
+		score = score - 10000000
+	end
+
 	return score
 end
 
