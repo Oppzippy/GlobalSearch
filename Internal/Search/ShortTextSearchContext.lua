@@ -1,12 +1,12 @@
 ---@class ns
 local ns = select(2, ...)
 
----@class QueryMatcherSearchContext
+---@class ShortTextSearchContext
 ---@field prevQuery string
 ---@field items SearchItem[]
 ---@field queryMatcher QueryMatcher
 ---@field prevResults SearchContextItem[]
-local QueryMatcherSearchContextPrototype = {}
+local ShortTextSearchContextPrototype = {}
 
 ---@param queryMatcher QueryMatcher
 ---@param items SearchItem[]
@@ -14,13 +14,13 @@ local function CreateSearchContext(queryMatcher, items)
 	local searchContext = setmetatable({
 		queryMatcher = queryMatcher,
 		items = items,
-	}, { __index = QueryMatcherSearchContextPrototype })
+	}, { __index = ShortTextSearchContextPrototype })
 	return searchContext
 end
 
 ---@param query string
 ---@return SearchContextItem[]
-function QueryMatcherSearchContextPrototype:Search(query)
+function ShortTextSearchContextPrototype:Search(query)
 	local items
 	-- If the old query matches the new query, the new query must be a subset, so we can reuse the results and filter them.
 	if self.prevResults and self.prevQuery and self.prevQuery ~= "" and self.queryMatcher(self.prevQuery, query) then
@@ -43,7 +43,7 @@ end
 ---@param query string
 ---@param items SearchItem[]
 ---@return SearchContextItem[]
-function QueryMatcherSearchContextPrototype:SearchItems(query, items)
+function ShortTextSearchContextPrototype:SearchItems(query, items)
 	if query == "" then return {} end
 	---@type SearchContextItem[]
 	local matches = {}
@@ -72,7 +72,7 @@ end
 
 ---@param match SearchContextItem
 ---@return number
-function QueryMatcherSearchContextPrototype:GetMatchScore(match)
+function ShortTextSearchContextPrototype:GetMatchScore(match)
 	local numMatchRanges = #match.matchRanges
 
 	-- Prioritize shorter names
@@ -92,6 +92,6 @@ end
 
 local export = { Create = CreateSearchContext }
 if ns then
-	ns.QueryMatcherSearchContext = export
+	ns.ShortTextSearchContext = export
 end
 return export

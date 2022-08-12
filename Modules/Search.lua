@@ -48,7 +48,7 @@ function module:Show()
 
 	local items = self.providerCollection:Get()
 	self.searchContext = ns.CombinedSearchContext.Create({
-		ns.QueryMatcherSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items),
+		ns.ShortTextSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items),
 		ns.FullTextSearchContext.Create(items),
 	})
 	self.searchUI:Show()
