@@ -7,7 +7,6 @@
 	<Script file="SpellsSearchProvider.lua" />
 	<Script file="SlashCommandsSearchProvider.lua" />
 	<Script file="MacrosSearchProvider.lua" />
-	<Script file="Emotes.lua" />
 	<Script file="EmotesSearchProvider.lua" />
 	<Script file="BagsSearchProvider.lua" />
 	<Script file="EquipmentSetsSearchProvider.lua" />

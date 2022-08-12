@@ -20,11 +20,12 @@ end
 
 ---@return SearchItem[]
 function EmotesSearchProvider:Fetch()
+	ChatFrame_ImportAllListsToHash()
 	local items = {}
-	for _, emote in ipairs(ns.emotes) do
-		local emoteLowerCase = emote:lower()
+	for cmd, emote in next, hash_EmoteTokenList do
+		local readableName = cmd:sub(2, 2) .. cmd:sub(3):lower()
 		items[#items + 1] = {
-			name = emoteLowerCase,
+			name = readableName,
 			category = L.emotes,
 			texture = 1019848, -- Interface/GossipFrame/ChatBubbleGossipIcon
 			action = function()
