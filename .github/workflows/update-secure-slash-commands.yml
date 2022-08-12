@@ -8,13 +8,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Update secure slash commands
-        run: ./Automation/update-secure-slash-commands > SearchProviders/SecureSlashCommands.lua
+        run: ./Automation/update-secure-slash-commands.sh > SearchProviders/SecureSlashCommands.lua
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
-          commit-message: Update locales
           branch: actions/update-secure-slash-commands
           title: Update secure slash commands
+          commit-message: Update secure slash commands
           labels: chore
           delete-branch: true
