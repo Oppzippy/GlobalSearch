@@ -1,0 +1,20 @@
+name: Update Secure Slash Commands
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Update secure slash commands
+        run: ./Automation/update-secure-slash-commands > SearchProviders/SecureSlashCommands.lua
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          commit-message: Update locales
+          branch: actions/update-secure-slash-commands
+          title: Update secure slash commands
+          labels: chore
+          delete-branch: true
