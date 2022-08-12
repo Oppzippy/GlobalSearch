@@ -3,6 +3,7 @@ local ns = select(2, ...)
 
 ---@class FullTextWordIndex
 ---@field rootNode FullTextWordIndex.Node
+---@field wordResultCache table<string, unknown>
 local FullTextWordIndexPrototype = {}
 
 ---@class FullTextWordIndex.Node
@@ -14,6 +15,7 @@ local function CreateFullTextWordIndex()
 		rootNode = {
 			children = {},
 		},
+		wordResultCache = {},
 	}, { __index = FullTextWordIndexPrototype })
 	return InvertedIndex
 end
@@ -27,7 +29,8 @@ end
 ---@param value unknown
 ---@param words string[]
 function FullTextWordIndexPrototype:AddWords(value, words)
-	for _, word in next, words do
+	local wordSet = ns.Util.ListToSet(words)
+	for word in next, wordSet do
 		self:AddWord(value, word)
 	end
 end
@@ -55,16 +58,13 @@ end
 ---@return unknown[]
 function FullTextWordIndexPrototype:Search(query)
 	local words = { strsplit(" ", self:Normalize(query)) }
+	local weightedWords = self:WeightWords(words)
 
 	local weightedResults = {}
-	for _, word in ipairs(words) do
+	for word, weight in next, weightedWords do
 		local values = self:SearchWord(word)
-		local seenValues = {}
-		for _, value in next, values do
-			if not seenValues[value] then
-				seenValues[value] = true
-				weightedResults[value] = (weightedResults[value] or 0) + 1
-			end
+		for value in next, values do
+			weightedResults[value] = (weightedResults[value] or 0) + weight
 		end
 	end
 
@@ -72,31 +72,43 @@ function FullTextWordIndexPrototype:Search(query)
 	for value in next, weightedResults do
 		results[#results + 1] = value
 	end
+
 	table.sort(results, function(a, b)
 		return weightedResults[a] > weightedResults[b]
 	end)
 	return results
 end
 
+function FullTextWordIndexPrototype:WeightWords(words)
+	local weightedWords = {}
+	for _, word in next, words do
+		weightedWords[word] = (weightedWords[word] or 0) + 1
+	end
+	return weightedWords
+end
+
 ---@param word string
 ---@return unknown[]
 function FullTextWordIndexPrototype:SearchWord(word)
-	local node = self.rootNode
-	for i = 1, #word do
-		local byte = word:byte(i)
-		node = node.children[byte]
-		if not node then
-			break
+	if not self.wordResultCache[word] then
+		local node = self.rootNode
+		for i = 1, #word do
+			local byte = word:byte(i)
+			node = node.children[byte]
+			if not node then
+				break
+			end
 		end
+		self.wordResultCache[word] = node and self:GetNodeValues(node) or {}
 	end
-	return node and self:GetNodeValues(node) or {}
+	return self.wordResultCache[word]
 end
 
 ---@param parentNode FullTextWordIndex.Node
----@return unknown[]
+---@return table<unknown, boolean>
 function FullTextWordIndexPrototype:GetNodeValues(parentNode)
 	local nodes = { parentNode }
-	local valueTable = {}
+	local values = {}
 	repeat
 		local childNodes = {}
 		for _, node in next, nodes do
@@ -105,13 +117,13 @@ function FullTextWordIndexPrototype:GetNodeValues(parentNode)
 			end
 			if node.values then
 				for value in next, node.values do
-					valueTable[#valueTable + 1] = value
+					values[value] = true
 				end
 			end
 		end
 		nodes = childNodes
 	until childNodes[1] == nil
-	return valueTable
+	return values
 end
 
 ---@param text string
