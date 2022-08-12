@@ -1,30 +1,26 @@
 ---@class ns
 local ns = select(2, ...)
 
----@class SearchContextPrototype
+---@class QueryMatcherSearchContext
 ---@field prevQuery string
 ---@field items SearchItem[]
----@field queryMatcher fun(query: string, text: string): boolean, MatchRange[]
+---@field queryMatcher QueryMatcher
 ---@field prevResults SearchContextItem[]
-local SearchContextPrototype = {}
+local QueryMatcherSearchContextPrototype = {}
 
----@class SearchContextItem
----@field item SearchItem
----@field matchRanges MatchRange[]
-
----@param queryMatcher fun(query: string, text: string): boolean, MatchRange[]
+---@param queryMatcher QueryMatcher
 ---@param items SearchItem[]
 local function CreateSearchContext(queryMatcher, items)
 	local searchContext = setmetatable({
 		queryMatcher = queryMatcher,
 		items = items,
-	}, { __index = SearchContextPrototype })
+	}, { __index = QueryMatcherSearchContextPrototype })
 	return searchContext
 end
 
 ---@param query string
 ---@return SearchContextItem[]
-function SearchContextPrototype:Search(query)
+function QueryMatcherSearchContextPrototype:Search(query)
 	local items
 	-- If the new query starts with the previous one, we can re-use the results and filter them
 	if self.prevResults and self.prevQuery and self.prevQuery ~= "" and string.find(query, self.prevQuery, nil, true) == 1 then
@@ -47,14 +43,14 @@ end
 ---@param query string
 ---@param items SearchItem[]
 ---@return SearchContextItem[]
-function SearchContextPrototype:SearchItems(query, items)
+function QueryMatcherSearchContextPrototype:SearchItems(query, items)
 	if query == "" then return {} end
 	---@type SearchContextItem[]
 	local matches = {}
 	---@type table<SearchContextItem, number>
 	local scores = {}
 	for _, item in ipairs(items) do
-		local isMatch, matchRanges = self.queryMatcher(query, item.name .. (item.extraSearchText or ""))
+		local isMatch, matchRanges = self.queryMatcher(query, item.name)
 		if isMatch then
 			local match = {
 				item = item,
@@ -76,7 +72,7 @@ end
 
 ---@param match SearchContextItem
 ---@return number
-function SearchContextPrototype:GetMatchScore(match)
+function QueryMatcherSearchContextPrototype:GetMatchScore(match)
 	local numMatchRanges = #match.matchRanges
 
 	-- Prioritize shorter names
@@ -91,15 +87,11 @@ function SearchContextPrototype:GetMatchScore(match)
 	-- Prioritize fewer matches
 	score = score - numMatchRanges * 100
 
-	if match.matchRanges[#match.matchRanges].to > #match.item.name then
-		score = score - 10000000
-	end
-
 	return score
 end
 
 local export = { Create = CreateSearchContext }
 if ns then
-	ns.SearchContext = export
+	ns.QueryMatcherSearchContext = export
 end
 return export

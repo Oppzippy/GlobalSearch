@@ -51,6 +51,8 @@ function FullTextWordIndexPrototype:AddWord(value, word)
 	node.values[value] = true
 end
 
+---@param query string
+---@return unknown[]
 function FullTextWordIndexPrototype:Search(query)
 	local words = { strsplit(" ", self:Normalize(query)) }
 
@@ -76,6 +78,8 @@ function FullTextWordIndexPrototype:Search(query)
 	return results
 end
 
+---@param word string
+---@return unknown[]
 function FullTextWordIndexPrototype:SearchWord(word)
 	local node = self.rootNode
 	for i = 1, #word do

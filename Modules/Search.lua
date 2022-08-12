@@ -46,7 +46,11 @@ end
 function module:Show()
 	if self:IsVisible() or InCombatLockdown() then return end
 
-	self.searchContext = ns.FullTextSearchContext.Create(self.providerCollection:Get())
+	local items = self.providerCollection:Get()
+	self.searchContext = ns.CombinedSearchContext.Create({
+		ns.QueryMatcherSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items),
+		ns.FullTextSearchContext.Create(items),
+	})
 	self.searchUI:Show()
 end
 

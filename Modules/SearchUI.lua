@@ -169,7 +169,7 @@ function SearchUIPrototype:SetSearchQuery(query)
 	self.widgets.searchBar:SetText(query)
 end
 
----@param results SearchContextItem[]
+---@param results QueryMatcherSearchContextItem[]
 function SearchUIPrototype:RenderResults(results)
 	self.widgets.resultsContainer:ReleaseChildren()
 	self.selectedIndex = 1

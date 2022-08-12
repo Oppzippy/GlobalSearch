@@ -1,0 +1,10 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="CombinedSearchContext.lua" />
+	<Script file="FullTextSearchContext.lua" />
+	<Script file="FullTextWordIndex.lua" />
+	<Script file="QueryMatcher.lua" />
+	<Script file="QueryMatcherSearchContext.lua" />
+	<Script file="SearchContext.lua" />
+	<Script file="ShortTextQueryMatcher.lua" />
+</Ui>

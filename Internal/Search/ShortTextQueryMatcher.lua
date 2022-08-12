@@ -1,10 +1,6 @@
 ---@class ns
 local ns = select(2, ...)
 
----@class MatchRange
----@field from integer
----@field to integer
-
 --- Attempts to group together match ranges when the a match range could exist in multiple places
 --- Example:
 --- Crusader Strike
@@ -82,6 +78,6 @@ end
 
 local export = { MatchesQuery = MatchesQuery }
 if ns then
-	ns.QueryMatcher = export
+	ns.ShortTextQueryMatcher = export
 end
 return export
