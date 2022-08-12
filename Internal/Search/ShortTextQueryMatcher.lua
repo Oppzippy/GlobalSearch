@@ -71,7 +71,9 @@ local function MatchesQuery(query, text)
 		prevIndex = index
 	end
 
-	matchRanges = CondenseMatchRanges(text, matchRanges)
+	if #matchRanges > 1 then
+		matchRanges = CondenseMatchRanges(text, matchRanges)
+	end
 
 	return true, matchRanges
 end
