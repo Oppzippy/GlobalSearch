@@ -16,25 +16,6 @@ local SpellsSearchProvider = {
 	localizedName = L.spells,
 }
 AceEvent:Embed(SpellsSearchProvider)
-SpellsSearchProvider.optionsTable = {
-	type = "group",
-	get = function(info)
-		local options = GlobalSearch:GetProviderOptionsDB(providerName)
-		return options[info[#info]]
-	end,
-	set = function(info, val)
-		local options = GlobalSearch:GetProviderOptionsDB(providerName)
-		SpellsSearchProvider:ClearCache()
-		options[info[#info]] = val
-	end,
-	args = {
-		useSpellDescriptions = {
-			name = L.use_spell_descriptions,
-			desc = L.use_spell_descriptions_desc,
-			type = "toggle",
-		},
-	},
-}
 
 ---@return SearchItem[]
 function SpellsSearchProvider:Get()
@@ -50,7 +31,6 @@ end
 
 ---@return SearchItem[]
 function SpellsSearchProvider:Fetch()
-	local options = GlobalSearch:GetProviderOptionsDB(providerName)
 	local items = {}
 
 	for spellID in self:IterateKnownSpells() do
@@ -64,12 +44,12 @@ function SpellsSearchProvider:Fetch()
 				castName = string.format("%s(%s)", name, subtext)
 			end
 
-			local description
-			if options.useSpellDescriptions then
-				description = GetSpellDescription(spellID)
-				if description and description ~= "" then
-					description = ns.Util.StripColorCodes(description)
-				end
+			---@type string?
+			local description = GetSpellDescription(spellID)
+			if description and description ~= "" then
+				description = ns.Util.StripColorCodes(description)
+			else
+				description = nil
 			end
 
 			items[#items + 1] = {

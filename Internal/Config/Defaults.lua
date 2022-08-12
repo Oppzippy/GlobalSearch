@@ -18,9 +18,6 @@ ns.dbDefaults = {
 				selectPreviousItem = "UP",
 			},
 			providers = {
-				GlobalSearch_Spells = {
-					useSpellDescriptions = false,
-				},
 			},
 		},
 	},
