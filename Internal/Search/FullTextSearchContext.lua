@@ -23,6 +23,8 @@ end
 ---@param query string
 ---@return unknown[]
 function FullTextSearchContextPrototype:Search(query)
+	if query == "" then return {} end
+
 	return self.index:Search(query)
 end
 
