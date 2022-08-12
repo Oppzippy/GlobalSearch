@@ -8,7 +8,7 @@ on:
       - "*"
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -16,7 +16,7 @@ jobs:
           fetch-depth: 0
       - name: Install luarocks
         run: sudo apt-get install luarocks
-      - name: Installl luaunit
+      - name: Install luaunit
         run: sudo luarocks install luaunit
       - name: Run tests
         run: lua Tests/Test.lua
