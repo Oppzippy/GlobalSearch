@@ -25,7 +25,14 @@ end
 function FullTextSearchContextPrototype:Search(query)
 	if query == "" then return {} end
 
-	return self.index:Search(query)
+	local items = {}
+	local results = self.index:Search(query)
+	for i, result in ipairs(results) do
+		items[i] = {
+			item = result
+		}
+	end
+	return items
 end
 
 local export = { Create = CreateFullTextSearchContext }

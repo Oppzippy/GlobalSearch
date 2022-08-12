@@ -16,7 +16,7 @@ local function CreateCombinedSearchContext(contexts)
 end
 
 ---@param query string
----@return unknown[]
+---@return SearchContextItem[]
 function CombinedSearchContextPrototype:Search(query)
 	local results = {}
 	for i, context in ipairs(self.contexts) do
@@ -25,16 +25,17 @@ function CombinedSearchContextPrototype:Search(query)
 	return self:FlattenAndDeduplicate(results)
 end
 
----@param results unknown[][]
----@return unknown[]
+---@param results SearchContextItem[][]
+---@return SearchContextItem[]
 function CombinedSearchContextPrototype:FlattenAndDeduplicate(results)
 	local seen = {}
 	local deduplicated = {}
 	local i = 1
 	for _, contextResults in ipairs(results) do
 		for _, result in ipairs(contextResults) do
-			if not seen[result] then
-				seen[result] = true
+			local item = result.item
+			if not seen[item] then
+				seen[item] = true
 				deduplicated[i] = result
 				i = i + 1
 			end

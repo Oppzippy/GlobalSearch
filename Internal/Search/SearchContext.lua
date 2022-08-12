@@ -1,6 +1,6 @@
 ---@class SearchContextItem
 ---@field item SearchItem
----@field matchRanges MatchRange[]
+---@field matchRanges? MatchRange[]
 
 ---@class SearchContext
 local SearchContext = {}
