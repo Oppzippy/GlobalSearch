@@ -4,9 +4,19 @@ local ns = select(2, ...)
 local Util = {}
 
 ---@param text string
-function Util.StripColorCodes(text)
+function Util.StripEscapeSequences(text)
+	-- Colors
+	text = text:gsub("|cn[^:]+:", "")
 	text = text:gsub("|c%x%x%x%x%x%x%x%x", "")
 	text = text:gsub("|r", "")
+
+	-- Textures
+	text = text:gsub("|T.*|t", "")
+	text = text:gsub("|A.*|a", "")
+
+	-- Newline
+	text = text:gsub("|n", "\n")
+
 	return text
 end
 

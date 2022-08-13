@@ -32,9 +32,13 @@ function MountsSearchProvider:Fetch()
 	local mountIDs = C_MountJournal.GetMountIDs()
 	for _, mountID in ipairs(mountIDs) do
 		local name, spellID, icon, _, isUsable = C_MountJournal.GetMountInfoByID(mountID)
+		local _, description, source = C_MountJournal.GetMountInfoExtraByID(mountID)
+		source = ns.Util.StripEscapeSequences(source)
+
 		if isUsable then
 			items[#items + 1] = {
 				name = name,
+				extraSearchText = string.format("%s %s", description, source),
 				category = L.mounts,
 				texture = icon,
 				tooltip = function(tooltip)

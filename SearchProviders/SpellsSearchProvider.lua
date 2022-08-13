@@ -47,7 +47,7 @@ function SpellsSearchProvider:Fetch()
 			---@type string?
 			local description = GetSpellDescription(spellID)
 			if description and description ~= "" then
-				description = ns.Util.StripColorCodes(description)
+				description = ns.Util.StripEscapeSequences(description)
 			else
 				description = nil
 			end

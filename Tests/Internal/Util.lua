@@ -5,6 +5,6 @@ TestUtil = {}
 
 function TestUtil:TestStripColorCodes()
 	local text = "|cFFFFFFFFTest|r color"
-	local noColor = Util.StripColorCodes(text)
+	local noColor = Util.StripEscapeSequences(text)
 	luaunit.assertEquals(noColor, "Test color")
 end
