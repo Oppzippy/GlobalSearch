@@ -79,9 +79,9 @@ function PetsSearchProvider:Fetch()
 	local numPets = C_PetJournal.GetNumPets()
 	for i = 1, numPets do
 		local petID, _, isOwned, customName, _, _, _, speciesName, icon, _, _, source, description = C_PetJournal.GetPetInfoByIndex(i)
-		source = ns.Util.StripEscapeSequences(source)
 
 		if isOwned then
+			source = ns.Util.StripEscapeSequences(source)
 			---@type string?
 			local name = speciesName
 			if customName then
