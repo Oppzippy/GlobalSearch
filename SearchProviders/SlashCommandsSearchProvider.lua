@@ -24,6 +24,17 @@ function SlashCommandsSearchProvider:Fetch()
 	for command in next, hash_SlashCmdList do
 		commands[command] = true
 	end
+	for _, identifier in ipairs(self:GetSecureSlashCommands()) do
+		local i = 1
+		while true do
+			local command = _G["SLASH_" .. identifier .. i]
+			if not command then
+				break
+			end
+			commands[command] = true
+			i = i + 1
+		end
+	end
 
 	local items = {}
 	for command in next, commands do
@@ -35,6 +46,11 @@ function SlashCommandsSearchProvider:Fetch()
 		}
 	end
 	return items
+end
+
+function SlashCommandsSearchProvider:GetSecureSlashCommands()
+	local expansion = GetClientDisplayExpansionLevel()
+	return ns.SecureSlashCommandLists[expansion] or ns.SecureSlashCommandLists.default
 end
 
 GlobalSearchAPI:RegisterProvider("GlobalSearch_SlashCommands", SlashCommandsSearchProvider)
