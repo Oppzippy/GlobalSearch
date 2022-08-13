@@ -16,6 +16,7 @@ local function CreateFullTextSearchContext(items)
 			index:AddString(item, item.extraSearchText)
 		end
 	end
+	index:Index()
 	context.index = index
 	return context
 end

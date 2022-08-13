@@ -51,6 +51,37 @@ function Util.ListToSet(list)
 	return set
 end
 
+---@param array unknown[]
+---@param comparator fun(value: unknown): number Returns less than 0 if the value is too low. Returns more than 0 of the value is too high. Returns 0 if it is a match.
+---@param range "first"|"last"|"firstFound"
+---@return integer? index of the result
+function Util.BinarySearch(array, comparator, range)
+	local startPoint = 1
+	local endPoint = #array
+
+	local result
+	while startPoint <= endPoint do
+		local midPoint = math.floor((endPoint - startPoint) / 2 + startPoint)
+		local comparison = comparator(array[midPoint])
+		if comparison > 0 then
+			endPoint = midPoint - 1
+		elseif comparison < 0 then
+			startPoint = midPoint + 1
+		else
+			result = midPoint
+			if range == "first" then
+				endPoint = midPoint - 1
+			elseif range == "last" then
+				startPoint = midPoint + 1
+			elseif range == "firstFound" then
+				break
+			end
+		end
+	end
+
+	return result
+end
+
 if ns then
 	ns.Util = Util
 end

@@ -2,8 +2,8 @@
 local ns = select(2, ...)
 
 ---@class FullTextWordIndex
----@field rootNode FullTextWordIndex.Node
----@field wordResultCache table<string, unknown>
+---@field words string[]
+---@field wordValues table<string, unknown>
 local FullTextWordIndexPrototype = {}
 
 ---@class FullTextWordIndex.Node
@@ -12,10 +12,8 @@ local FullTextWordIndexPrototype = {}
 
 local function CreateFullTextWordIndex()
 	local InvertedIndex = setmetatable({
-		rootNode = {
-			children = {},
-		},
-		wordResultCache = {},
+		words = {},
+		wordValues = {},
 	}, { __index = FullTextWordIndexPrototype })
 	return InvertedIndex
 end
@@ -23,7 +21,10 @@ end
 ---@param value unknown
 ---@param string string
 function FullTextWordIndexPrototype:AddString(value, string)
-	self:AddWords(value, { strsplit(" ", self:Normalize(string)) })
+	local normalized = self:Normalize(string)
+	for word in normalized:gmatch("([^ ]+)") do
+		self:AddWord(value, word)
+	end
 end
 
 ---@param value unknown
@@ -38,20 +39,16 @@ end
 ---@param value unknown
 ---@param word string
 function FullTextWordIndexPrototype:AddWord(value, word)
-	local node = self.rootNode
-	for i = 1, #word do
-		local byte = word:byte(i)
-		if not node.children[byte] then
-			node.children[byte] = {
-				children = {},
-			}
-		end
-		node = node.children[byte]
+	if not self.wordValues[word] then
+		self.wordValues[word] = {}
+		self.words[#self.words + 1] = word
 	end
-	if not node.values then
-		node.values = {}
-	end
-	node.values[value] = true
+	local values = self.wordValues[word]
+	values[#values + 1] = value
+end
+
+function FullTextWordIndexPrototype:Index()
+	table.sort(self.words)
 end
 
 ---@param query string
@@ -88,52 +85,48 @@ function FullTextWordIndexPrototype:WeightWords(words)
 end
 
 ---@param word string
----@return unknown[]
-function FullTextWordIndexPrototype:SearchWord(word)
-	if not self.wordResultCache[word] then
-		local node = self.rootNode
-		for i = 1, #word do
-			local byte = word:byte(i)
-			node = node.children[byte]
-			if not node then
-				break
-			end
-		end
-		self.wordResultCache[word] = node and self:GetNodeValues(node) or {}
-	end
-	return self.wordResultCache[word]
-end
-
----@param parentNode FullTextWordIndex.Node
 ---@return table<unknown, boolean>
-function FullTextWordIndexPrototype:GetNodeValues(parentNode)
-	local nodes = { parentNode }
-	local values = {}
-	repeat
-		local childNodes = {}
-		for _, node in next, nodes do
-			for _, childNode in next, node.children do
-				childNodes[#childNodes + 1] = childNode
-			end
-			if node.values then
-				for value in next, node.values do
-					values[value] = true
-				end
-			end
+function FullTextWordIndexPrototype:SearchWord(word)
+	local comparator = function(value)
+		if value:find(word, nil, true) == 1 then
+			return 0
+		elseif value < word then
+			return -1
+		elseif value > word then
+			return 1
 		end
-		nodes = childNodes
-	until childNodes[1] == nil
-	return values
+	end
+
+	local first = ns.Util.BinarySearch(self.words, comparator, "first")
+	local last = ns.Util.BinarySearch(self.words, comparator, "last")
+
+	if not first or not last then
+		return {}
+	end
+
+	local resultsSet = {}
+	for i = first, last do
+		for _, value in ipairs(self.wordValues[self.words[i]]) do
+			resultsSet[value] = true
+		end
+	end
+	return resultsSet
 end
 
----@param text string
----@return string
-function FullTextWordIndexPrototype:Normalize(text)
-	-- All punctuation should be removed except hyphens. Those should be replaced with spaces.
-	text = text:gsub("-", " ")
-	text = text:gsub("%p", "")
-	text = text:lower()
-	return text
+do
+	-- Keep an eye on this as it could get big
+	local cache = {}
+	---@param text string
+	---@return string
+	function FullTextWordIndexPrototype:Normalize(text)
+		if cache[text] then return cache[text] end
+		-- All punctuation should be removed except hyphens. Those should be replaced with spaces.
+		local normalized = text:gsub("-", " ")
+		normalized = normalized:gsub("%p", "")
+		normalized = normalized:lower()
+		cache[text] = normalized
+		return normalized
+	end
 end
 
 local export = { Create = CreateFullTextWordIndex }
