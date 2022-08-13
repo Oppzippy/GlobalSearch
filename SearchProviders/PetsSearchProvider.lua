@@ -78,7 +78,9 @@ function PetsSearchProvider:Fetch()
 	SetPetJournalBoxSettings(petJournalSettings)
 	local numPets = C_PetJournal.GetNumPets()
 	for i = 1, numPets do
-		local petID, _, isOwned, customName, _, _, _, speciesName, icon = C_PetJournal.GetPetInfoByIndex(i)
+		local petID, _, isOwned, customName, _, _, _, speciesName, icon, _, _, source, description = C_PetJournal.GetPetInfoByIndex(i)
+		source = ns.Util.StripEscapeSequences(source)
+
 		if isOwned then
 			---@type string?
 			local name = speciesName
@@ -87,6 +89,7 @@ function PetsSearchProvider:Fetch()
 			end
 			items[#items + 1] = {
 				name = name,
+				extraSearchText = string.format("%s %s", source, description),
 				category = L.pets,
 				texture = icon,
 				tooltip = function(tooltip)
