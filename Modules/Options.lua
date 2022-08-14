@@ -43,10 +43,22 @@ module.optionsTable = {
 				selectNextItem = {
 					type = "keybinding",
 					name = L.select_next_item,
+					order = 1,
 				},
 				selectPreviousItem = {
 					type = "keybinding",
 					name = L.select_previous_item,
+					order = 2,
+				},
+				selectNextPage = {
+					type = "keybinding",
+					name = L.select_next_page,
+					order = 3,
+				},
+				selectPreviousPage = {
+					type = "keybinding",
+					name = L.select_previous_page,
+					order = 4,
 				},
 			},
 		},

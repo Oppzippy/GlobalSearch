@@ -15,12 +15,15 @@ L.does_show_keybind_toggle = "Keybind Hides When Shown"
 L.does_show_keybind_toggle_desc = "When the search bar is shown, the show keybind will instead hide the search bar."
 L.select_next_item = "Select Next Item"
 L.select_previous_item = "Select Previous Item"
+L.select_next_page = "Select Next Page"
+L.select_previous_page = "Select Previous Page"
 L.keybinding_in_use = "Keybinding %s is already in use by GlobalSearch."
 L.use_spell_descriptions = "Use Spell Descriptions"
 L.use_spell_descriptions_desc = "If enabled, spell descriptions will be searched in addition to the spell name."
 L.building_achievement_cache = "Building achievement cache. Your frame rate will be affected until this completes. This is usually done within 15 seconds."
 L.rebuild_cache = "Rebuild Cache"
 L.done = "Done"
+L.page_x_of_x = "Page %d of %d"
 
 L.key_bindings = KEY_BINDINGS
 L.general = GENERAL

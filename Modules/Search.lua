@@ -28,6 +28,8 @@ function module:OnInitialize()
 	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnSelectPreviousItem")
 	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnToggle")
 	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnCreateHyperlink")
+	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnSelectNextPage")
+	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnSelectPreviousPage")
 
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "Hide")
 	self:RegisterMessage("GlobalSearch_OnKeybindingModified", "RegisterKeybindings")
@@ -74,6 +76,8 @@ function module:RegisterKeybindings()
 
 	self.searchUI.keybindingRegistry:RegisterKeybinding(keybindings.selectNextItem, "OnSelectNextItem")
 	self.searchUI.keybindingRegistry:RegisterKeybinding(keybindings.selectPreviousItem, "OnSelectPreviousItem")
+	self.searchUI.keybindingRegistry:RegisterKeybinding(keybindings.selectNextPage, "OnSelectNextPage")
+	self.searchUI.keybindingRegistry:RegisterKeybinding(keybindings.selectPreviousPage, "OnSelectPreviousPage")
 	for key in next, ns.Bindings.GetKeyBinding("SHOW") do
 		self.searchUI.keybindingRegistry:RegisterKeybinding(key, "OnToggle")
 	end
@@ -87,6 +91,14 @@ end
 
 function module:OnSelectPreviousItem()
 	self.searchUI:SelectPreviousItem()
+end
+
+function module:OnSelectNextPage()
+	self.searchUI:SelectNextPage()
+end
+
+function module:OnSelectPreviousPage()
+	self.searchUI:SelectPreviousPage()
 end
 
 function module:OnToggle()

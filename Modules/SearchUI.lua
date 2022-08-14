@@ -2,14 +2,17 @@
 local ns = select(2, ...)
 
 local AceGUI = LibStub("AceGUI-3.0")
+local AceLocale = LibStub("AceLocale-3.0")
 local CallbackHandler = LibStub("CallbackHandler-1.0")
+
+local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class SearchUI
 ---@field callbacks table
 ---@field keybindingRegistry KeybindingRegistry
 ---@field RegisterCallback function
 local SearchUIPrototype = {
-	maxResults = 10,
+	resultsPerPage = 10,
 }
 
 local function CreateSearchUI()
@@ -128,6 +131,16 @@ function SearchUIPrototype:SelectPreviousItem()
 	self:SetSelection(self.selectedIndex - 1)
 end
 
+function SearchUIPrototype:SelectNextPage()
+	local _, rightBound = self:GetPageBounds()
+	self:SetSelection(rightBound + 1)
+end
+
+function SearchUIPrototype:SelectPreviousPage()
+	local leftBound = self:GetPageBounds()
+	self:SetSelection(leftBound - self.resultsPerPage)
+end
+
 ---@param index number
 function SearchUIPrototype:SetSelection(index)
 	if index < 1 then
@@ -136,8 +149,8 @@ function SearchUIPrototype:SetSelection(index)
 		index = 1
 	end
 
-	local oldPage = math.ceil(self.selectedIndex / self.maxResults)
-	local newPage = math.ceil(index / self.maxResults)
+	local oldPage = math.ceil(self.selectedIndex / self.resultsPerPage)
+	local newPage = math.ceil(index / self.resultsPerPage)
 
 	if oldPage ~= newPage then
 		self.selectedIndex = index
@@ -191,10 +204,11 @@ end
 ---@param page integer
 function SearchUIPrototype:SetPage(page)
 	if page < 1 then
-		page = 1
-	elseif page > self:GetNumPages() then
 		page = self:GetNumPages()
+	elseif page > self:GetNumPages() then
+		page = 1
 	end
+
 	self.page = page
 	self:RenderResults()
 end
@@ -204,12 +218,14 @@ function SearchUIPrototype:GetPage()
 end
 
 function SearchUIPrototype:GetNumPages()
-	return math.ceil(#self.results / self.maxResults)
+	return math.ceil(#self.results / self.resultsPerPage)
 end
 
+---@return integer
+---@return integer
 function SearchUIPrototype:GetPageBounds()
-	local left = (self.page - 1) * self.maxResults + 1
-	local right = math.min(left + self.maxResults - 1, #self.results)
+	local left = (self.page - 1) * self.resultsPerPage + 1
+	local right = math.min(left + self.resultsPerPage - 1, #self.results)
 	return left, right
 end
 
@@ -244,6 +260,12 @@ function SearchUIPrototype:RenderResults()
 		self.widgets.resultsContainer:AddChild(resultWidget)
 		self.widgets.results[#self.widgets.results + 1] = resultWidget
 	end
+	local pageNumber = AceGUI:Create("Label")
+	---@cast pageNumber AceGUILabel
+	pageNumber:SetText(L.page_x_of_x:format(self:GetPage(), self:GetNumPages()))
+	pageNumber:SetFontObject("GameFontWhite")
+	self.widgets.resultsContainer:AddChild(pageNumber)
+
 	self.widgets.resultsContainer:ResumeLayout()
 	self.widgets.resultsContainer:DoLayout()
 

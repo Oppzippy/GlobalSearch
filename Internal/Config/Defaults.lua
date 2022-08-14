@@ -16,6 +16,8 @@ ns.dbDefaults = {
 			keybindings = {
 				selectNextItem = "DOWN",
 				selectPreviousItem = "UP",
+				selectNextPage = "ALT-RIGHT",
+				selectPreviousPage = "ALT-LEFT",
 			},
 			providers = {
 			},
