@@ -122,8 +122,6 @@ function UIPanelsSearchProvider:Fetch()
 		{
 			name = L.calendar,
 			category = L.ui_panels,
-			-- SetPortraitTexture should ideally be used to match the default UI, but that adds complication for a single case.
-			-- A basic sword texture will suffice.
 			texture = 986189, -- Interface/Calendar/Calendar
 			action = function()
 				ToggleCalendar()
@@ -132,8 +130,6 @@ function UIPanelsSearchProvider:Fetch()
 		{
 			name = L.open_all_bags,
 			category = L.ui_panels,
-			-- SetPortraitTexture should ideally be used to match the default UI, but that adds complication for a single case.
-			-- A basic sword texture will suffice.
 			texture = 130716, -- Interface/Buttons/Button-Backpack-Up
 			action = function()
 				ToggleAllBags()
