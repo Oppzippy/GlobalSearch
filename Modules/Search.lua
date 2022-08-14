@@ -144,7 +144,7 @@ function module:Search(query)
 	self.selectedIndex = newSelectedIndex
 
 	self.searchUI:Show()
-	self.searchUI:RenderResults(results)
+	self.searchUI:SetResults(results)
 end
 
 function module:OnCreateHyperlink()

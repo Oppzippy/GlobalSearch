@@ -16,6 +16,7 @@ local function CreateSearchUI()
 	local searchUI = setmetatable({
 		widgets = { results = {} },
 		selectedIndex = 1,
+		page = 1,
 		keybindingRegistry = ns.KeybindingRegistry.Create(CallbackHandler),
 	}, { __index = SearchUIPrototype })
 	searchUI.callbacks = CallbackHandler:New(searchUI)
@@ -64,22 +65,6 @@ function SearchUIPrototype:Show()
 	self.widgets.container = container
 	self.widgets.searchBar = searchBar
 	self.widgets.resultsContainer = resultsContainer
-end
-
-function SearchUIPrototype:SelectNextItem()
-	local newSelectedIndex = self.selectedIndex + 1
-	if newSelectedIndex > math.min(#self.widgets.results, self.maxResults) then
-		newSelectedIndex = 1
-	end
-	self:SetSelection(newSelectedIndex)
-end
-
-function SearchUIPrototype:SelectPreviousItem()
-	local newSelectedIndex = self.selectedIndex - 1
-	if newSelectedIndex < 1 then
-		newSelectedIndex = math.min(#self.widgets.results, self.maxResults)
-	end
-	self:SetSelection(newSelectedIndex)
 end
 
 function SearchUIPrototype:UpdateTooltip()
@@ -135,18 +120,42 @@ function SearchUIPrototype:IsVisible()
 	return self.widgets.container ~= nil
 end
 
+function SearchUIPrototype:SelectNextItem()
+	self:SetSelection(self.selectedIndex + 1)
+end
+
+function SearchUIPrototype:SelectPreviousItem()
+	self:SetSelection(self.selectedIndex - 1)
+end
+
 ---@param index number
 function SearchUIPrototype:SetSelection(index)
-	local prevSelection = self.widgets.results[self.selectedIndex]
-	if prevSelection then
-		prevSelection:SetIsSelected(false)
+	if index < 1 then
+		index = #self.results
+	elseif index > #self.results then
+		index = 1
 	end
 
-	local newSelection = self.widgets.results[index]
-	if newSelection then
-		newSelection:SetIsSelected(true)
+	local oldPage = math.ceil(self.selectedIndex / self.maxResults)
+	local newPage = math.ceil(index / self.maxResults)
+
+	if oldPage ~= newPage then
+		self.selectedIndex = index
+		self:SetPage(newPage)
+	else
+		local leftBound = self:GetPageBounds()
+		local prevSelection = self.widgets.results[self.selectedIndex - leftBound + 1]
+		if prevSelection then
+			prevSelection:SetIsSelected(false)
+		end
+
+		local newSelection = self.widgets.results[index - leftBound + 1]
+		if newSelection then
+			newSelection:SetIsSelected(true)
+		end
+
+		self.selectedIndex = index
 	end
-	self.selectedIndex = index
 
 	self:UpdateTooltip()
 	self:FireSelectionChange()
@@ -159,9 +168,11 @@ function SearchUIPrototype:GetSelection()
 end
 
 function SearchUIPrototype:FireSelectionChange()
-	local widget = self.widgets.results[self.selectedIndex]
-	local item = widget and widget:GetUserData("item")
-	self.callbacks:Fire("OnSelectionChanged", item)
+	if self.results and self.results[self.selectedIndex] then
+		self.callbacks:Fire("OnSelectionChanged", self.results[self.selectedIndex].item or self.results[self.selectedIndex])
+	else
+		self.callbacks:Fire("OnSelectionChanged")
+	end
 end
 
 ---@param query string
@@ -169,14 +180,47 @@ function SearchUIPrototype:SetSearchQuery(query)
 	self.widgets.searchBar:SetText(query)
 end
 
----@param results QueryMatcherSearchContextItem[]
-function SearchUIPrototype:RenderResults(results)
-	self.widgets.resultsContainer:ReleaseChildren()
+---@param results SearchContextItem[]
+function SearchUIPrototype:SetResults(results)
+	self.results = results
+	self.page = 1
 	self.selectedIndex = 1
+	self:RenderResults()
+end
+
+---@param page integer
+function SearchUIPrototype:SetPage(page)
+	if page < 1 then
+		page = 1
+	elseif page > self:GetNumPages() then
+		page = self:GetNumPages()
+	end
+	self.page = page
+	self:RenderResults()
+end
+
+function SearchUIPrototype:GetPage()
+	return self.page
+end
+
+function SearchUIPrototype:GetNumPages()
+	return math.ceil(#self.results / self.maxResults)
+end
+
+function SearchUIPrototype:GetPageBounds()
+	local left = (self.page - 1) * self.maxResults + 1
+	local right = math.min(left + self.maxResults - 1, #self.results)
+	return left, right
+end
+
+function SearchUIPrototype:RenderResults()
+	self.widgets.resultsContainer:ReleaseChildren()
 
 	self.widgets.results = {}
 	self.widgets.resultsContainer:PauseLayout()
-	for i, result in ipairs(results) do
+	local leftBound, rightBound = self:GetPageBounds()
+	for i = leftBound, rightBound do
+		local result = self.results[i]
 		local resultWidget = AceGUI:Create("GlobalSearch-SearchResult")
 		local item = result.item or result
 		if result.matchRanges then
@@ -198,9 +242,7 @@ function SearchUIPrototype:RenderResults(results)
 		end
 
 		self.widgets.resultsContainer:AddChild(resultWidget)
-		self.widgets.results[i] = resultWidget
-
-		if i >= self.maxResults then break end
+		self.widgets.results[#self.widgets.results + 1] = resultWidget
 	end
 	self.widgets.resultsContainer:ResumeLayout()
 	self.widgets.resultsContainer:DoLayout()
