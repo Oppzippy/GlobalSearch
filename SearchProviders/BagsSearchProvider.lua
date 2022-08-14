@@ -1,9 +1,13 @@
 ---@class ns
 local ns = select(2, ...)
 
+local AceAddon = LibStub("AceAddon-3.0")
 local AceLocale = LibStub("AceLocale-3.0")
 local AceEvent = LibStub("AceEvent-3.0")
+
 local L = AceLocale:GetLocale("GlobalSearch")
+local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
+---@cast GlobalSearch GlobalSearch
 
 ---@class BagsSearchProvider : SearchProvider, AceEvent-3.0
 local BagsSearchProvider = {
@@ -25,6 +29,7 @@ end
 
 ---@return SearchItem[]
 function BagsSearchProvider:Fetch()
+	local tooltipStorage = GlobalSearch:GetModule("TooltipStorage")
 	local items = {}
 	for itemID in next, self:GetItemSet() do
 		local itemName, itemLink, _, _, _, _, _, _, _, icon = GetItemInfo(itemID)
@@ -32,6 +37,7 @@ function BagsSearchProvider:Fetch()
 		if itemName and spellName then
 			items[#items + 1] = {
 				name = itemName,
+				extraSearchText = tooltipStorage:GetTooltip(itemLink),
 				category = L.bags,
 				texture = icon,
 				macroText = "/use " .. itemName,

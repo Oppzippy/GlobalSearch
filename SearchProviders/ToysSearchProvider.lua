@@ -4,9 +4,13 @@ if C_ToyBox == nil then return end
 ---@class ns
 local ns = select(2, ...)
 
+local AceAddon = LibStub("AceAddon-3.0")
 local AceLocale = LibStub("AceLocale-3.0")
 local AceEvent = LibStub("AceEvent-3.0")
+
 local L = AceLocale:GetLocale("GlobalSearch")
+local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
+---@cast GlobalSearch GlobalSearch
 
 ---@class ToysSearchProvider : SearchProvider, AceEvent-3.0
 local ToysSearchProvider = {
@@ -76,6 +80,7 @@ end
 
 ---@return SearchItem[]
 function ToysSearchProvider:Fetch()
+	local tooltipStorage = GlobalSearch:GetModule("TooltipStorage")
 	local items = {}
 	local prevSettings = GetToyBoxSettings()
 	SetToyBoxSettings(toyBoxSettings)
@@ -84,6 +89,9 @@ function ToysSearchProvider:Fetch()
 		local _, name, icon = C_ToyBox.GetToyInfo(itemID)
 		items[#items + 1] = {
 			name = name,
+			extraSearchText = tooltipStorage:GetTooltip(function(tooltip)
+				tooltip:SetToyByItemID(itemID)
+			end),
 			category = L.toys,
 			texture = icon,
 			tooltip = function(tooltip)

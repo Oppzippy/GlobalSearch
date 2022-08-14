@@ -4,4 +4,5 @@
 	<Script file="Search.lua" />
 	<Script file="SearchUI.lua" />
 	<Script file="Options.lua" />
+	<Script file="TooltipStorage.lua" />
 </Ui>
