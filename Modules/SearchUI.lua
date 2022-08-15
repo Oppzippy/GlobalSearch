@@ -198,7 +198,7 @@ function SearchUIPrototype:SetResults(results)
 	self.results = results
 	self.page = 1
 	self.selectedIndex = 1
-	self:RenderResults()
+	self:Render()
 end
 
 ---@param page integer
@@ -210,7 +210,7 @@ function SearchUIPrototype:SetPage(page)
 	end
 
 	self.page = page
-	self:RenderResults()
+	self:Render()
 end
 
 function SearchUIPrototype:GetPage()
@@ -229,7 +229,7 @@ function SearchUIPrototype:GetPageBounds()
 	return left, right
 end
 
-function SearchUIPrototype:RenderResults()
+function SearchUIPrototype:Render()
 	self.widgets.resultsContainer:ReleaseChildren()
 
 	self.widgets.results = {}
