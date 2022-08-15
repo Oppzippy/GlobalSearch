@@ -182,7 +182,7 @@ end
 
 function SearchUIPrototype:FireSelectionChange()
 	if self.results and self.results[self.selectedIndex] then
-		self.callbacks:Fire("OnSelectionChanged", self.results[self.selectedIndex].item or self.results[self.selectedIndex])
+		self.callbacks:Fire("OnSelectionChanged", self.results[self.selectedIndex].item)
 	else
 		self.callbacks:Fire("OnSelectionChanged")
 	end
@@ -238,7 +238,7 @@ function SearchUIPrototype:RenderResults()
 	for i = leftBound, rightBound do
 		local result = self.results[i]
 		local resultWidget = AceGUI:Create("GlobalSearch-SearchResult")
-		local item = result.item or result
+		local item = result.item
 		if result.matchRanges then
 			resultWidget:SetText(self:HighlightRanges(item.name, result.matchRanges))
 		else
