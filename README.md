@@ -17,11 +17,13 @@ Press the keybinding and search for anything from any of the the following provi
 - Mounts
 - Pets
 - Toys
+- Achievements
 - Emotes
 - Items in bags
 - Spells
 - UI Panels
 - Macros
 - Slash Commands
+- Equipment Sets
 
 Providers can be disabled in Interface > AddOns > GlobalSearch > Enabled Providers.
