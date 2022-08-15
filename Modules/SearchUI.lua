@@ -41,7 +41,7 @@ function SearchUIPrototype:Show()
 	local searchBar = AceGUI:Create("GlobalSearch-SearchBar")
 	searchBar:SetCallback("OnTextChanged", function()
 		local text = searchBar:GetText()
-		text = strtrim(text) -- XXX Temporary fix for the search bar starting with a space in it due to the keybind
+		text = strtrim(text)
 		self.callbacks:Fire("OnTextChanged", text)
 	end)
 	searchBar:SetCallback("OnKeyDown", function(_, _, key)
