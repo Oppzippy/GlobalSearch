@@ -54,6 +54,7 @@ function AchievementsSearchProvider:Fetch()
 				ShowUIPanel(AchievementFrame)
 				AchievementFrame_SelectSearchItem(achievement[1])
 			end,
+			---@param tooltip LimitedTooltip
 			tooltip = function(tooltip)
 				tooltip:SetAchievementByID(achievement[1])
 			end,

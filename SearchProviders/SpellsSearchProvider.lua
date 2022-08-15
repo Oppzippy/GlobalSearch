@@ -54,6 +54,7 @@ function SpellsSearchProvider:Fetch()
 				category = L.spells,
 				texture = icon,
 				extraSearchText = description,
+				---@param tooltip LimitedTooltip
 				tooltip = function(tooltip)
 					tooltip:SetSpellByID(spellID)
 				end,

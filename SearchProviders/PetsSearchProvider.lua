@@ -92,6 +92,7 @@ function PetsSearchProvider:Fetch()
 				extraSearchText = string.format("%s %s", source, description),
 				category = L.pets,
 				texture = icon,
+				---@param tooltip LimitedTooltip
 				tooltip = function(tooltip)
 					tooltip:SetCompanionPet(petID)
 				end,

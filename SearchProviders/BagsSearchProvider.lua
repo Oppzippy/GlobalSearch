@@ -41,6 +41,7 @@ function BagsSearchProvider:Fetch()
 				category = L.bags,
 				texture = icon,
 				macroText = "/use " .. itemName,
+				---@param tooltip LimitedTooltip
 				tooltip = function(tooltip)
 					tooltip:SetItemByID(itemID)
 				end,

@@ -41,6 +41,7 @@ function MountsSearchProvider:Fetch()
 				extraSearchText = string.format("%s %s", description, source),
 				category = L.mounts,
 				texture = icon,
+				---@param tooltip LimitedTooltip
 				tooltip = function(tooltip)
 					tooltip:SetMountBySpellID(spellID)
 				end,

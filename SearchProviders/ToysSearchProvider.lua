@@ -90,10 +90,13 @@ function ToysSearchProvider:Fetch()
 		items[#items + 1] = {
 			name = name,
 			extraSearchText = tooltipStorage:GetTooltip(function(tooltip)
+				---@cast tooltip LimitedTooltip
 				tooltip:SetToyByItemID(itemID)
-			end),
+			end
+			),
 			category = L.toys,
 			texture = icon,
+			---@param tooltip LimitedTooltip
 			tooltip = function(tooltip)
 				tooltip:SetToyByItemID(itemID)
 			end,
