@@ -71,9 +71,8 @@ function SearchUIPrototype:Show()
 end
 
 function SearchUIPrototype:UpdateTooltip()
-	local selection = self.widgets.results[self.selectedIndex]
-	if selection then
-		local item = selection:GetUserData("item")
+	local item = self:GetSelectedItem()
+	if item then
 		local tooltipType = type(item.tooltip)
 		-- TODO add string tooltip type
 		if tooltipType == "function" then
@@ -175,17 +174,13 @@ function SearchUIPrototype:SetSelection(index)
 end
 
 ---@return SearchItem
-function SearchUIPrototype:GetSelection()
-	local widget = self.widgets.results[self.selectedIndex]
-	return widget and widget:GetUserData("item")
+function SearchUIPrototype:GetSelectedItem()
+	local result = self.results[self.selectedIndex]
+	return result and result.item
 end
 
 function SearchUIPrototype:FireSelectionChange()
-	if self.results and self.results[self.selectedIndex] then
-		self.callbacks:Fire("OnSelectionChanged", self.results[self.selectedIndex].item)
-	else
-		self.callbacks:Fire("OnSelectionChanged")
-	end
+	self.callbacks:Fire("OnSelectionChanged", self:GetSelectedItem())
 end
 
 ---@param query string

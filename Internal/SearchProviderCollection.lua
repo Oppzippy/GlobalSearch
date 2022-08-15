@@ -9,6 +9,7 @@ local ns = select(2, ...)
 ---@field action function
 ---@field macroText string
 ---@field pickup function
+---@field tooltip fun(limitedTooltip: unknown)
 
 ---@class SearchProviderCollection
 ---@field providers SearchProvider[]

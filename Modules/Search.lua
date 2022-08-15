@@ -160,7 +160,7 @@ function module:Search(query)
 end
 
 function module:OnCreateHyperlink()
-	local item = self.searchUI:GetSelection()
+	local item = self.searchUI:GetSelectedItem()
 	if item then
 		self:Hide()
 		ChatEdit_ActivateChat(ChatFrame1EditBox)
