@@ -260,11 +260,13 @@ function SearchUIPrototype:Render()
 		self.widgets.resultsContainer:AddChild(resultWidget)
 		self.widgets.results[#self.widgets.results + 1] = resultWidget
 	end
-	local pageNumber = AceGUI:Create("Label")
-	---@cast pageNumber AceGUILabel
-	pageNumber:SetText(L.page_x_of_x:format(self:GetPage(), self:GetNumPages()))
-	pageNumber:SetFontObject("GameFontWhite")
-	self.widgets.resultsContainer:AddChild(pageNumber)
+	if self:GetNumPages() >= 1 then
+		local pageNumber = AceGUI:Create("Label")
+		---@cast pageNumber AceGUILabel
+		pageNumber:SetText(L.page_x_of_x:format(self:GetPage(), self:GetNumPages()))
+		pageNumber:SetFontObject("GameFontWhite")
+		self.widgets.resultsContainer:AddChild(pageNumber)
+	end
 
 	self.widgets.resultsContainer:ResumeLayout()
 	self.widgets.resultsContainer:DoLayout()
