@@ -51,9 +51,18 @@ do
 		highlightTexture:SetColorTexture(1, 1, 1, 0.3)
 		highlightTexture:Hide()
 
-		local texture = frame:CreateTexture(nil, "OVERLAY")
-		texture:SetPoint("LEFT", 4, 0)
-		texture:SetSize(32, 32)
+		local textureFrame = CreateFrame("Frame", nil, frame)
+		textureFrame:SetPoint("LEFT", 4, 0)
+		textureFrame:SetSize(32, 32)
+
+		local texture = textureFrame:CreateTexture(nil, "OVERLAY")
+		texture:SetAllPoints(textureFrame)
+
+		local isMasqueEnabled, Masque = pcall(LibStub, "Masque")
+		if isMasqueEnabled then
+			local group = Masque:Group("GlobalSearch", "Search Results")
+			group:AddButton(textureFrame, { Icon = texture })
+		end
 
 		local categoryFontString = frame:CreateFontString(nil, "OVERLAY", "GameFontWhite")
 		categoryFontString:SetPoint("RIGHT", frame, "RIGHT", -5, 0)
@@ -61,7 +70,7 @@ do
 		categoryFontString:SetJustifyH("RIGHT")
 
 		local fontString = frame:CreateFontString(nil, "OVERLAY", "GameFontWhite")
-		fontString:SetPoint("LEFT", texture, "RIGHT", 6, 0)
+		fontString:SetPoint("LEFT", textureFrame, "RIGHT", 6, 0)
 		fontString:SetPoint("RIGHT", categoryFontString, "LEFT", -6, 0)
 		fontString:SetJustifyH("LEFT")
 		fontString:SetMaxLines(2)
@@ -69,6 +78,7 @@ do
 		local widget = {
 			type = widgetType,
 			frame = frame,
+			textureFrame = textureFrame,
 			texture = texture,
 			highlightTexture = highlightTexture,
 			fontString = fontString,
