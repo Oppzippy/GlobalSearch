@@ -204,7 +204,7 @@ end
 ---@param page integer
 function SearchUIPrototype:SetPage(page)
 	if page < 1 then
-		page = self:GetNumPages()
+		page = math.max(self:GetNumPages(), 1)
 	elseif page > self:GetNumPages() then
 		page = 1
 	end
