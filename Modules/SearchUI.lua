@@ -72,13 +72,18 @@ end
 
 function SearchUIPrototype:UpdateTooltip()
 	local item = self:GetSelectedItem()
-	if item then
+	if item and item.tooltip then
 		local tooltipType = type(item.tooltip)
-		-- TODO add string tooltip type
-		if tooltipType == "function" then
+		if tooltipType == "string" then
+			self:ShowTooltip(function(tooltip)
+				tooltip:SetText(item.tooltip, nil, nil, nil, nil, true)
+			end)
+		elseif tooltipType == "function" then
 			self:ShowTooltip(item.tooltip)
-			return
+		else
+			error("bad tooltip type: " .. tooltipType)
 		end
+		return
 	end
 	self:HideTooltip()
 end
