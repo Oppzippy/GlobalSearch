@@ -19,9 +19,9 @@ local function CreateFullTextWordIndex()
 end
 
 ---@param value unknown
----@param string string
-function FullTextWordIndexPrototype:AddString(value, string)
-	local normalized = self:Normalize(string)
+---@param text string
+function FullTextWordIndexPrototype:AddString(value, text)
+	local normalized = self:Normalize(text)
 	for word in normalized:gmatch("([^ ]+)") do
 		if not self.wordValues[word] then
 			self.wordValues[word] = {}
