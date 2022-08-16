@@ -55,10 +55,10 @@ function FullTextWordIndexPrototype:Search(query)
 	for value in next, weightedResults do
 		results[#results + 1] = value
 	end
-
-	table.sort(results, function(a, b)
-		return weightedResults[a] > weightedResults[b]
+	ns.Util.HeapSort(results, function(a, b)
+		return weightedResults[a] < weightedResults[b]
 	end)
+
 	return results
 end
 
