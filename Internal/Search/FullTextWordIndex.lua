@@ -107,9 +107,10 @@ do
 	function FullTextWordIndexPrototype:Normalize(text)
 		if cache[text] then return cache[text] end
 		-- All punctuation should be removed except hyphens. Those should be replaced with spaces.
-		local normalized = text:gsub("-", " ")
-		normalized = normalized:gsub("%p", "")
-		normalized = normalized:lower()
+		local normalized = text
+			:gsub("-", " ")
+			:gsub("%p", "")
+			:lower()
 		cache[text] = normalized
 		return normalized
 	end
