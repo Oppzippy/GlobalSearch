@@ -73,7 +73,7 @@ end
 ---@param word string
 ---@return table<unknown, boolean>
 function FullTextWordIndexPrototype:SearchWord(word)
-	local comparator = function(value)
+	local function comparator(value)
 		if value:find(word, nil, true) == 1 then
 			return 0
 		elseif value < word then
@@ -92,8 +92,9 @@ function FullTextWordIndexPrototype:SearchWord(word)
 
 	local resultsSet = {}
 	for i = first, last do
-		for _, value in ipairs(self.wordValues[self.words[i]]) do
-			resultsSet[value] = true
+		local values = self.wordValues[self.words[i]]
+		for j = 1, #values do
+			resultsSet[values[j]] = true
 		end
 	end
 	return resultsSet
