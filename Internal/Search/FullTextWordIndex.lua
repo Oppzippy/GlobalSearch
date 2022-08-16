@@ -23,28 +23,14 @@ end
 function FullTextWordIndexPrototype:AddString(value, string)
 	local normalized = self:Normalize(string)
 	for word in normalized:gmatch("([^ ]+)") do
-		self:AddWord(value, word)
+		if not self.wordValues[word] then
+			self.wordValues[word] = {}
+			local words = self.words
+			words[#words + 1] = word
+		end
+		local values = self.wordValues[word]
+		values[#values + 1] = value
 	end
-end
-
----@param value unknown
----@param words string[]
-function FullTextWordIndexPrototype:AddWords(value, words)
-	local wordSet = ns.Util.ListToSet(words)
-	for word in next, wordSet do
-		self:AddWord(value, word)
-	end
-end
-
----@param value unknown
----@param word string
-function FullTextWordIndexPrototype:AddWord(value, word)
-	if not self.wordValues[word] then
-		self.wordValues[word] = {}
-		self.words[#self.words + 1] = word
-	end
-	local values = self.wordValues[word]
-	values[#values + 1] = value
 end
 
 function FullTextWordIndexPrototype:Index()
