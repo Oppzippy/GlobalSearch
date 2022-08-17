@@ -51,14 +51,25 @@ function FullTextWordIndexPrototype:Search(query)
 		end
 	end
 
+	local prevWeight, areAllWeightsEqual = nil, true
 	local results = {}
-	for value in next, weightedResults do
+	for value, weight in next, weightedResults do
 		results[#results + 1] = value
+		if areAllWeightsEqual then
+			if not prevWeight then
+				prevWeight = weight
+			elseif prevWeight ~= weight then
+				areAllWeightsEqual = false
+			end
+		end
 	end
 
-	table.sort(results, function(a, b)
-		return weightedResults[a] > weightedResults[b]
-	end)
+	-- If every value is the same, we don't need to sort
+	if not areAllWeightsEqual then
+		table.sort(results, function(a, b)
+			return weightedResults[a] > weightedResults[b]
+		end)
+	end
 	return results
 end
 
