@@ -82,39 +82,6 @@ function Util.BinarySearch(array, comparator, range)
 	return result
 end
 
-do
-	local function heapify(array, heapSize, i, lessThan)
-		local largest = i
-		local left = i * 2 + 1
-		local right = i * 2 + 2
-
-		if left < heapSize and lessThan(array[largest], array[left]) then
-			largest = left
-		end
-		if right < heapSize and lessThan(array[largest], array[right]) then
-			largest = right
-		end
-		if largest ~= i then
-			array[i], array[largest] = array[largest], array[i]
-			heapify(array, heapSize, largest, lessThan)
-		end
-	end
-
-	---@generic T
-	---@param array T[]
-	---@param lessThan fun(a: T, b: T): boolean
-	function Util.HeapSort(array, lessThan)
-		local heapSize = #array
-		for i = math.floor(heapSize / 2), 1, -1 do
-			heapify(array, heapSize, i, lessThan)
-		end
-		for i = heapSize, 2, -1 do
-			array[i], array[0] = array[0], array[i]
-			heapify(array, i, 0, lessThan)
-		end
-	end
-end
-
 if ns then
 	ns.Util = Util
 end
