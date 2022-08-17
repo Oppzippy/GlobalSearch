@@ -30,14 +30,16 @@ end
 function CombinedSearchContextPrototype:FlattenAndDeduplicate(results)
 	local seen = {}
 	local deduplicated = {}
-	local i = 1
+	-- Outer loop runs very few times so ipairs is fine
 	for _, contextResults in ipairs(results) do
-		for _, result in ipairs(contextResults) do
+		local numContextResults = #contextResults
+		-- Standard for loop for performance
+		for i = 1, numContextResults do
+			local result = contextResults[i]
 			local item = result.item
 			if not seen[item] then
 				seen[item] = true
-				deduplicated[i] = result
-				i = i + 1
+				deduplicated[#deduplicated + 1] = result
 			end
 		end
 	end
