@@ -25,12 +25,12 @@ end
 ---@return unknown[]
 function FullTextSearchContextPrototype:Search(query)
 	if query == "" then return {} end
-
 	local items = {}
 	local results = self.index:Search(query)
-	for i, result in ipairs(results) do
+	local numResults = #results
+	for i = 1, numResults do
 		items[i] = {
-			item = result
+			item = results[i],
 		}
 	end
 	return items
