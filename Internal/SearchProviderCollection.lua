@@ -1,24 +1,9 @@
 ---@class ns
 local ns = select(2, ...)
 
----@class SearchItem
----@field name string
----@field category string
----@field texture number
----@field extraSearchText string
----@field action function
----@field macroText string
----@field pickup function
----@field tooltip fun(limitedTooltip: LimitedTooltip) | string
-
 ---@class SearchProviderCollection
 ---@field providers SearchProvider[]
 local SearchProviderCollectionPrototype = {}
-
----@class SearchProvider
----@field localizedName string
----@field Get fun(): SearchItem[]
----@field optionsTable AceConfigOptionsTable
 
 ---@param providers SearchProvider[]
 ---@return SearchProviderCollection

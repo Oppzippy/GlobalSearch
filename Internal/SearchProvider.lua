@@ -1,0 +1,4 @@
+---@class SearchProvider
+---@field localizedName? string
+---@field optionsTable? AceConfigOptionsTable
+---@field Get fun(): SearchItem[]
