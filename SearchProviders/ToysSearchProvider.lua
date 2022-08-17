@@ -92,8 +92,7 @@ function ToysSearchProvider:Fetch()
 			extraSearchText = tooltipStorage:GetTooltip(function(tooltip)
 				---@cast tooltip LimitedTooltip
 				tooltip:SetToyByItemID(itemID)
-			end
-			),
+			end),
 			category = L.toys,
 			texture = icon,
 			---@param tooltip LimitedTooltip
