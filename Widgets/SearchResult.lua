@@ -9,6 +9,7 @@ local methods = {
 		self.fontString:SetText("")
 		self.categoryFontString:SetText("")
 		self.highlightTexture:Hide()
+		self.mouseoverHighlightTexture:Hide()
 		self.frame:SetAttribute("macrotext", "")
 	end,
 	SetText = function(self, text)
@@ -37,6 +38,16 @@ do
 		frame.obj:Fire("OnPickup")
 	end
 
+	local function onEnter(frame)
+		frame.obj.mouseoverHighlightTexture:Show()
+		frame.obj:Fire("OnEnter")
+	end
+
+	local function onLeave(frame)
+		frame.obj.mouseoverHighlightTexture:Hide()
+		frame.obj:Fire("OnLeave")
+	end
+
 	local function constructor()
 		local frame = CreateFrame("Button", nil, UIParent, "InsecureActionButtonTemplate,BackdropTemplate")
 		frame:Hide()
@@ -51,11 +62,18 @@ do
 		frame:SetScript("OnDragStart", onDragStart)
 		frame:RegisterForClicks("LeftButtonUp")
 		frame:SetAttribute("type", "macro")
+		frame:SetScript("OnEnter", onEnter)
+		frame:SetScript("OnLeave", onLeave)
 
 		local highlightTexture = frame:CreateTexture(nil, "ARTWORK")
 		highlightTexture:SetAllPoints(frame)
 		highlightTexture:SetColorTexture(1, 1, 1, 0.3)
 		highlightTexture:Hide()
+
+		local mouseoverHighlightTexture = frame:CreateTexture(nil, "ARTWORK")
+		mouseoverHighlightTexture:SetAllPoints(frame)
+		mouseoverHighlightTexture:SetColorTexture(1, 1, 1, 0.1)
+		mouseoverHighlightTexture:Hide()
 
 		local textureFrame = CreateFrame("Frame", nil, frame)
 		textureFrame:SetPoint("LEFT", 4, 0)
@@ -87,6 +105,7 @@ do
 			textureFrame = textureFrame,
 			texture = texture,
 			highlightTexture = highlightTexture,
+			mouseoverHighlightTexture = mouseoverHighlightTexture,
 			fontString = fontString,
 			categoryFontString = categoryFontString,
 		}
