@@ -7,3 +7,4 @@
 ---@field macroText? string
 ---@field pickup? function
 ---@field tooltip? fun(limitedTooltip: LimitedTooltip) | string
+---@field hyperlink? string
