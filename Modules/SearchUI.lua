@@ -70,8 +70,8 @@ function SearchUIPrototype:Show()
 	self.widgets.resultsContainer = resultsContainer
 end
 
-function SearchUIPrototype:UpdateTooltip()
-	local item = self:GetSelectedItem()
+---@param item SearchItem
+function SearchUIPrototype:SetTooltip(item)
 	if item and item.tooltip then
 		local tooltipSetter = item.tooltip
 		local tooltipSetterType = type(tooltipSetter)
@@ -84,9 +84,9 @@ function SearchUIPrototype:UpdateTooltip()
 		else
 			error("bad tooltip type: " .. tooltipSetterType)
 		end
-		return
+	else
+		self:HideTooltip()
 	end
-	self:HideTooltip()
 end
 
 ---@param tooltipFunc fun(tooltip: LimitedTooltip)
@@ -119,8 +119,11 @@ end
 function SearchUIPrototype:Hide()
 	if not self.widgets.container then return end
 
-	self:HideTooltip()
+	-- result widgets must be released first to prevent the results'
+	-- OnLeave handler from showing another tooltip after HideTooltip
+	-- is already called
 	self.widgets.container:Release()
+	self:HideTooltip()
 	self.widgets = { results = {} }
 end
 
@@ -176,7 +179,7 @@ function SearchUIPrototype:SetSelection(index)
 		self.selectedIndex = index
 	end
 
-	self:UpdateTooltip()
+	self:SetTooltip(self:GetSelectedItem())
 	self:FireSelectionChange()
 end
 
@@ -233,6 +236,11 @@ function SearchUIPrototype:GetPageBounds()
 	return left, right
 end
 
+---@param enabled boolean
+function SearchUIPrototype:SetShowMouseoverTooltip(enabled)
+	self.showMouseoverTooltip = enabled
+end
+
 function SearchUIPrototype:Render()
 	self.widgets.resultsContainer:ReleaseChildren()
 
@@ -261,6 +269,15 @@ function SearchUIPrototype:Render()
 			resultWidget:SetIsSelected(true)
 		end
 
+		if self.showMouseoverTooltip then
+			resultWidget:SetCallback("OnEnter", function()
+				self:SetTooltip(item)
+			end)
+			resultWidget:SetCallback("OnLeave", function()
+				self:SetTooltip(self:GetSelectedItem())
+			end)
+		end
+
 		self.widgets.resultsContainer:AddChild(resultWidget)
 		self.widgets.results[#self.widgets.results + 1] = resultWidget
 	end
@@ -275,7 +292,7 @@ function SearchUIPrototype:Render()
 	self.widgets.resultsContainer:ResumeLayout()
 	self.widgets.resultsContainer:DoLayout()
 
-	self:UpdateTooltip()
+	self:SetTooltip(self:GetSelectedItem())
 	self.callbacks:Fire("OnRender", self.widgets.results)
 	self:FireSelectionChange()
 end

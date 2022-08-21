@@ -49,6 +49,8 @@ end
 function module:Show()
 	if self:IsVisible() or InCombatLockdown() then return end
 
+	self.searchUI:SetShowMouseoverTooltip(self:GetDB().profile.options.showMouseoverTooltip)
+
 	local items = self.providerCollection:Get()
 	self.searchContext = ns.CombinedSearchContext.Create({
 		ns.ShortTextSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items),

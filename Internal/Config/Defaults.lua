@@ -10,6 +10,7 @@ ns.dbDefaults = {
 	profile = {
 		options = {
 			doesShowKeybindToggle = false,
+			showMouseoverTooltip = true,
 			disabledSearchProviders = {
 				GlobalSearch_Achievements = true,
 			},

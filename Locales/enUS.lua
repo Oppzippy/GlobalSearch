@@ -22,6 +22,7 @@ L.building_achievement_cache = "Building achievement cache. Your frame rate will
 L.rebuild_cache = "Rebuild Cache"
 L.done = "Done"
 L.page_x_of_x = "Page %d of %d"
+L.show_mouseover_tooltip = "Show Mouseover Tooltip"
 
 L.key_bindings = KEY_BINDINGS
 L.general = GENERAL
