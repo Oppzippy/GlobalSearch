@@ -23,6 +23,7 @@ function module:OnInitialize()
 	self.searchUI.RegisterCallback(self, "OnTextChanged")
 	self.searchUI.RegisterCallback(self, "OnSelectionChanged")
 	self.searchUI.RegisterCallback(self, "OnRender")
+	self.searchUI.RegisterCallback(self, "OnHyperlink")
 
 	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnClose", "Hide")
 	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnSelectNextItem")
@@ -186,8 +187,15 @@ function module:Search(query)
 	self.searchUI:SetResults(results)
 end
 
+function module:OnHyperlink(_, item)
+	self:Hyperlink(item)
+end
+
 function module:OnCreateHyperlink()
-	local item = self.searchUI:GetSelectedItem()
+	self:Hyperlink(self.searchUI:GetSelectedItem())
+end
+
+function module:Hyperlink(item)
 	if item then
 		self:Hide()
 		ChatEdit_ActivateChat(ChatFrame1EditBox)
