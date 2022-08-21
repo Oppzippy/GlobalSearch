@@ -58,6 +58,7 @@ function AchievementsSearchProvider:Fetch()
 			tooltip = function(tooltip)
 				tooltip:SetAchievementByID(achievement[1])
 			end,
+			hyperlink = GetAchievementLink(achievement[1]),
 		}
 	end
 	return items
