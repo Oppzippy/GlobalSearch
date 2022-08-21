@@ -132,22 +132,8 @@ function SearchUIPrototype:IsVisible()
 	return self.widgets.container ~= nil
 end
 
-function SearchUIPrototype:SelectNextItem()
-	self:SetSelection(self.selectedIndex + 1)
-end
-
-function SearchUIPrototype:SelectPreviousItem()
-	self:SetSelection(self.selectedIndex - 1)
-end
-
-function SearchUIPrototype:SelectNextPage()
-	local _, rightBound = self:GetPageBounds()
-	self:SetSelection(rightBound + 1)
-end
-
-function SearchUIPrototype:SelectPreviousPage()
-	local leftBound = self:GetPageBounds()
-	self:SetSelection(leftBound - self.resultsPerPage)
+function SearchUIPrototype:SelectPage(page)
+	self:SetSelection((page - 1) * self.resultsPerPage + 1)
 end
 
 ---@param index number
@@ -187,6 +173,10 @@ end
 function SearchUIPrototype:GetSelectedItem()
 	local result = self.results[self.selectedIndex]
 	return result and result.item
+end
+
+function SearchUIPrototype:GetSelectedIndex()
+	return self.selectedIndex
 end
 
 function SearchUIPrototype:FireSelectionChange()

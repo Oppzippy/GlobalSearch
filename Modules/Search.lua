@@ -89,19 +89,19 @@ function module:RegisterKeybindings()
 end
 
 function module:OnSelectNextItem()
-	self.searchUI:SelectNextItem()
+	self.searchUI:SetSelection(self.searchUI:GetSelectedIndex() + 1)
 end
 
 function module:OnSelectPreviousItem()
-	self.searchUI:SelectPreviousItem()
+	self.searchUI:SetSelection(self.searchUI:GetSelectedIndex() + -1)
 end
 
 function module:OnSelectNextPage()
-	self.searchUI:SelectNextPage()
+	self.searchUI:SelectPage(self.searchUI:GetPage() + 1)
 end
 
 function module:OnSelectPreviousPage()
-	self.searchUI:SelectPreviousPage()
+	self.searchUI:SelectPage(self.searchUI:GetPage() - 1)
 end
 
 function module:OnToggle()
