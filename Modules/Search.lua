@@ -123,7 +123,8 @@ function module:OnSelectionChanged(_, item)
 	if not item then return end
 
 	searchExecute:SetAttribute("type", "macro")
-	searchExecute:SetAttribute("macrotext", self:GetMacroText(self.searchUI:GetSelectedItem(), self.searchUI.selectedIndex))
+	searchExecute:SetAttribute("macrotext",
+		self:GetMacroText(self.searchUI:GetSelectedItem(), self.searchUI:GetSelectedIndex()))
 
 	SetOverrideBindingClick(searchExecute, true, "ENTER", "GlobalSearchExecuteButton")
 end
