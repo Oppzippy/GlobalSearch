@@ -9,6 +9,7 @@ local methods = {
 		self.fontString:SetText("")
 		self.categoryFontString:SetText("")
 		self.highlightTexture:Hide()
+		self.frame:SetAttribute("macrotext", "")
 	end,
 	SetText = function(self, text)
 		self.fontString:SetText(text)
@@ -26,6 +27,9 @@ local methods = {
 			self.highlightTexture:Hide()
 		end
 	end,
+	SetMacroText = function(self, macroText)
+		self.frame:SetAttribute("macrotext", macroText)
+	end,
 }
 
 do
@@ -34,7 +38,7 @@ do
 	end
 
 	local function constructor()
-		local frame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
+		local frame = CreateFrame("Button", nil, UIParent, "InsecureActionButtonTemplate,BackdropTemplate")
 		frame:Hide()
 
 		frame.backdropInfo = {
@@ -45,6 +49,8 @@ do
 		frame:EnableMouse(true)
 		frame:RegisterForDrag("LeftButton")
 		frame:SetScript("OnDragStart", onDragStart)
+		frame:RegisterForClicks("LeftButtonUp")
+		frame:SetAttribute("type", "macro")
 
 		local highlightTexture = frame:CreateTexture(nil, "ARTWORK")
 		highlightTexture:SetAllPoints(frame)

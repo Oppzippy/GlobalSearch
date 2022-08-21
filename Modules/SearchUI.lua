@@ -215,10 +215,12 @@ function SearchUIPrototype:SetPage(page)
 	self:Render()
 end
 
+---@return integer
 function SearchUIPrototype:GetPage()
 	return self.page
 end
 
+---@return integer
 function SearchUIPrototype:GetNumPages()
 	return math.ceil(#self.results / self.resultsPerPage)
 end
@@ -274,6 +276,7 @@ function SearchUIPrototype:Render()
 	self.widgets.resultsContainer:DoLayout()
 
 	self:UpdateTooltip()
+	self.callbacks:Fire("OnRender", self.widgets.results)
 	self:FireSelectionChange()
 end
 

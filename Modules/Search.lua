@@ -22,6 +22,7 @@ function module:OnInitialize()
 
 	self.searchUI.RegisterCallback(self, "OnTextChanged")
 	self.searchUI.RegisterCallback(self, "OnSelectionChanged")
+	self.searchUI.RegisterCallback(self, "OnRender")
 
 	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnClose", "Hide")
 	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnSelectNextItem")
@@ -120,21 +121,44 @@ function module:OnSelectionChanged(_, item)
 	if not item then return end
 
 	searchExecute:SetAttribute("type", "macro")
+	searchExecute:SetAttribute("macrotext", self:GetMacroText(self.searchUI:GetSelectedItem(), self.searchUI.selectedIndex))
+
+	SetOverrideBindingClick(searchExecute, true, "ENTER", "GlobalSearchExecuteButton")
+end
+
+function module:OnRender(_, resultWidgets)
+	self.resultActions = {}
+	local leftBound = self.searchUI:GetPageBounds()
+	for i, resultWidget in ipairs(resultWidgets) do
+		local resultIndex = leftBound + i - 1
+		resultWidget:SetMacroText(self:GetMacroText(self.results[resultIndex].item, resultIndex))
+	end
+end
+
+---@param resultIndex integer
+function module:ExecuteAction(resultIndex)
+	local action = self.results[resultIndex].item.action
+	if action then
+		action()
+	end
+end
+
+---@param item SearchItem
+---@param resultIndex integer
+---@return string
+function module:GetMacroText(item, resultIndex)
 	local macroText = {
 		[[/run LibStub("AceAddon-3.0"):GetAddon("GlobalSearch"):GetModule("Search"):Hide()]],
 	}
 	if item.action then
-		macroText[#macroText + 1] = [[/run LibStub("AceAddon-3.0"):GetAddon("GlobalSearch"):GetModule("Search").selectedAction()]]
-		self.selectedAction = item.action
+		macroText[#macroText + 1] = [[/run LibStub("AceAddon-3.0"):GetAddon("GlobalSearch"):GetModule("Search"):ExecuteAction(]]
+			.. resultIndex .. ")"
 	elseif item.macroText then
 		macroText[#macroText + 1] = item.macroText
 	else
-		self:Printf("No action set for %s in %s", item.name, item.category)
-		return
+		error(string.format("No action set for %s in %s", item.name, item.category))
 	end
-	searchExecute:SetAttribute("macrotext", table.concat(macroText, "\n"))
-
-	SetOverrideBindingClick(searchExecute, true, "ENTER", "GlobalSearchExecuteButton")
+	return table.concat(macroText, "\n")
 end
 
 ---@param query string
