@@ -16,10 +16,13 @@ local addon = AceAddon:GetAddon("GlobalSearch")
 ---@field RegisterEvent function
 local module = addon:NewModule("AchievementStorage", "AceEvent-3.0", "AceConsole-3.0")
 
+-- Update when cache structure changes
+local cacheVersion = 2
+
 function module:OnEnable()
 	local cache = self:GetDB().global.cache.achievements
 	local _, _, _, tocVersion = GetBuildInfo()
-	if cache.data and cache.tocVersion == tocVersion then
+	if cache.data and cache.tocVersion == tocVersion and cache.version == cacheVersion then
 		self.achievements = cache.data
 	else
 		self:RebuildCache()
@@ -41,6 +44,7 @@ function module:RebuildCache()
 		local _, _, _, tocVersion = GetBuildInfo()
 		cache.data = achievements
 		cache.tocVersion = tocVersion
+		cache.version = 2
 
 		self:Print(L.done)
 		self.rebuildInProgress = false
@@ -71,13 +75,19 @@ end
 
 function module:IterateAchievements()
 	return coroutine.wrap(function()
+		---@type table<number, boolean>
+		local seenIds = {}
 		local categoryIDs = GetCategoryList()
 		for _, categoryID in next, categoryIDs do
 			for i = 1, GetCategoryNumAchievements(categoryID, false) do
 				local achievement = { GetAchievementInfo(categoryID, i) }
-				coroutine.yield(achievement)
-				for sibling in self:IterateSiblingAchievements(achievement[1]) do
-					coroutine.yield({ GetAchievementInfo(sibling) })
+				if not seenIds[achievement[1]] then
+					seenIds[achievement[1]] = true
+					coroutine.yield(achievement)
+					for siblingId in self:IterateSiblingAchievements(achievement[1]) do
+						seenIds[siblingId] = true
+						coroutine.yield({ GetAchievementInfo(siblingId) })
+					end
 				end
 			end
 		end
