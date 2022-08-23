@@ -1,8 +1,12 @@
 ---@class ns
 local ns = select(2, ...)
 
+local AceAddon = LibStub("AceAddon-3.0")
 local AceLocale = LibStub("AceLocale-3.0")
+
 local L = AceLocale:GetLocale("GlobalSearch")
+local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
+---@cast GlobalSearch GlobalSearch
 
 ---@class InterfaceOptionsSearchProvider : SearchProvider
 local InterfaceOptionsSearchProvider = {
@@ -64,20 +68,24 @@ end
 ---@return SearchItem[]
 function InterfaceOptionsSearchProvider:Fetch()
 	local items = {}
-	for _, optionGroup in ipairs(optionGroups) do
-		for _, option in next, optionGroup.options do
-			if type(_G[option.text]) == "string" then
-				local tooltip = _G["OPTION_TOOLTIP_" .. option.text:gsub("_TEXT$", "")]
-				items[#items + 1] = {
-					name = ns.Util.StripEscapeSequences(_G[option.text]),
-					category = L.interface_options,
-					texture = 136243, -- Interface/Icons/Trade_Engineering
-					tooltip = type(tooltip) == "string" and tooltip,
-					action = function()
-						InterfaceOptionsFrame_OpenToCategory(optionGroup.panel)
-					end,
-				}
+	for i, optionGroup in ipairs(optionGroups) do
+		if optionGroup.panel and optionGroup.options then
+			for _, option in next, optionGroup.options do
+				if type(_G[option.text]) == "string" then
+					local tooltip = _G["OPTION_TOOLTIP_" .. option.text:gsub("_TEXT$", "")]
+					items[#items + 1] = {
+						name = ns.Util.StripEscapeSequences(_G[option.text]),
+						category = L.interface_options,
+						texture = 136243, -- Interface/Icons/Trade_Engineering
+						tooltip = type(tooltip) == "string" and tooltip,
+						action = function()
+							InterfaceOptionsFrame_OpenToCategory(optionGroup.panel)
+						end,
+					}
+				end
 			end
+		else
+			GlobalSearch:Printf("InterfaceOptionsSearchProvider: Option group #%d doesn't exist. Please report this issue.", i)
 		end
 	end
 	return items
