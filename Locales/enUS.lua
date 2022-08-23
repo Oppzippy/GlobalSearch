@@ -42,3 +42,4 @@ L.character_info = CHARACTER_BUTTON
 L.open_all_bags = BINDING_NAME_OPENALLBAGS
 L.spells = SPELLS
 L.macros = MACROS
+L.interface_options = INTERFACE_OPTIONS
