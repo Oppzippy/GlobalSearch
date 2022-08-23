@@ -12,5 +12,6 @@
 	<Script file="EquipmentSetsSearchProvider.lua" />
 	<Script file="AchievementsProvider.lua" />
 	<Script file="SecureSlashCommands.lua" />
+	<Script file="InterfaceOptions.lua" />
 	<Script file="InterfaceOptionsSearchProvider.lua" />
 </Ui>

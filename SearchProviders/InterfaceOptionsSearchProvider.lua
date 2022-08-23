@@ -13,49 +13,6 @@ local InterfaceOptionsSearchProvider = {
 	localizedName = L.interface_options,
 }
 
-local optionGroups = {
-	{
-		panel = InterfaceOptionsControlsPanel,
-		options = ControlsPanelOptions,
-	},
-	{
-		panel = InterfaceOptionsCombatPanel,
-		options = CombatPanelOptions,
-	},
-	{
-		panel = InterfaceOptionsDisplayPanel,
-		options = DisplayPanelOptions,
-	},
-	{
-		panel = InterfaceOptionsSocialPanel,
-		options = SocialPanelOptions,
-	},
-	{
-		panel = InterfaceOptionsActionBarsPanel,
-		options = ActionBarsPanelOptions,
-	},
-	{
-		panel = InterfaceOptionsNamesPanel,
-		options = NamePanelOptions,
-	},
-	{
-		panel = InterfaceOptionsCameraPanel,
-		options = CameraPanelOptions,
-	},
-	{
-		panel = InterfaceOptionsMousePanel,
-		options = MousePanelOptions,
-	},
-	{
-		panel = InterfaceOptionsAccessibilityPanel,
-		options = AccessibilityPanelOptions,
-	},
-	{
-		panel = InterfaceOptionsColorblindPanel,
-		options = ColorblindPanelOptions,
-	},
-}
-
 ---@return SearchItem[]
 function InterfaceOptionsSearchProvider:Get()
 	if not self.cache then
@@ -68,8 +25,8 @@ end
 ---@return SearchItem[]
 function InterfaceOptionsSearchProvider:Fetch()
 	local items = {}
-	for i, optionGroup in ipairs(optionGroups) do
-		if optionGroup.panel and optionGroup.options then
+	for i, optionGroup in ipairs(self:GetInterfaceOptionsPanels()) do
+		if optionGroup.frame and optionGroup.options then
 			for _, option in next, optionGroup.options do
 				if type(_G[option.text]) == "string" then
 					local tooltip = _G["OPTION_TOOLTIP_" .. option.text:gsub("_TEXT$", "")]
@@ -79,7 +36,7 @@ function InterfaceOptionsSearchProvider:Fetch()
 						texture = 136243, -- Interface/Icons/Trade_Engineering
 						tooltip = type(tooltip) == "string" and tooltip,
 						action = function()
-							InterfaceOptionsFrame_OpenToCategory(optionGroup.panel)
+							InterfaceOptionsFrame_OpenToCategory(optionGroup.frame)
 						end,
 					}
 				end
@@ -89,6 +46,11 @@ function InterfaceOptionsSearchProvider:Fetch()
 		end
 	end
 	return items
+end
+
+function InterfaceOptionsSearchProvider:GetInterfaceOptionsPanels()
+	local expansion = GetClientDisplayExpansionLevel()
+	return ns.InterfaceOptionsPanels[expansion] or ns.InterfaceOptionsPanels.default
 end
 
 GlobalSearchAPI:RegisterProvider("GlobalSearch_DefaultUIPanels", InterfaceOptionsSearchProvider)

@@ -1,4 +1,4 @@
-name: Update Secure Slash Commands
+name: Update Generated Files
 
 on: workflow_dispatch
 
@@ -16,5 +16,21 @@ jobs:
           branch: actions/update-secure-slash-commands
           title: Update secure slash commands
           commit-message: Update secure slash commands
+          labels: chore
+          delete-branch: true
+
+  update-interface-options:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Update interface options
+        run: ./Automation/update-interface-options.py > SearchProviders/InterfaceOptions.lua
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          branch: actions/update-interface-options
+          title: Update interface options
+          commit-message: Update interface options
           labels: chore
           delete-branch: true
