@@ -7,7 +7,8 @@ local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
 ---@cast GlobalSearch GlobalSearch
-local AchievementStorage = GlobalSearch:GetModule("AchievementStorage")
+local AchievementStorage = GlobalSearch:GetModule("AchievementStorage", true)
+if not AchievementStorage then return end
 ---@cast AchievementStorage AchievementStorageModule
 
 ---@class AchievementsSearchProvider : SearchProvider

@@ -1,3 +1,6 @@
+-- Disable on classic
+if not GetAchievementInfo then return end
+
 ---@class ns
 local ns = select(2, ...)
 
