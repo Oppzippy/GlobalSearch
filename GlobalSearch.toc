@@ -12,6 +12,7 @@
 ## X-WoWI-ID: 26354
 
 Libs.xml
+Generated\Include.xml
 Locales\Include.xml
 Widgets\Include.xml
 Internal\Include.xml
