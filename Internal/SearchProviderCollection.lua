@@ -18,9 +18,11 @@ end
 function SearchProviderCollectionPrototype:Get()
 	local items = {}
 	for _, provider in ipairs(self.providers) do
-		local itemGroup = provider:Get()
-		for _, item in ipairs(itemGroup) do
-			items[#items + 1] = item
+		local success, itemGroup = xpcall(provider.Get, geterrorhandler(), provider)
+		if success then
+			for _, item in ipairs(itemGroup) do
+				items[#items + 1] = item
+			end
 		end
 	end
 	return items
