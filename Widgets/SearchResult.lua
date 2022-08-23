@@ -89,8 +89,8 @@ do
 		local texture = textureFrame:CreateTexture(nil, "OVERLAY")
 		texture:SetAllPoints(textureFrame)
 
-		local isMasqueEnabled, Masque = pcall(LibStub, "Masque")
-		if isMasqueEnabled then
+		local Masque = LibStub("Masque", true)
+		if Masque then
 			local group = Masque:Group("GlobalSearch", "Search Results")
 			group:AddButton(textureFrame, { Icon = texture })
 		end
