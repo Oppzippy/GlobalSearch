@@ -10,6 +10,6 @@
 	<Script file="EmotesSearchProvider.lua" />
 	<Script file="BagsSearchProvider.lua" />
 	<Script file="EquipmentSetsSearchProvider.lua" />
-	<Script file="AchievementsProvider.lua" />
+	<Script file="AchievementsSearchProvider.lua" />
 	<Script file="InterfaceOptionsSearchProvider.lua" />
 </Ui>
