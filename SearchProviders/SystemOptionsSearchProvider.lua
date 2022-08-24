@@ -1,12 +1,9 @@
 ---@class ns
 local ns = select(2, ...)
 
-local AceAddon = LibStub("AceAddon-3.0")
 local AceLocale = LibStub("AceLocale-3.0")
 
 local L = AceLocale:GetLocale("GlobalSearch")
-local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
----@cast GlobalSearch GlobalSearch
 
 ---@class SystemOptionsSearchProvider : SearchProvider
 local SystemOptionsSearchProvider = {
