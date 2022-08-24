@@ -17,4 +17,4 @@ externals:
 ignore:
   - README.md
   - Tests
-  - Automation
+  - Scripts

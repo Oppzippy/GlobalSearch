@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Update secure slash commands
-        run: ./Automation/update-secure-slash-commands.sh > Generated/SecureSlashCommands.lua
+        run: ./Scripts/update-secure-slash-commands.sh > Generated/SecureSlashCommands.lua
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Update interface options
-        run: ./Automation/update-interface-options.py > Generated/InterfaceOptions.lua
+        run: ./Scripts/update-interface-options.py > Generated/InterfaceOptions.lua
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
