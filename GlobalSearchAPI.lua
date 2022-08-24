@@ -1,4 +1,3 @@
----@class ns
 local AceAddon = LibStub("AceAddon-3.0")
 ---@class GlobalSearch
 local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
