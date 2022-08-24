@@ -23,6 +23,7 @@ L.rebuild_cache = "Rebuild Cache"
 L.done = "Done"
 L.page_x_of_x = "Page %d of %d"
 L.show_mouseover_tooltip = "Show Mouseover Tooltip"
+L.system_options = "System Options"
 
 L.key_bindings = KEY_BINDINGS
 L.general = GENERAL

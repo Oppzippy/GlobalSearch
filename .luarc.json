@@ -73,6 +73,11 @@
 		"InterfaceOptionsNamesPanel",
 		"ChatEdit_ActivateChat",
 		"ChatFrame1EditBox",
-		"WorldFrame"
+		"WorldFrame",
+		"VideoData",
+		"GRAPHICS_LABEL",
+		"ADVANCED_LABEL",
+		"VideoOptionsFrame",
+		"OptionsFrame_OpenToCategory"
 	]
 }

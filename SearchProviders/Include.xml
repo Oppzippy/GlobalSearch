@@ -12,4 +12,5 @@
 	<Script file="EquipmentSetsSearchProvider.lua" />
 	<Script file="AchievementsSearchProvider.lua" />
 	<Script file="InterfaceOptionsSearchProvider.lua" />
+	<Script file="SystemOptionsSearchProvider.lua" />
 </Ui>
