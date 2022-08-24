@@ -53,4 +53,4 @@ function InterfaceOptionsSearchProvider:GetInterfaceOptionsPanels()
 	return ns.InterfaceOptionsPanels[expansion] or ns.InterfaceOptionsPanels.default
 end
 
-GlobalSearchAPI:RegisterProvider("GlobalSearch_DefaultUIPanels", InterfaceOptionsSearchProvider)
+GlobalSearchAPI:RegisterProvider("GlobalSearch_InterfaceOptions", InterfaceOptionsSearchProvider)

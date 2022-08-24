@@ -15,6 +15,9 @@ end
 ---@param name string
 ---@param provider SearchProvider
 function SearchProviderRegistryPrototype:Register(name, provider)
+	if self.providers[name] then
+		error(string.format("A search provider named %s is already registered.", name))
+	end
 	self.providers[name] = provider
 end
 
