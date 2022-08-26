@@ -13,4 +13,5 @@
 	<Script file="AchievementsSearchProvider.lua" />
 	<Script file="InterfaceOptionsSearchProvider.lua" />
 	<Script file="SystemOptionsSearchProvider.lua" />
+	<Script file="EncounterJournalSearchProvider.lua" />
 </Ui>

@@ -24,6 +24,7 @@ L.done = "Done"
 L.page_x_of_x = "Page %d of %d"
 L.show_mouseover_tooltip = "Show Mouseover Tooltip"
 L.system_options = "System Options"
+L.boss_from_instance = "%s (%s)"
 
 L.key_bindings = KEY_BINDINGS
 L.general = GENERAL
@@ -44,3 +45,4 @@ L.open_all_bags = BINDING_NAME_OPENALLBAGS
 L.spells = SPELLS
 L.macros = MACROS
 L.interface_options = INTERFACE_OPTIONS
+L.encounter_journal = ENCOUNTER_JOURNAL
