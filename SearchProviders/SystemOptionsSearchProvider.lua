@@ -7,7 +7,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class SystemOptionsSearchProvider : SearchProvider
 local SystemOptionsSearchProvider = {
-	localizedName = L.interface_options,
+	localizedName = L.system_options,
 }
 
 ---@return SearchItem[]
