@@ -18,6 +18,15 @@ function UIPanelsSearchProvider:Get()
 	return self.cache
 end
 
+---@param atlas string
+---@return fun(texture: Texture)
+local function createAtlasTextureSetter(atlas)
+	---@param texture Texture
+	return function(texture)
+		texture:SetAtlas(atlas)
+	end
+end
+
 ---@return SearchItem[]
 function UIPanelsSearchProvider:Fetch()
 	-- TODO
@@ -26,7 +35,7 @@ function UIPanelsSearchProvider:Fetch()
 		{
 			name = L.game_menu,
 			category = L.ui_panels,
-			texture = 130801, -- Interface/Buttons/UI-MICROBUTTON-MAINMENU-UP
+			texture = createAtlasTextureSetter("hud-microbutton-MainMenu-Up"),
 			action = function()
 				if GameMenuFrame:IsVisible() then
 					PlaySound(SOUNDKIT.IG_MAINMENU_QUIT)
@@ -40,7 +49,7 @@ function UIPanelsSearchProvider:Fetch()
 		{
 			name = L.adventure_guide,
 			category = L.ui_panels,
-			texture = 525019, -- Interface/Buttons/UI-MicroButton-EJ-Up
+			texture = createAtlasTextureSetter("hud-microbutton-EJ-Up"),
 			action = function()
 				ToggleEncounterJournal()
 			end,
@@ -48,7 +57,7 @@ function UIPanelsSearchProvider:Fetch()
 		{
 			name = L.collections,
 			category = L.ui_panels,
-			texture = 615164, -- Interface/Buttons/UI-MicroButton-Mounts-Up
+			texture = createAtlasTextureSetter("hud-microbutton-Mounts-Up"),
 			action = function()
 				ToggleCollectionsJournal()
 			end,
@@ -56,7 +65,7 @@ function UIPanelsSearchProvider:Fetch()
 		{
 			name = L.group_finder,
 			category = L.ui_panels,
-			texture = 130798, -- Interface/Buttons/UI-MicroButton-LFG-Up
+			texture = createAtlasTextureSetter("hud-microbutton-LFG-Up"),
 			action = function()
 				PVEFrame_ToggleFrame()
 			end,
@@ -64,7 +73,7 @@ function UIPanelsSearchProvider:Fetch()
 		{
 			name = L.guilds_and_communities,
 			category = L.ui_panels,
-			texture = 440546, -- Interface/Buttons/UI-MicroButton-Guild-Banner
+			texture = createAtlasTextureSetter("hud-microbutton-Guild-Banner"),
 			action = function()
 				ToggleGuildFrame()
 			end,
@@ -72,7 +81,7 @@ function UIPanelsSearchProvider:Fetch()
 		{
 			name = L.quest_log,
 			category = L.ui_panels,
-			texture = 130804, -- Interface/Buttons/UI-MICROBUTTON-QUEST-UP
+			texture = createAtlasTextureSetter("hud-microbutton-Quest-Up"),
 			action = function()
 				ToggleQuestLog()
 			end,
@@ -88,7 +97,7 @@ function UIPanelsSearchProvider:Fetch()
 		{
 			name = L.achievements,
 			category = L.ui_panels,
-			texture = 235422, -- Interface/Buttons/UI-MicroButton-Achievement-Up
+			texture = createAtlasTextureSetter("hud-microbutton-Achievement-Up"),
 			action = function()
 				ToggleAchievementFrame()
 			end,
@@ -96,7 +105,7 @@ function UIPanelsSearchProvider:Fetch()
 		{
 			name = L.specialization_and_talents,
 			category = L.ui_panels,
-			texture = 130786, -- Interface/Buttons/UI-MicroButton-Abilities-Up
+			texture = createAtlasTextureSetter("hud-microbutton-Talents-Up"),
 			action = function()
 				ToggleTalentFrame()
 			end,
@@ -104,7 +113,7 @@ function UIPanelsSearchProvider:Fetch()
 		{
 			name = L.spellbook_and_abilities,
 			category = L.ui_panels,
-			texture = 130810, -- Interface/Buttons/UI-MicroButton-Spellbook-Up
+			texture = createAtlasTextureSetter("hud-microbutton-Spellbook-Up"),
 			action = function()
 				ToggleSpellBook("spell")
 			end,
@@ -114,7 +123,9 @@ function UIPanelsSearchProvider:Fetch()
 			category = L.ui_panels,
 			-- SetPortraitTexture should ideally be used to match the default UI, but that adds complication for a single case.
 			-- A basic sword texture will suffice.
-			texture = 135349, -- Interface/Icons/INV_Sword_39
+			texture = function(texture)
+				SetPortraitTexture(texture, "player")
+			end,
 			action = function()
 				ToggleCharacter("PaperDollFrame")
 			end,
@@ -122,7 +133,11 @@ function UIPanelsSearchProvider:Fetch()
 		{
 			name = L.calendar,
 			category = L.ui_panels,
-			texture = 986189, -- Interface/Calendar/Calendar
+			---@param texture Texture
+			texture = function(texture)
+				texture:SetTexture("Interface\\Calendar\\UI-Calendar-Button")
+				texture:SetTexCoord(0, 0.390625, 0, 0.78125)
+			end,
 			action = function()
 				ToggleCalendar()
 			end,

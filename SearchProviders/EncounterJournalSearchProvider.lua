@@ -31,7 +31,16 @@ function EncounterJournalSearchProvider:Fetch()
 				name = L.boss_from_instance:format(encounterInfo.name, instanceInfo.name),
 				extraSearchText = encounterInfo.description,
 				category = L.encounter_journal,
-				texture = bossImage or instanceInfo.buttonImage2,
+				---@param texture Texture
+				texture = function(texture)
+					if bossImage then
+						texture:SetTexture(bossImage)
+						-- 2:1 aspect ratio
+						texture:SetTexCoord(0.25, 0.75, 0, 1)
+					else
+						texture:SetTexture(instanceInfo.buttonImage2)
+					end
+				end,
 				action = function()
 					EncounterJournal_LoadUI()
 

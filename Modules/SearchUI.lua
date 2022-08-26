@@ -247,7 +247,11 @@ function SearchUIPrototype:Render()
 			resultWidget:SetText(item.name)
 		end
 		resultWidget:SetCategory(item.category)
-		resultWidget:SetTexture(item.texture)
+		if type(item.texture) == "function" then
+			item.texture(resultWidget:GetTexture())
+		else
+			resultWidget:SetTexture(item.texture)
+		end
 		if item.pickup then
 			resultWidget:SetCallback("OnPickup", item.pickup)
 		end

@@ -1,7 +1,7 @@
 ---@class SearchItem
 ---@field name string
 ---@field category string
----@field texture number
+---@field texture number|string|function
 ---@field extraSearchText? string
 ---@field action? function
 ---@field macroText? string

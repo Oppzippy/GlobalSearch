@@ -5,7 +5,28 @@ local AceGUI = LibStub("AceGUI-3.0")
 local methods = {
 	OnAcquire = function(self)
 		self.frame:SetSize(350, 40)
+
+		-- This texture is provided to consumers of the api, so everything that can be modified (within reason)
+		-- should be reset. It's necessary to pass the actual texture rather than a read only view of it like
+		-- LimitedTooltip for functions such as SetPortraitTexture.
+		self.texture:SetAllPoints(self.textureFrame)
+		self.texture:SetParent(self.textureFrame)
 		self.texture:SetTexture(0)
+		self.texture:SetTexCoord(0, 1, 0, 1)
+		self.texture:SetBlendMode("BLEND")
+		self.texture:SetVertTile(false)
+		self.texture:SetHorizTile(false)
+		self.texture:SetDesaturated(false)
+		self.texture:SetVertexColor(1, 1, 1, 1)
+		self.texture:SetRotation(0)
+		self.texture:SetSnapToPixelGrid()
+		self.texture:SetNonBlocking(true)
+		self.texture:SetVertexOffset(1, 0, 0)
+		self.texture:SetVertexOffset(2, 0, 0)
+		self.texture:SetVertexOffset(3, 0, 0)
+		self.texture:SetVertexOffset(4, 0, 0)
+		self.texture:Show()
+
 		self.fontString:SetText("")
 		self.categoryFontString:SetText("")
 		self.highlightTexture:Hide()
@@ -20,6 +41,9 @@ local methods = {
 	end,
 	SetTexture = function(self, texture)
 		self.texture:SetTexture(texture)
+	end,
+	GetTexture = function(self)
+		return self.texture
 	end,
 	SetIsSelected = function(self, isSelected)
 		if isSelected then
@@ -87,7 +111,6 @@ do
 		textureFrame:SetSize(32, 32)
 
 		local texture = textureFrame:CreateTexture(nil, "OVERLAY")
-		texture:SetAllPoints(textureFrame)
 
 		local Masque = LibStub("Masque", true)
 		if Masque then
