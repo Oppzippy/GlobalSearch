@@ -19,7 +19,7 @@ jobs:
       - name: Install luaunit
         run: sudo luarocks install luaunit
       - name: Run tests
-        run: lua Tests/Test.lua
+        run: ./Scripts/test.sh
       - name: Package and release
         uses: BigWigsMods/packager@v2
         env:
