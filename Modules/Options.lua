@@ -117,6 +117,7 @@ function module:RenderProviderEnableOption(name, provider)
 	return {
 		type = "toggle",
 		name = provider.localizedName or name,
+		desc = provider.description,
 		order = self.numProviders,
 	}
 end
