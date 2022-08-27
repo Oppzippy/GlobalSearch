@@ -7,6 +7,8 @@ GlobalSearchAPI = {}
 ---@param name string
 ---@param provider SearchProvider
 function GlobalSearchAPI:RegisterProvider(name, provider)
+	assert(type(name) == "string", "name must be a string")
+	assert(type(provider) == "table", "provider must be a table")
 	GlobalSearch:RegisterSearchProvider(name, provider)
 end
 
