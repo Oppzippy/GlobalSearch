@@ -26,6 +26,18 @@ L.show_mouseover_tooltip = "Show Mouseover Tooltip"
 L.system_options = "System Options"
 L.boss_from_instance = "%s (%s)"
 
+L.achievements_search_provider_desc = "Provides all achievements. Includes earned, unearned, and achievements further in chains that aren't visible in the UI yet."
+L.bags_search_provider_desc = "Provides all usable items in bags."
+L.encounter_journal_search_provider_desc = "Provides all dungeon and raid bosses from the dungeon journal."
+L.interface_options_search_provider_desc = "Provides all options in Game Menu > Interface > Game. Selecting an option will open its options tab."
+L.mounts_search_provider_desc = "Provides all known mounts."
+L.pets_search_provider_desc = "Provides all known pets."
+L.slash_commands_search_provider = "Provides all slash commands. When a command is selected, it will be run as is with no arguments. It is not possible to pass any arguments to the command when running it through GlobalSearch."
+L.spells_search_provider = "Provides all usable spells."
+L.system_options_search_provider = "Provides all options from Game Menu > System."
+L.toys_search_provider = "Provides all known toys."
+L.ui_panels_search_provider = "Provides various UI panels from the base UI."
+
 L.key_bindings = KEY_BINDINGS
 L.general = GENERAL
 L.show = SHOW

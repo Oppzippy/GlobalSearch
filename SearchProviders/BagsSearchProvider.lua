@@ -12,6 +12,7 @@ local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
 ---@class BagsSearchProvider : SearchProvider, AceEvent-3.0
 local BagsSearchProvider = {
 	localizedName = L.bags,
+	description = L.bags_search_provider_desc,
 }
 AceEvent:Embed(BagsSearchProvider)
 

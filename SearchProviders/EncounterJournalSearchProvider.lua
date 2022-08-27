@@ -7,6 +7,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 ---@class EncounterJournalSearchProvider : SearchProvider
 local EncounterJournalSearchProvider = {
 	localizedName = L.encounter_journal,
+	description = L.encounter_journal_search_provider_desc,
 }
 
 ---@return SearchItem[]

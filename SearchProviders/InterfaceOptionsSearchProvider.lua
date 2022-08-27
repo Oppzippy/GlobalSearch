@@ -11,6 +11,7 @@ local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
 ---@class InterfaceOptionsSearchProvider : SearchProvider
 local InterfaceOptionsSearchProvider = {
 	localizedName = L.interface_options,
+	description = L.interface_options_search_provider_desc,
 }
 
 ---@return SearchItem[]
