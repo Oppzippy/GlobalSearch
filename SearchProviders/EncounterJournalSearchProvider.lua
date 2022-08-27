@@ -30,7 +30,6 @@ function EncounterJournalSearchProvider:Fetch()
 			items[#items + 1] = {
 				name = L.boss_from_instance:format(encounterInfo.name, instanceInfo.name),
 				extraSearchText = encounterInfo.description,
-				category = L.encounter_journal,
 				---@param texture Texture
 				texture = function(texture)
 					if bossImage then

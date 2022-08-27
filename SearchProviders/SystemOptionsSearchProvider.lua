@@ -50,7 +50,6 @@ do
 					local panelName = prefixToPanelName[prefix]
 					coroutine.yield({
 						name = option.name,
-						category = L.system_options,
 						texture = 136243, -- Interface/Icons/Trade_Engineering
 						tooltip = option.tooltip or option.description,
 						action = function()
@@ -82,7 +81,6 @@ function SystemOptionsSearchProvider:GetOptionsFromCategoryFrame(categoryFrame)
 				local tooltip = _G["OPTION_TOOLTIP_" .. option.text:gsub("_TEXT$", "")]
 				coroutine.yield({
 					name = ns.Util.StripEscapeSequences(_G[option.text]),
-					category = L.system_options,
 					texture = 136243, -- Interface/Icons/Trade_Engineering
 					tooltip = type(tooltip) == "string" and tooltip,
 					action = function()

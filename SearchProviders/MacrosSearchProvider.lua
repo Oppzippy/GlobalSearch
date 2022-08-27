@@ -44,7 +44,6 @@ function MacrosSearchProvider:GetItemByMacroIndex(index)
 	local name, icon, body = GetMacroInfo(index)
 	return {
 		name = name,
-		category = L.macros,
 		texture = icon,
 		macroText = body,
 		pickup = function()

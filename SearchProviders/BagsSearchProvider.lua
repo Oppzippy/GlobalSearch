@@ -38,7 +38,6 @@ function BagsSearchProvider:Fetch()
 			items[#items + 1] = {
 				name = itemName,
 				extraSearchText = tooltipStorage:GetTooltip(itemLink),
-				category = L.bags,
 				texture = icon,
 				macroText = "/use " .. itemName,
 				---@param tooltip LimitedTooltip

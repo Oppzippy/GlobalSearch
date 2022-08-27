@@ -51,7 +51,6 @@ function SpellsSearchProvider:Fetch()
 
 			items[#items + 1] = {
 				name = displayName,
-				category = L.spells,
 				texture = icon,
 				extraSearchText = description,
 				---@param tooltip LimitedTooltip

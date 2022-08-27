@@ -35,7 +35,6 @@ function EquipmentSetsSearchProvider:Fetch()
 		local setName, icon = C_EquipmentSet.GetEquipmentSetInfo(setID)
 		items[#items + 1] = {
 			name = setName,
-			category = L.equipment_sets,
 			texture = icon,
 			---@param tooltip LimitedTooltip
 			tooltip = function(tooltip)

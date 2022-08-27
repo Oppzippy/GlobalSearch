@@ -47,7 +47,6 @@ function AchievementsSearchProvider:Fetch()
 	for _, achievement in next, achievements do
 		items[#items + 1] = {
 			name = achievement[2],
-			category = L.achievements,
 			texture = achievement[10],
 			extraSearchText = achievement[8],
 			action = function()

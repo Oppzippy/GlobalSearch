@@ -93,7 +93,6 @@ function ToysSearchProvider:Fetch()
 				---@cast tooltip LimitedTooltip
 				tooltip:SetToyByItemID(itemID)
 			end),
-			category = L.toys,
 			texture = icon,
 			---@param tooltip LimitedTooltip
 			tooltip = function(tooltip)

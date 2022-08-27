@@ -15,6 +15,8 @@ end
 ---@param name string
 ---@param provider SearchProvider
 function SearchProviderRegistryPrototype:Register(name, provider)
+	assert(type(provider.Get) == "function", "SearchProvider must have a Get function")
+	assert(type(provider.localizedName) == "string", "SearchProvider must have a localizedName string")
 	if self.providers[name] then
 		error(string.format("A search provider named %s is already registered.", name))
 	end

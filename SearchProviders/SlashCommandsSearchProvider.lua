@@ -40,7 +40,6 @@ function SlashCommandsSearchProvider:Fetch()
 	for command in next, commands do
 		items[#items + 1] = {
 			name = command:lower(),
-			category = L.slash_commands,
 			texture = 136243, -- Interface/Icons/Trade_Engineering
 			macroText = command,
 		}

@@ -32,7 +32,6 @@ function InterfaceOptionsSearchProvider:Fetch()
 					local tooltip = _G["OPTION_TOOLTIP_" .. option.text:gsub("_TEXT$", "")]
 					items[#items + 1] = {
 						name = ns.Util.StripEscapeSequences(_G[option.text]),
-						category = L.interface_options,
 						texture = 136243, -- Interface/Icons/Trade_Engineering
 						tooltip = type(tooltip) == "string" and tooltip,
 						action = function()

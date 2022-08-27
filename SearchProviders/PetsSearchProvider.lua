@@ -90,7 +90,6 @@ function PetsSearchProvider:Fetch()
 			items[#items + 1] = {
 				name = name,
 				extraSearchText = string.format("%s %s", source, description),
-				category = L.pets,
 				texture = icon,
 				---@param tooltip LimitedTooltip
 				tooltip = function(tooltip)

@@ -34,7 +34,6 @@ function UIPanelsSearchProvider:Fetch()
 	return {
 		{
 			name = L.game_menu,
-			category = L.ui_panels,
 			texture = createAtlasTextureSetter("hud-microbutton-MainMenu-Up"),
 			action = function()
 				if GameMenuFrame:IsVisible() then
@@ -48,7 +47,6 @@ function UIPanelsSearchProvider:Fetch()
 		},
 		{
 			name = L.adventure_guide,
-			category = L.ui_panels,
 			texture = createAtlasTextureSetter("hud-microbutton-EJ-Up"),
 			action = function()
 				ToggleEncounterJournal()
@@ -56,7 +54,6 @@ function UIPanelsSearchProvider:Fetch()
 		},
 		{
 			name = L.collections,
-			category = L.ui_panels,
 			texture = createAtlasTextureSetter("hud-microbutton-Mounts-Up"),
 			action = function()
 				ToggleCollectionsJournal()
@@ -64,7 +61,6 @@ function UIPanelsSearchProvider:Fetch()
 		},
 		{
 			name = L.group_finder,
-			category = L.ui_panels,
 			texture = createAtlasTextureSetter("hud-microbutton-LFG-Up"),
 			action = function()
 				PVEFrame_ToggleFrame()
@@ -72,7 +68,6 @@ function UIPanelsSearchProvider:Fetch()
 		},
 		{
 			name = L.guilds_and_communities,
-			category = L.ui_panels,
 			texture = createAtlasTextureSetter("hud-microbutton-Guild-Banner"),
 			action = function()
 				ToggleGuildFrame()
@@ -80,7 +75,6 @@ function UIPanelsSearchProvider:Fetch()
 		},
 		{
 			name = L.quest_log,
-			category = L.ui_panels,
 			texture = createAtlasTextureSetter("hud-microbutton-Quest-Up"),
 			action = function()
 				ToggleQuestLog()
@@ -88,7 +82,6 @@ function UIPanelsSearchProvider:Fetch()
 		},
 		{
 			name = L.world_map,
-			category = L.ui_panels,
 			texture = 137176, -- Interface/WorldMap/UI-World-Icon
 			action = function()
 				ToggleWorldMap()
@@ -96,7 +89,6 @@ function UIPanelsSearchProvider:Fetch()
 		},
 		{
 			name = L.achievements,
-			category = L.ui_panels,
 			texture = createAtlasTextureSetter("hud-microbutton-Achievement-Up"),
 			action = function()
 				ToggleAchievementFrame()
@@ -104,7 +96,6 @@ function UIPanelsSearchProvider:Fetch()
 		},
 		{
 			name = L.specialization_and_talents,
-			category = L.ui_panels,
 			texture = createAtlasTextureSetter("hud-microbutton-Talents-Up"),
 			action = function()
 				ToggleTalentFrame()
@@ -112,7 +103,6 @@ function UIPanelsSearchProvider:Fetch()
 		},
 		{
 			name = L.spellbook_and_abilities,
-			category = L.ui_panels,
 			texture = createAtlasTextureSetter("hud-microbutton-Spellbook-Up"),
 			action = function()
 				ToggleSpellBook("spell")
@@ -120,7 +110,6 @@ function UIPanelsSearchProvider:Fetch()
 		},
 		{
 			name = L.character_info,
-			category = L.ui_panels,
 			-- SetPortraitTexture should ideally be used to match the default UI, but that adds complication for a single case.
 			-- A basic sword texture will suffice.
 			texture = function(texture)
@@ -132,7 +121,6 @@ function UIPanelsSearchProvider:Fetch()
 		},
 		{
 			name = L.calendar,
-			category = L.ui_panels,
 			---@param texture Texture
 			texture = function(texture)
 				texture:SetTexture("Interface\\Calendar\\UI-Calendar-Button")
@@ -144,7 +132,6 @@ function UIPanelsSearchProvider:Fetch()
 		},
 		{
 			name = L.open_all_bags,
-			category = L.ui_panels,
 			texture = 130716, -- Interface/Buttons/Button-Backpack-Up
 			action = function()
 				ToggleAllBags()

@@ -26,7 +26,6 @@ function EmotesSearchProvider:Fetch()
 		local readableName = cmd:sub(2, 2) .. cmd:sub(3):lower()
 		items[#items + 1] = {
 			name = readableName,
-			category = L.emotes,
 			texture = 1019848, -- Interface/GossipFrame/ChatBubbleGossipIcon
 			action = function()
 				DoEmote(emote)

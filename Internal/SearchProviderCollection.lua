@@ -21,7 +21,11 @@ function SearchProviderCollectionPrototype:Get()
 		local success, itemGroup = xpcall(provider.Get, geterrorhandler and geterrorhandler() or print, provider)
 		if success then
 			for _, item in ipairs(itemGroup) do
-				items[#items + 1] = item
+				items[#items + 1] = setmetatable({
+					category = provider.localizedName,
+				}, {
+					__index = item,
+				})
 			end
 		end
 	end
