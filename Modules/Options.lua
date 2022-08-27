@@ -4,6 +4,7 @@ local ns = select(2, ...)
 local AceAddon = LibStub("AceAddon-3.0")
 local AceLocale = LibStub("AceLocale-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 
 local L = AceLocale:GetLocale("GlobalSearch")
 
@@ -126,7 +127,7 @@ end
 function module:RenderProviderOptions(name, provider)
 	local optionsTable = provider.optionsTable
 	if optionsTable then
-		return {
+		local options = {
 			type = "group",
 			name = provider.localizedName or name,
 			order = self.numProviders,
@@ -136,6 +137,14 @@ function module:RenderProviderOptions(name, provider)
 			args = optionsTable.args,
 			plugins = optionsTable.plugins,
 		}
+		local success, error = pcall(function()
+			AceConfigRegistry:ValidateOptionsTable(options, name)
+		end)
+		if success then
+			return options
+		else
+			geterrorhandler()(error)
+		end
 	end
 end
 
