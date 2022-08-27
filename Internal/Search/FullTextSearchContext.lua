@@ -22,7 +22,7 @@ local function CreateFullTextSearchContext(items)
 end
 
 ---@param query string
----@return unknown[]
+---@return SearchContextItem[]
 function FullTextSearchContextPrototype:Search(query)
 	if query == "" then return {} end
 	local items = {}
