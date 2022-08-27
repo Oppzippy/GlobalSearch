@@ -84,6 +84,7 @@
         "EncounterJournal_LoadUI",
         "EncounterJournal",
         "NavBar_Reset",
-        "ENCOUNTER_JOURNAL"
+        "ENCOUNTER_JOURNAL",
+        "GameTooltip"
     ]
 }

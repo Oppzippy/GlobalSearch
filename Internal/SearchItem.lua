@@ -6,5 +6,5 @@
 ---@field action? function
 ---@field macroText? string
 ---@field pickup? function
----@field tooltip? fun(limitedTooltip: LimitedTooltip) | string
+---@field tooltip? fun(limitedTooltip: GameTooltip) | string
 ---@field hyperlink? string

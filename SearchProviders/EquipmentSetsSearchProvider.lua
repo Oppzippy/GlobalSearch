@@ -36,7 +36,7 @@ function EquipmentSetsSearchProvider:Fetch()
 		items[#items + 1] = {
 			name = setName,
 			texture = icon,
-			---@param tooltip LimitedTooltip
+			---@param tooltip GameTooltip
 			tooltip = function(tooltip)
 				tooltip:SetEquipmentSet(setName)
 			end,

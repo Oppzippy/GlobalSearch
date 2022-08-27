@@ -30,6 +30,7 @@ function EncounterJournalSearchProvider:Fetch()
 			local _, _, _, _, bossImage = EJ_GetCreatureInfo(1, encounterInfo.journalEncounterID)
 			items[#items + 1] = {
 				name = L.boss_from_instance:format(encounterInfo.name, instanceInfo.name),
+				tooltip = encounterInfo.description,
 				extraSearchText = encounterInfo.description,
 				---@param texture Texture
 				texture = function(texture)

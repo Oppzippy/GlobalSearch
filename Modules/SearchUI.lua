@@ -89,7 +89,7 @@ function SearchUIPrototype:SetTooltip(item)
 	end
 end
 
----@param tooltipFunc fun(tooltip: LimitedTooltip)
+---@param tooltipFunc fun(tooltip: GameTooltip)
 function SearchUIPrototype:ShowTooltip(tooltipFunc)
 	self:HideTooltip()
 

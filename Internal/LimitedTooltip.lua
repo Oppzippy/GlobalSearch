@@ -1,108 +1,53 @@
 ---@class ns
 local ns = select(2, ...)
 
----@class LimitedTooltip
-local LimitedTooltip = {
-	AddDoubleLine = function(...) end,
-	AddLine = function(...) end,
-	AddSpellByID = function(...) end,
-	SetAchievementByID = function(...) end,
-	SetAction = function(...) end,
-	SetArtifactItem = function(...) end,
-	SetArtifactPowerByID = function(...) end,
-	SetAzeriteEssence = function(...) end,
-	SetAzeriteEssenceSlot = function(...) end,
-	SetAzeritePower = function(...) end,
-	SetBackpackToken = function(...) end,
-	SetBagItem = function(...) end,
-	SetBagItemChild = function(...) end,
-	SetBuybackItem = function(...) end,
-	SetCompanionPet = function(...) end,
-	SetCompareAzeritePower = function(...) end,
-	SetCompareItem = function(...) end,
-	SetConduit = function(...) end,
-	SetCurrencyByID = function(...) end,
-	SetCurrencyToken = function(...) end,
-	SetCurrencyTokenByID = function(...) end,
-	SetEquipmentSet = function(...) end,
-	SetEnhancedConduit = function(...) end,
-	SetExistingSocketGem = function(...) end,
-	SetGuildBankItem = function(...) end,
-	SetHeirloomByItemID = function(...) end,
-	SetHyperlink = function(...) end,
-	SetInboxItem = function(...) end,
-	SetInstanceLockEncountersComplete = function(...) end,
-	SetInventoryItem = function(...) end,
-	SetInventoryItemByID = function(...) end,
-	SetItemByID = function(...) end,
-	SetItemKey = function(...) end,
-	SetLFGDungeonReward = function(...) end,
-	SetLFGDungeonShortageReward = function(...) end,
-	SetLootCurrency = function(...) end,
-	SetLootItem = function(...) end,
-	SetLootRollItem = function(...) end,
-	SetMerchantCostItem = function(...) end,
-	SetMerchantItem = function(...) end,
-	SetMountBySpellID = function(...) end,
-	SetOwnedItemByID = function(...) end,
-	SetPetAction = function(...) end,
-	SetPossession = function(...) end,
-	SetPvpBrawl = function(...) end,
-	SetPvpTalent = function(...) end,
-	SetQuestCurrency = function(...) end,
-	SetQuestItem = function(...) end,
-	SetQuestLogCurrency = function(...) end,
-	SetQuestLogItem = function(...) end,
-	SetQuestLogRewardSpell = function(...) end,
-	SetQuestLogSpecialItem = function(...) end,
-	SetQuestPartyProgress = function(...) end,
-	SetQuestRewardSpell = function(...) end,
-	SetRecipeRankInfo = function(...) end,
-	SetRecipeReagentItem = function(...) end,
-	SetRecipeResultItem = function(...) end,
-	SetRuneforgeResultItem = function(...) end,
-	SetSendMailItem = function(...) end,
-	SetShapeshift = function(...) end,
-	SetSocketedItem = function(...) end,
-	SetSocketedRelic = function(...) end,
-	SetSocketGem = function(...) end,
-	SetSpecialPvpBrawl = function(...) end,
-	SetSpellBookItem = function(...) end,
-	SetSpellByID = function(...) end,
-	SetTalent = function(...) end,
-	SetText = function(...) end,
-	SetTotem = function(...) end,
-	SetToyByItemID = function(...) end,
-	SetTradePlayerItem = function(...) end,
-	SetTradeTargetItem = function(...) end,
-	SetTrainerService = function(...) end,
-	SetTransmogrifyItem = function(...) end,
-	SetUnit = function(...) end,
-	SetUnitAura = function(...) end,
-	SetUnitBuff = function(...) end,
-	SetUnitDebuff = function(...) end,
-	SetUpgradeItem = function(...) end,
-	SetVoidDepositItem = function(...) end,
-	SetVoidItem = function(...) end,
-	SetVoidWithdrawalItem = function(...) end,
-	SetWeeklyReward = function(...) end,
+local whitelist = {
+	"AddDoubleLine",
+	"AddLine",
+	"AddSpellByID",
+	"AddTexture",
+	"AdvanceSecondaryCompareItem",
+	"ResetSecondaryCompareItem",
+	"AppendText",
 }
 
-local cache = {}
----@param tooltip GameTooltip
----@return LimitedTooltip
-local function Limit(tooltip)
-	if not cache[tooltip] then
-		local limitedTooltip = {}
-		for method in next, LimitedTooltip do
-			local func = tooltip[method]
-			limitedTooltip[method] = function(_, ...)
-				func(tooltip, ...)
+local frame = CreateFrame("Frame")
+local allowedFunctionsCache
+local function getAllowedFunctions()
+	if not allowedFunctionsCache then
+		local disallowedFunctions = {}
+		for key in next, getmetatable(frame).__index do
+			disallowedFunctions[key] = true
+		end
+
+		local allowedFunctions = {}
+		for key, value in next, getmetatable(GameTooltip).__index do
+			if type(key) == "string" and type(value) == "function" and not disallowedFunctions[key] then
+				if key:find("^Set[A-Z]") or whitelist[key] then
+					allowedFunctions[key] = true
+				end
 			end
 		end
-		cache[tooltip] = ns.Util.ReadOnlyTable(limitedTooltip)
+		allowedFunctionsCache = allowedFunctions
 	end
-	return cache[tooltip]
+	return allowedFunctionsCache
+end
+
+---@param tooltip GameTooltip
+local function Limit(tooltip)
+	local allowedFunctions = getAllowedFunctions()
+	return setmetatable({}, {
+		__index = function(_, key)
+			if allowedFunctions[key] then
+				return function(_, ...)
+					tooltip[key](tooltip, ...)
+				end
+			end
+		end,
+		__newindex = function()
+			error("LimitedTooltip is read only.")
+		end,
+	})
 end
 
 local export = { Limit = Limit }

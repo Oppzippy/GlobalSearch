@@ -18,7 +18,7 @@ function module:OnEnable()
 	self.limitedTooltip = ns.LimitedTooltip.Limit(self.tooltip)
 end
 
----@param hyperlink string|fun(limitedTooltip: LimitedTooltip)
+---@param hyperlink string|fun(limitedTooltip: GameTooltip)
 ---@return string
 function module:GetTooltip(hyperlink)
 	-- TODO implement caching

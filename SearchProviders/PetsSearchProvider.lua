@@ -92,7 +92,7 @@ function PetsSearchProvider:Fetch()
 				name = name,
 				extraSearchText = string.format("%s %s", source, description),
 				texture = icon,
-				---@param tooltip LimitedTooltip
+				---@param tooltip GameTooltip
 				tooltip = function(tooltip)
 					tooltip:SetCompanionPet(petID)
 				end,
