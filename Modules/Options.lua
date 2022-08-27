@@ -33,6 +33,7 @@ module.optionsTable = {
 				showMouseoverTooltip = {
 					type = "toggle",
 					name = L.show_mouseover_tooltip,
+					desc = L.show_mouseover_tooltip_desc,
 					width = 1.6,
 					order = 2,
 				},

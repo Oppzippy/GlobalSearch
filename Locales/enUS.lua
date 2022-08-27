@@ -23,6 +23,7 @@ L.rebuild_cache = "Rebuild Cache"
 L.done = "Done"
 L.page_x_of_x = "Page %d of %d"
 L.show_mouseover_tooltip = "Show Mouseover Tooltip"
+L.show_mouseover_tooltip_desc = "If enabled, mousing over a search result will show the tooltip for the item under the cursor rather than the selected item."
 L.system_options = "System Options"
 L.boss_from_instance = "%s (%s)"
 
