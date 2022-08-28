@@ -14,4 +14,5 @@
 	<Script file="InterfaceOptionsSearchProvider.lua" />
 	<Script file="SystemOptionsSearchProvider.lua" />
 	<Script file="EncounterJournalSearchProvider.lua" />
+	<Script file="MinimapTrackingSearchProvider.lua" />
 </Ui>
