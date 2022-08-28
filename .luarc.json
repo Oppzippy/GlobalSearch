@@ -85,6 +85,14 @@
         "EncounterJournal",
         "NavBar_Reset",
         "ENCOUNTER_JOURNAL",
-        "GameTooltip"
+        "GameTooltip",
+        "StaticPopup_Show",
+        "UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_INSTANCE",
+        "RESET_INSTANCES",
+        "PLAYER_DIFFICULTY1",
+        "PLAYER_DIFFICULTY2",
+        "PLAYER_DIFFICULTY6",
+        "RAID_DIFFICULTY1",
+        "RAID_DIFFICULTY2"
     ]
 }
