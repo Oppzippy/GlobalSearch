@@ -31,6 +31,7 @@ L.x_is_enabled = "%s is enabled."
 L.x_is_disabled = "%s is disabled."
 L.dungeon_difficulty_x = "Dungeon Difficulty: %s"
 L.raid_difficulty_x = "Raid Difficulty: %s"
+L.legacy_raid_difficulty_x = "Legacy Raid Difficulty: %s"
 
 L.achievements_search_provider_desc = "Provides all achievements. Includes earned, unearned, and achievements further in chains that aren't visible in the UI yet."
 L.bags_search_provider_desc = "Provides all usable items in bags."
@@ -43,7 +44,7 @@ L.spells_search_provider = "Provides all usable spells."
 L.system_options_search_provider = "Provides all options from Game Menu > System."
 L.toys_search_provider = "Provides all known toys."
 L.ui_panels_search_provider = "Provides various UI panels from the base UI."
-L.legacy_raid_difficulty_x = "Legacy Raid Difficulty: %s"
+L.instance_options_search_provider_desc = "Provides dungeon/raid difficulty controls."
 
 L.key_bindings = KEY_BINDINGS
 L.general = GENERAL
