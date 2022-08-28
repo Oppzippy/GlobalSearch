@@ -1,3 +1,6 @@
+-- Disable on classic
+if not EJ_GetEncounterInfoByIndex then return end
+
 ---@class ns
 local ns = select(2, ...)
 
