@@ -20,6 +20,6 @@ indent_size = 4
 indent_style = space
 indent_size = 4
 
-[*.json]
+[*.{json,code-snippets}]
 indent_style = tab
 indent_size = 4
