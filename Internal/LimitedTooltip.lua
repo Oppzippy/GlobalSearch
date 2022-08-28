@@ -2,13 +2,13 @@
 local ns = select(2, ...)
 
 local whitelist = {
-	"AddDoubleLine",
-	"AddLine",
-	"AddSpellByID",
-	"AddTexture",
-	"AdvanceSecondaryCompareItem",
-	"ResetSecondaryCompareItem",
-	"AppendText",
+	AddDoubleLine = true,
+	AddLine = true,
+	AddSpellByID = true,
+	AddTexture = true,
+	AdvanceSecondaryCompareItem = true,
+	ResetSecondaryCompareItem = true,
+	AppendText = true,
 }
 
 local frame = CreateFrame("Frame")
