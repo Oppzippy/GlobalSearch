@@ -39,11 +39,11 @@ L.encounter_journal_search_provider_desc = "Provides all dungeon and raid bosses
 L.interface_options_search_provider_desc = "Provides all options in Game Menu > Interface > Game. Selecting an option will open its options tab."
 L.mounts_search_provider_desc = "Provides all known mounts."
 L.pets_search_provider_desc = "Provides all known pets."
-L.slash_commands_search_provider = "Provides all slash commands. When a command is selected, it will be run as is with no arguments. It is not possible to pass any arguments to the command when running it through GlobalSearch."
-L.spells_search_provider = "Provides all usable spells."
-L.system_options_search_provider = "Provides all options from Game Menu > System."
-L.toys_search_provider = "Provides all known toys."
-L.ui_panels_search_provider = "Provides various UI panels from the base UI."
+L.slash_commands_search_provider_desc = "Provides all slash commands. When a command is selected, it will be run as is with no arguments. It is not possible to pass any arguments to the command when running it through GlobalSearch."
+L.spells_search_provider_desc = "Provides all usable spells."
+L.system_options_search_provider_desc = "Provides all options from Game Menu > System."
+L.toys_search_provider_desc = "Provides all known toys."
+L.ui_panels_search_provider_desc = "Provides various UI panels from the base UI."
 L.instance_options_search_provider_desc = "Provides dungeon/raid difficulty controls."
 
 L.key_bindings = KEY_BINDINGS
