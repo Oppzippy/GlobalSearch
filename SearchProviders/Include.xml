@@ -1,20 +1,20 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-	<Script file="UIPanelsSearchProvider.lua" />
-	<Script file="MountsSearchProvider.lua" />
-	<Script file="ToysSearchProvider.lua" />
-	<Script file="PetsSearchProvider.lua" />
-	<Script file="SpellsSearchProvider.lua" />
-	<Script file="SlashCommandsSearchProvider.lua" />
-	<Script file="MacrosSearchProvider.lua" />
-	<Script file="EmotesSearchProvider.lua" />
-	<Script file="BagsSearchProvider.lua" />
-	<Script file="EquipmentSetsSearchProvider.lua" />
 	<Script file="AchievementsSearchProvider.lua" />
-	<Script file="InterfaceOptionsSearchProvider.lua" />
-	<Script file="SystemOptionsSearchProvider.lua" />
+	<Script file="BagsSearchProvider.lua" />
+	<Script file="EmotesSearchProvider.lua" />
 	<Script file="EncounterJournalSearchProvider.lua" />
-	<Script file="MinimapTrackingSearchProvider.lua" />
+	<Script file="EquipmentSetsSearchProvider.lua" />
 	<Script file="InstanceOptionsSearchProvider.lua" />
+	<Script file="InterfaceOptionsSearchProvider.lua" />
+	<Script file="MacrosSearchProvider.lua" />
 	<Script file="MapsSearchProvider.lua" />
+	<Script file="MinimapTrackingSearchProvider.lua" />
+	<Script file="MountsSearchProvider.lua" />
+	<Script file="PetsSearchProvider.lua" />
+	<Script file="SlashCommandsSearchProvider.lua" />
+	<Script file="SpellsSearchProvider.lua" />
+	<Script file="SystemOptionsSearchProvider.lua" />
+	<Script file="ToysSearchProvider.lua" />
+	<Script file="UIPanelsSearchProvider.lua" />
 </Ui>
