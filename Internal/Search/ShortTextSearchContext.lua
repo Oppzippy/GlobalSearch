@@ -62,8 +62,9 @@ function ShortTextSearchContextPrototype:SearchItems(query, items)
 	end
 
 	table.sort(matches, function(a, b)
-		if scores[a] ~= scores[b] then
-			return scores[a] > scores[b]
+		local aScore, bScore = scores[a], scores[b]
+		if aScore ~= bScore then
+			return aScore > bScore
 		end
 		return a.item.name < b.item.name
 	end)
