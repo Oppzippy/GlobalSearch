@@ -3,7 +3,6 @@ local ns = select(2, ...)
 
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
---ToggleLFGParentFrame
 
 ---@class UIPanelsSearchProvider : SearchProvider
 local UIPanelsSearchProvider = {
