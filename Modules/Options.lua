@@ -13,6 +13,7 @@ local addon = AceAddon:GetAddon("GlobalSearch")
 ---@field RegisterEvent function
 local module = addon:NewModule("Options", "AceEvent-3.0", "AceConsole-3.0")
 module.numProviders = 0
+module.numGroups = 0
 module.optionsTable = {
 	type = "group",
 	childGroups = "tab",
@@ -98,8 +99,24 @@ end
 
 function module:OnProviderRegistered(_, name, provider)
 	self.numProviders = self.numProviders + 1
-	self.optionsTable.args.enabledProviders.args[name] = self:RenderProviderEnableOption(name, provider)
+	self:AddProviderEnableOption(name, provider)
 	self.optionsTable.args.providerOptions.args[name] = self:RenderProviderOptions(name, provider)
+end
+
+function module:AddProviderEnableOption(name, provider)
+	local groupsOptionTable = self.optionsTable.args.enabledProviders
+	local groupKey = provider.category or ""
+	if not groupsOptionTable.args[groupKey] then
+		self.numGroups = self.numGroups + 1
+		groupsOptionTable.args[groupKey] = {
+			type = "group",
+			inline = true,
+			name = groupKey == "" and L.uncategorized or groupKey,
+			order = groupKey == "" and 999999 or self.numGroups,
+			args = {}
+		}
+	end
+	groupsOptionTable.args[groupKey].args[name] = self:RenderProviderEnableOption(name, provider)
 end
 
 function module:RenderProviderEnableOption(name, provider)
