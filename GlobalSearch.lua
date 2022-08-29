@@ -13,6 +13,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 local GlobalSearch = AceAddon:NewAddon("GlobalSearch", "AceEvent-3.0", "AceConsole-3.0")
 GlobalSearch:SetDefaultModulePrototype(ns.ModulePrototype.Create(GlobalSearch))
 GlobalSearch.providerRegistry = ns.SearchProviderRegistry.Create()
+GlobalSearch.queuedMessages = {}
 
 function GlobalSearch:OnInitialize()
 	self.db = AceDB:New("GlobalSearchDB", ns.dbDefaults, true)
@@ -23,11 +24,24 @@ function GlobalSearch:OnInitialize()
 	AceConfigDialog:AddToBlizOptions("GlobalSearch", L.global_search)
 end
 
+function GlobalSearch:OnEnable()
+	for _, message in ipairs(self.queuedMessages) do
+		self:SendMessage(unpack(message))
+	end
+	self.queuedMessages = nil
+end
+
 ---@param name string
 ---@param provider SearchProvider
 function GlobalSearch:RegisterSearchProvider(name, provider)
 	self.providerRegistry:Register(name, provider)
-	self:SendMessage("GlobalSearch_OnProviderRegistered", name, provider)
+	-- If providers are registered before OnInitialize, modules won't be ready to receive these events.
+	-- In that case, we can queue up the messages and send them after OnInitialize has run for all modules.
+	if self.queuedMessages then
+		self.queuedMessages[#self.queuedMessages + 1] = { "GlobalSearch_OnProviderRegistered", name, provider }
+	else
+		self:SendMessage("GlobalSearch_OnProviderRegistered", name, provider)
+	end
 end
 
 ---@return boolean

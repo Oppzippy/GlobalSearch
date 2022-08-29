@@ -12,6 +12,7 @@ local addon = AceAddon:GetAddon("GlobalSearch")
 ---@class OptionsModule : AceConsole-3.0, AceEvent-3.0, ModulePrototype
 ---@field RegisterEvent function
 local module = addon:NewModule("Options", "AceEvent-3.0", "AceConsole-3.0")
+module.numProviders = 0
 module.optionsTable = {
 	type = "group",
 	childGroups = "tab",
@@ -90,29 +91,15 @@ module.optionsTable = {
 	},
 }
 
+
 function module:OnInitialize()
-	self:RenderRegisteredProviders()
-	self:RegisterMessage("GlobalSearch_OnProviderRegistered", "OnProviderRegistered")
+	module:RegisterMessage("GlobalSearch_OnProviderRegistered", "OnProviderRegistered")
 end
 
 function module:OnProviderRegistered(_, name, provider)
 	self.numProviders = self.numProviders + 1
 	self.optionsTable.args.enabledProviders.args[name] = self:RenderProviderEnableOption(name, provider)
 	self.optionsTable.args.providerOptions.args[name] = self:RenderProviderOptions(name, provider)
-end
-
-function module:RenderRegisteredProviders()
-	self.numProviders = 0
-	local providers = self:GetSearchProviderRegistry():GetProviders()
-	local enableOptions = {}
-	local providerOptions = {}
-	for name, provider in next, providers do
-		self.numProviders = self.numProviders + 1
-		enableOptions[name] = self:RenderProviderEnableOption(name, provider)
-		providerOptions[name] = self:RenderProviderOptions(name, provider)
-	end
-	self.optionsTable.args.enabledProviders.args = enableOptions
-	self.optionsTable.args.providerOptions.args = providerOptions
 end
 
 function module:RenderProviderEnableOption(name, provider)
