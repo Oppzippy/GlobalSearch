@@ -95,6 +95,8 @@
         "RAID_DIFFICULTY1",
         "RAID_DIFFICULTY2",
         "ToggleLFGParentFrame",
-        "OpenWorldMap"
+        "OpenWorldMap",
+        "DUNGEONS",
+        "RAIDS"
     ]
 }

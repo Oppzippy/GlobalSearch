@@ -31,6 +31,12 @@ ns.dbDefaults = {
 					},
 					listFloorsSeparately = false,
 				},
+				GlobalSearch_EncounterJournal = {
+					enableDungeons = true,
+					enableRaids = true,
+					enableInstances = false,
+					enableBosses = true,
+				},
 			},
 		},
 	},

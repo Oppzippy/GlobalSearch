@@ -4,13 +4,67 @@ if not EJ_GetEncounterInfoByIndex then return end
 ---@class ns
 local ns = select(2, ...)
 
+local AceAddon = LibStub("AceAddon-3.0")
 local AceLocale = LibStub("AceLocale-3.0")
+
+local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
+---@cast GlobalSearch GlobalSearch
 local L = AceLocale:GetLocale("GlobalSearch")
+local providerName = "GlobalSearch_EncounterJournal"
 
 ---@class EncounterJournalSearchProvider : SearchProvider
 local EncounterJournalSearchProvider = {
 	localizedName = L.encounter_journal,
 	description = L.encounter_journal_search_provider_desc,
+}
+---@type AceConfigOptionsTable
+EncounterJournalSearchProvider.optionsTable = {
+	type = "group",
+	get = function(info)
+		local db = GlobalSearch:GetProviderOptionsDB(providerName)
+		return db[info[#info]]
+	end,
+	set = function(info, value)
+		local db = GlobalSearch:GetProviderOptionsDB(providerName)
+		db[info[#info]] = value
+		EncounterJournalSearchProvider.cache = nil
+	end,
+	args = {
+		instanceTypes = {
+			type = "group",
+			inline = true,
+			name = L.instance_types,
+			args = {
+				enableDungeons = {
+					type = "toggle",
+					name = L.dungeons,
+					order = 1,
+				},
+				enableRaids = {
+					type = "toggle",
+					name = L.raids,
+					order = 2,
+				},
+			},
+		},
+		itemTypes = {
+			type = "group",
+			inline = true,
+			name = L.item_types,
+			args = {
+				enableInstances = {
+					type = "toggle",
+					name = L.instances,
+					order = 1,
+				},
+				enableBosses = {
+					type = "toggle",
+					name = L.bosses,
+					order = 2,
+				},
+			},
+		},
+	},
 }
 
 ---@return SearchItem[]
@@ -22,55 +76,68 @@ function EncounterJournalSearchProvider:Get()
 	return self.cache
 end
 
+---@param journalInstanceID number
+---@param journalEncounterID? number
+local function createDisplayInstanceEncounterAction(journalInstanceID, journalEncounterID)
+	return function()
+		EncounterJournal_LoadUI()
+		-- Nav bar buttons will be appended to what was there before if it's not reset
+		NavBar_Reset(EncounterJournal.navBar)
+
+		EncounterJournal_DisplayInstance(journalInstanceID)
+		if journalEncounterID then
+			EncounterJournal_DisplayEncounter(journalEncounterID)
+		end
+		ShowUIPanel(EncounterJournal)
+	end
+end
+
 ---@return SearchItem[]
 function EncounterJournalSearchProvider:Fetch()
+	local db = GlobalSearch:GetProviderOptionsDB(providerName)
+	---@type SearchItem[]
 	local items = {}
-	local seenIds = {}
-	for instanceInfo, encounterInfo in self:IterateInstancesAndEncounterInfo() do
-		if not seenIds[encounterInfo.journalEncounterID] then
-			seenIds[encounterInfo.journalEncounterID] = true
+	-- Dungeons that are used in more than one expansion are listed more than once
+	-- For example, Deadmines is listed under Classic and Cataclysm
+	local seenInstanceIDs = {}
+	for instanceInfo in self:IterateInstanceInfo(db.enableDungeons, db.enableRaids) do
+		if not seenInstanceIDs[instanceInfo.journalInstanceID] then
+			seenInstanceIDs[instanceInfo.journalInstanceID] = true
+			if db.enableInstances then
+				items[#items + 1] = {
+					name = instanceInfo.name,
+					tooltip = instanceInfo.description,
+					extraSearchText = instanceInfo.description,
+					texture = instanceInfo.buttonImage2,
+					action = createDisplayInstanceEncounterAction(instanceInfo.journalInstanceID),
+				}
+			end
 
-			local _, _, _, _, bossImage = EJ_GetCreatureInfo(1, encounterInfo.journalEncounterID)
-			items[#items + 1] = {
-				name = L.boss_from_instance:format(encounterInfo.name, instanceInfo.name),
-				tooltip = encounterInfo.description,
-				extraSearchText = encounterInfo.description,
-				---@param texture Texture
-				texture = function(texture)
-					if bossImage then
-						texture:SetTexture(bossImage)
-						-- 2:1 aspect ratio
-						texture:SetTexCoord(0.25, 0.75, 0, 1)
-					else
-						texture:SetTexture(instanceInfo.buttonImage2)
-					end
-				end,
-				action = function()
-					EncounterJournal_LoadUI()
-
-					-- Nav bar buttons will be appended to what was there before if it's not reset
-					NavBar_Reset(EncounterJournal.navBar)
-
-					EncounterJournal_DisplayInstance(encounterInfo.journalInstanceID)
-					EncounterJournal_DisplayEncounter(encounterInfo.journalEncounterID)
-					ShowUIPanel(EncounterJournal)
-				end,
-			}
+			if db.enableBosses then
+				for encounterInfo in self:IterateEncounterInfo(instanceInfo) do
+					local _, _, _, _, bossImage = EJ_GetCreatureInfo(1, encounterInfo.journalEncounterID)
+					items[#items + 1] = {
+						name = L.boss_from_instance:format(encounterInfo.name, instanceInfo.name),
+						tooltip = encounterInfo.description,
+						extraSearchText = encounterInfo.description,
+						---@param texture Texture
+						texture = function(texture)
+							if bossImage then
+								texture:SetTexture(bossImage)
+								-- 2:1 aspect ratio
+								texture:SetTexCoord(0.25, 0.75, 0, 1)
+							else
+								texture:SetTexture(instanceInfo.buttonImage2)
+							end
+						end,
+						action = createDisplayInstanceEncounterAction(encounterInfo.journalInstanceID, encounterInfo.journalEncounterID),
+					}
+				end
+			end
 		end
 	end
 
 	return items
-end
-
----@return fun(): EncounterJournalSearchProvider.InstanceInfo, EncounterJournalSearchProvider.EncounterInfo
-function EncounterJournalSearchProvider:IterateInstancesAndEncounterInfo()
-	return coroutine.wrap(function()
-		for instanceInfo in self:IterateInstanceInfo() do
-			for encounterInfo in self:IterateEncounterInfo(instanceInfo) do
-				coroutine.yield(instanceInfo, encounterInfo)
-			end
-		end
-	end)
 end
 
 ---@class EncounterJournalSearchProvider.EncounterInfo
@@ -128,8 +195,10 @@ end
 ---@field link string
 ---@field shouldDisplayDifficulty boolean
 
+---@param includeDungeons boolean
+---@param includeRaids boolean
 ---@return fun(): EncounterJournalSearchProvider.InstanceInfo
-function EncounterJournalSearchProvider:IterateInstanceInfo()
+function EncounterJournalSearchProvider:IterateInstanceInfo(includeDungeons, includeRaids)
 	return coroutine.wrap(function()
 		local numTiers = EJ_GetNumTiers()
 		for tierIndex = 1, numTiers do
@@ -168,10 +237,14 @@ function EncounterJournalSearchProvider:IterateInstanceInfo()
 				end
 			end
 
-			yieldInstances(false) -- Dungeons
-			yieldInstances(true) -- Raids
+			if includeDungeons then
+				yieldInstances(false) -- Dungeons
+			end
+			if includeRaids then
+				yieldInstances(true) -- Raids
+			end
 		end
 	end)
 end
 
-GlobalSearchAPI:RegisterProvider("GlobalSearch_EncounterJournal", EncounterJournalSearchProvider)
+GlobalSearchAPI:RegisterProvider(providerName, EncounterJournalSearchProvider)

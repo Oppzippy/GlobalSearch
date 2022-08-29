@@ -36,6 +36,11 @@ L.maps = "Maps"
 L.enabled_map_types = "Enabled Map Types"
 L.map_with_floor = "%s: %s"
 L.list_floors_separately = "List Floors Separately"
+L.instance_types = "Instance Types"
+L.instances = "Instances"
+L.bosses = "Bosses"
+L.item_types = "Item Types"
+
 
 L.achievements_search_provider_desc = "Provides all achievements. Includes earned, unearned, and achievements further in chains that aren't visible in the UI yet."
 L.bags_search_provider_desc = "Provides all usable items in bags."
@@ -72,3 +77,5 @@ L.interface_options = INTERFACE_OPTIONS
 L.encounter_journal = ENCOUNTER_JOURNAL
 L.instance_options = UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_INSTANCE
 L.reset_all_instances = RESET_INSTANCES
+L.dungeons = DUNGEONS
+L.raids = RAIDS
