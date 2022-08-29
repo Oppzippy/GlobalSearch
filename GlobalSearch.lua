@@ -43,7 +43,7 @@ function GlobalSearch:ProfilingResults()
 end
 
 function GlobalSearch:GetProviderOptionsDB(name)
-	local providerOptions = self.db.profile.options.providers
+	local providerOptions = self.db.profile.options.searchProviders
 	if not providerOptions[name] then
 		providerOptions[name] = {}
 	end

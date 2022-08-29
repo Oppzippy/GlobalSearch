@@ -20,7 +20,7 @@ ns.dbDefaults = {
 				selectNextPage = "ALT-RIGHT",
 				selectPreviousPage = "ALT-LEFT",
 			},
-			providers = {
+			searchProviders = {
 			},
 		},
 	},
