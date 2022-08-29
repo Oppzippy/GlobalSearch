@@ -45,12 +45,13 @@ end
 ---@return SearchContextItem[]
 function ShortTextSearchContextPrototype:SearchItems(query, items)
 	if query == "" then return {} end
+	query = query:lower()
 	---@type SearchContextItem[]
 	local matches = {}
 	---@type table<SearchContextItem, number>
 	local scores = {}
 	for _, item in ipairs(items) do
-		local isMatch, matchRanges = self.queryMatcher(query, item.name)
+		local isMatch, matchRanges = self.queryMatcher(query, item.name:lower())
 		if isMatch then
 			local match = {
 				item = item,

@@ -43,18 +43,13 @@ end
 ---@param text string
 ---@return boolean, MatchRange[]?
 local function MatchesQuery(query, text)
-	if query == "" then
-		return true, {}
-	end
-	query = query:lower()
-	text = text:lower()
-
 	---@type MatchRange[]
 	local matchRanges = {}
 	---@type MatchRange
 	local range
 	local prevIndex = -1
-	for i = 1, #query do
+	local queryLen = #query
+	for i = 1, queryLen do
 		local char = query:sub(i, i)
 		local index = text:find(char, prevIndex + 1, true)
 		if not index then return false, nil end
