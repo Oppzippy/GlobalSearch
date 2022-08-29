@@ -12,6 +12,7 @@ local providerName = "GlobalSearch_Maps"
 ---@class MapsSearchProvider : SearchProvider
 local MapsSearchProvider = {
 	localizedName = L.maps,
+	category = L.global_search,
 }
 ---@type AceConfigOptionsTable
 MapsSearchProvider.optionsTable = {

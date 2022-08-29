@@ -8,6 +8,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 local SlashCommandsSearchProvider = {
 	localizedName = L.slash_commands,
 	description = L.slash_commands_search_provider_desc,
+	category = L.global_search,
 }
 
 ---@return SearchItem[]

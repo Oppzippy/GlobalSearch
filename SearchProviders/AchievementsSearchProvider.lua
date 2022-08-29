@@ -15,6 +15,7 @@ if not AchievementStorage then return end
 local AchievementsSearchProvider = {
 	localizedName = L.achievements,
 	description = L.achievements_search_provider_desc,
+	category = L.global_search,
 }
 AchievementsSearchProvider.optionsTable = {
 	type = "group",

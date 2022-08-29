@@ -16,6 +16,7 @@ local providerName = "GlobalSearch_EncounterJournal"
 local EncounterJournalSearchProvider = {
 	localizedName = L.encounter_journal,
 	description = L.encounter_journal_search_provider_desc,
+	category = L.global_search,
 }
 ---@type AceConfigOptionsTable
 EncounterJournalSearchProvider.optionsTable = {

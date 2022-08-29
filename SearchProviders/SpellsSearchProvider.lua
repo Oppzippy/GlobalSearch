@@ -12,6 +12,7 @@ local providerName = "GlobalSearch_Spells"
 local SpellsSearchProvider = {
 	localizedName = L.spells,
 	description = L.spells_search_provider_desc,
+	category = L.global_search,
 }
 AceEvent:Embed(SpellsSearchProvider)
 

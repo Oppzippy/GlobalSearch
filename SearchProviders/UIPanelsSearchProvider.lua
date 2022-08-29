@@ -9,6 +9,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 local UIPanelsSearchProvider = {
 	localizedName = L.ui_panels,
 	description = L.ui_panels_search_provider_desc,
+	category = L.global_search,
 }
 
 ---@return SearchItem[]

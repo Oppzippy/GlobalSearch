@@ -8,6 +8,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 local InstanceOptionsSearchProvider = {
 	localizedName = L.instance_options,
 	description = L.instance_options_search_provider_desc,
+	category = L.global_search,
 }
 
 ---@return SearchItem[]

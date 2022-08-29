@@ -9,6 +9,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 local SystemOptionsSearchProvider = {
 	localizedName = L.system_options,
 	description = L.system_options_search_provider_desc,
+	category = L.global_search,
 }
 
 ---@return SearchItem[]
