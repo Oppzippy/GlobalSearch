@@ -21,6 +21,16 @@ ns.dbDefaults = {
 				selectPreviousPage = "ALT-LEFT",
 			},
 			searchProviders = {
+				GlobalSearch_Maps = {
+					disabledMapTypes = {
+						[0] = true, -- Cosmic
+						[1] = true, -- World
+						[4] = true, -- Dungeon
+						[5] = true, -- Micro
+						[6] = true, -- Orphan
+					},
+					listFloorsSeparately = false,
+				},
 			},
 		},
 	},

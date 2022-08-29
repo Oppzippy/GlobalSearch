@@ -94,6 +94,7 @@
         "PLAYER_DIFFICULTY6",
         "RAID_DIFFICULTY1",
         "RAID_DIFFICULTY2",
-        "ToggleLFGParentFrame"
+        "ToggleLFGParentFrame",
+        "OpenWorldMap"
     ]
 }

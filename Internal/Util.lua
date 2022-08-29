@@ -82,6 +82,14 @@ function Util.BinarySearch(array, comparator, range)
 	return result
 end
 
+function Util.ReverseTable(t)
+	local reversed = {}
+	for i = #t, 1, -1 do
+		reversed[#reversed + 1] = t[i]
+	end
+	return reversed
+end
+
 if ns then
 	ns.Util = Util
 end
