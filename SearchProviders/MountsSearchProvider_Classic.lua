@@ -32,7 +32,10 @@ function MountsSearchProvider_Classic:Fetch()
 	local items = {}
 	local numMounts = GetNumCompanions("MOUNT")
 	for i = 1, numMounts do
-		local _, name, spellID, texture = GetCompanionInfo("MOUNT", i)
+		-- GetCompanionInfo returns the texture, but it will return a different texture if the mount is currently in use
+		-- Since we cache the items, we don't want that information persisted. GetSpellInfo will return the actual texture.
+		local _, name, spellID = GetCompanionInfo("MOUNT", i)
+		local _, _, texture = GetSpellInfo(spellID)
 		-- I'm not sure if the mount id can change when learning new mounts, but if it can, it could cause
 		-- the wrong mount to be summoned if the new mount is learned while the search bar is opened, meaning the items won't
 		-- be refreshed. To get around this, we get the mount id when we need it by spell id since that won't change.
