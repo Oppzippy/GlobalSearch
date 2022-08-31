@@ -97,6 +97,7 @@
         "ToggleLFGParentFrame",
         "OpenWorldMap",
         "DUNGEONS",
-        "RAIDS"
+        "RAIDS",
+        "AchievementFrame_SelectAchievement"
     ]
 }

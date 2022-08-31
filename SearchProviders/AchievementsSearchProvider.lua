@@ -47,6 +47,7 @@ function AchievementsSearchProvider:Fetch()
 
 	local items = {}
 	for _, achievement in next, achievements do
+		local hyperlink = GetAchievementLink(achievement[1])
 		items[#items + 1] = {
 			name = achievement[2],
 			texture = achievement[10],
@@ -54,13 +55,14 @@ function AchievementsSearchProvider:Fetch()
 			action = function()
 				AchievementFrame_LoadUI()
 				ShowUIPanel(AchievementFrame)
-				AchievementFrame_SelectSearchItem(achievement[1])
+				AchievementFrame_SelectAchievement(achievement[1])
 			end,
 			---@param tooltip GameTooltip
 			tooltip = function(tooltip)
-				tooltip:SetAchievementByID(achievement[1])
+				-- We can't use SetAchievementByID because it doesn't exist on wotlk classic
+				tooltip:SetHyperlink(hyperlink)
 			end,
-			hyperlink = GetAchievementLink(achievement[1]),
+			hyperlink = hyperlink,
 		}
 	end
 	return items
