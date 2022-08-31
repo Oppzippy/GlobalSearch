@@ -98,6 +98,7 @@
         "OpenWorldMap",
         "DUNGEONS",
         "RAIDS",
-        "AchievementFrame_SelectAchievement"
+        "AchievementFrame_SelectAchievement",
+        "PetPaperDollFrame_SetCompanionPage"
     ]
 }

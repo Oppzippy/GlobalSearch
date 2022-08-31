@@ -10,6 +10,7 @@
 	<Script file="MacrosSearchProvider.lua" />
 	<Script file="MapsSearchProvider.lua" />
 	<Script file="MinimapTrackingSearchProvider.lua" />
+	<Script file="MountsSearchProvider_Classic.lua" />
 	<Script file="MountsSearchProvider.lua" />
 	<Script file="PetsSearchProvider.lua" />
 	<Script file="SlashCommandsSearchProvider.lua" />
