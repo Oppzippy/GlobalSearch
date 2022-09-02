@@ -72,39 +72,28 @@ function SpellsSearchProvider:Fetch()
 end
 
 function SpellsSearchProvider:IterateKnownSpells()
-	local tabIterator = self:IterateSpellTabs()
-	local _, offset, numEntries = tabIterator()
-	local index = 1
-	return function()
-		while numEntries do
-			local _, _, spellID = GetSpellBookItemName(offset + index, BOOKTYPE_SPELL)
-			index = index + 1
-			if index > numEntries then
-				_, offset, numEntries = tabIterator()
-				index = 1
-			end
-
-			if spellID and IsSpellKnownOrOverridesKnown(spellID) then
-				return spellID
+	return coroutine.wrap(function()
+		for _, offset, numEntries in self:IterateSpellTabs() do
+			for i = 1, numEntries do
+				local _, _, spellID = GetSpellBookItemName(offset + i, BOOKTYPE_SPELL)
+				if spellID and IsSpellKnownOrOverridesKnown(spellID) then
+					coroutine.yield(spellID)
+				end
 			end
 		end
-	end
+	end)
 end
 
 function SpellsSearchProvider:IterateSpellTabs()
-	local currentTab = 1
-	local numTabs = GetNumSpellTabs()
-
-	return function()
-		-- offspecID 0 means the spells are not for an offspec
-		local _, offset, numEntries, offspecID
-		repeat
-			_, _, offset, numEntries, _, offspecID = GetSpellTabInfo(currentTab)
-			currentTab = currentTab + 1
-			if currentTab > numTabs then return end
-		until offspecID == 0
-		return currentTab, offset, numEntries
-	end
+	return coroutine.wrap(function()
+		local numTabs = GetNumSpellTabs()
+		for i = 1, numTabs do
+			local _, _, offset, numEntries, _, offspecID = GetSpellTabInfo(i)
+			if offspecID == 0 then
+				coroutine.yield(i, offset, numEntries)
+			end
+		end
+	end)
 end
 
 SpellsSearchProvider:RegisterEvent("SPELLS_CHANGED", "ClearCache")
