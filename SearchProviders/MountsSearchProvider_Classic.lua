@@ -11,6 +11,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 ---@class MountsSearchProvider_Classic : SearchProvider
 local MountsSearchProvider_Classic = {
 	localizedName = L.mounts,
+	category = L.global_search,
 }
 AceEvent:Embed(MountsSearchProvider_Classic)
 

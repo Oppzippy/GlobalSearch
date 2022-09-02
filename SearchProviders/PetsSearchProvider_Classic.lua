@@ -11,6 +11,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 ---@class PetsSearchProvider_Classic : SearchProvider
 local PetsSearchProvider_Classic = {
 	localizedName = L.pets,
+	category = L.global_search,
 }
 AceEvent:Embed(PetsSearchProvider_Classic)
 
