@@ -29,6 +29,7 @@
 			"---@class $1SearchProvider : SearchProvider",
 			"local $1SearchProvider = {",
 			"\tlocalizedName = L.$2,",
+			"\tcategory = L.global_search,",
 			"}",
 			"",
 			"---@return SearchItem[]",
