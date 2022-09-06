@@ -104,6 +104,8 @@
         "GetQuestLogTitle",
         "QuestLog_SetSelection",
         "QuestLog_Update",
-        "QuestLogFrame"
+        "QuestLogFrame",
+        "WorldMapFrame",
+        "MaximizeUIPanel"
     ]
 }

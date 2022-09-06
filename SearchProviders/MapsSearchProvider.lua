@@ -74,7 +74,8 @@ function MapsSearchProvider:Fetch()
 	local mapGroupIDs = {}
 	for _, mapTypeID in next, Enum.UIMapType do
 		if not db.disabledMapTypes[mapTypeID] then
-			local uiMapDetails = C_Map.GetMapChildrenInfo(946, mapTypeID, true) -- Cosmic
+			-- Cosmic if available, otherwise Azeroth
+			local uiMapDetails = C_Map.GetMapChildrenInfo(946, mapTypeID, true) or C_Map.GetMapChildrenInfo(947, mapTypeID, true)
 			for _, details in next, uiMapDetails do
 				local groupID = C_Map.GetMapGroupID(details.mapID)
 				-- Separate individual maps from groups of maps (dungeons, raids, anything with floors)
@@ -110,7 +111,12 @@ function MapsSearchProvider:CreateItem(name, mapID)
 		name = name,
 		texture = 137176, -- Interface/WorldMap/UI-World-Icon
 		action = function()
-			OpenWorldMap(mapID)
+			local success = pcall(OpenWorldMap, mapID)
+			if not success then
+				ShowUIPanel(WorldMapFrame)
+				MaximizeUIPanel(WorldMapFrame)
+				WorldMapFrame:SetMapID(mapID)
+			end
 		end,
 		---@param tooltip GameTooltip
 		tooltip = function(tooltip)
