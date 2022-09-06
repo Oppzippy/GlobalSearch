@@ -2,7 +2,9 @@
 local ns = select(2, ...)
 
 local AceAddon = LibStub("AceAddon-3.0")
+local AceLocale = LibStub("AceLocale-3.0")
 
+local L = AceLocale:GetLocale("GlobalSearch")
 local addon = AceAddon:GetAddon("GlobalSearch")
 ---@class SearchModule : AceConsole-3.0, AceEvent-3.0, ModulePrototype
 ---@field RegisterEvent function
@@ -51,6 +53,7 @@ function module:Show()
 	if self:IsVisible() or InCombatLockdown() then return end
 
 	self.searchUI:SetShowMouseoverTooltip(self:GetDB().profile.options.showMouseoverTooltip)
+	self.searchUI:SetHelpText(self:GetHelpText())
 
 	local items = self.providerCollection:Get()
 	self.searchContext = ns.CombinedSearchContext.Create({
@@ -201,4 +204,23 @@ function module:Hyperlink(item)
 		ChatEdit_ActivateChat(ChatFrame1EditBox)
 		ChatFrame1EditBox:Insert(item.hyperlink or item.name)
 	end
+end
+
+function module:GetHelpText()
+	local keybinds = self.searchUI.keybindingRegistry:GetKeyBindingsByCallbackName()
+	local function getKeybindText(callbackName)
+		if not keybinds[callbackName] then
+			return "Not Bound"
+		end
+		return table.concat(keybinds[callbackName], ", ")
+	end
+
+	return L.keybinding_help:format(
+		getKeybindText("OnClose"),
+		getKeybindText("OnCreateHyperlink"),
+		getKeybindText("OnSelectPreviousItem"),
+		getKeybindText("OnSelectNextItem"),
+		getKeybindText("OnSelectPreviousPage"),
+		getKeybindText("OnSelectNextPage")
+	)
 end

@@ -41,6 +41,13 @@ L.instances = "Instances"
 L.bosses = "Bosses"
 L.item_types = "Item Types"
 L.uncategorized = "Uncategorized"
+L.keybinding_help = [[Close: %s
+Select Item: ENTER
+Link Item in Chat: %s
+Previous Item: %s
+Next Item: %s
+Preivous Page: %s
+Next Page: %s]]
 
 L.achievements_search_provider_desc = "Provides all achievements. Includes earned, unearned, and achievements further in chains that aren't visible in the UI yet."
 L.bags_search_provider_desc = "Provides all usable items in bags."

@@ -25,6 +25,18 @@ function KeybindingRegistryPrototype:RegisterKeybinding(key, callbackName)
 	self.keybindings[key] = callbackName
 end
 
+---@return table<string, string[]>
+function KeybindingRegistryPrototype:GetKeyBindingsByCallbackName()
+	local keybindingsByCallback = {}
+	for key, callbackName in next, self.keybindings do
+		if not keybindingsByCallback[callbackName] then
+			keybindingsByCallback[callbackName] = {}
+		end
+		table.insert(keybindingsByCallback[callbackName], key)
+	end
+	return keybindingsByCallback
+end
+
 ---@param eventToRemove string
 function KeybindingRegistryPrototype:ClearKeybindingsByEvent(eventToRemove)
 	for key, event in next, self.keybindings do

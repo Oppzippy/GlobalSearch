@@ -68,6 +68,13 @@ function SearchUIPrototype:Show()
 	self.widgets.container = container
 	self.widgets.searchBar = searchBar
 	self.widgets.resultsContainer = resultsContainer
+
+	self.results = {}
+	self:Render()
+end
+
+function SearchUIPrototype:SetHelpText(helpText)
+	self.helpText = helpText
 end
 
 ---@param item SearchItem
@@ -286,6 +293,12 @@ function SearchUIPrototype:Render()
 		pageNumber:SetText(L.page_x_of_x:format(self:GetPage(), self:GetNumPages()))
 		pageNumber:SetFontObject("GameFontWhite")
 		self.widgets.resultsContainer:AddChild(pageNumber)
+	else
+		local help = AceGUI:Create("Label")
+		---@cast help AceGUILabel
+		help:SetText(self.helpText)
+		help:SetFontObject("GameFontWhite")
+		self.widgets.resultsContainer:AddChild(help)
 	end
 
 	self.widgets.resultsContainer:ResumeLayout()
