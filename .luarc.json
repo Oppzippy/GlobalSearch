@@ -100,6 +100,10 @@
         "RAIDS",
         "AchievementFrame_SelectAchievement",
         "PetPaperDollFrame_SetCompanionPage",
-        "QuestMapFrame_OpenToQuestDetails"
+        "QuestMapFrame_OpenToQuestDetails",
+        "GetQuestLogTitle",
+        "QuestLog_SetSelection",
+        "QuestLog_Update",
+        "QuestLogFrame"
     ]
 }
