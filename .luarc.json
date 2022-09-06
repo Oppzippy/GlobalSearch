@@ -99,6 +99,7 @@
         "DUNGEONS",
         "RAIDS",
         "AchievementFrame_SelectAchievement",
-        "PetPaperDollFrame_SetCompanionPage"
+        "PetPaperDollFrame_SetCompanionPage",
+        "QuestMapFrame_OpenToQuestDetails"
     ]
 }
