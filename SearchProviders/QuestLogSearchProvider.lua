@@ -17,7 +17,7 @@ function QuestLogSearchProvider:Get()
 	for questInfo in self:IterateQuests() do
 		if not questInfo.isHeader and not questInfo.isHidden then
 			local _, objective = GetQuestLogQuestText(questInfo.questLogIndex)
-			local hyperlink = GetQuestLink(questInfo.questID)
+			local hyperlink = GetQuestLink and GetQuestLink(questInfo.questID)
 			items[#items + 1] = {
 				name = questInfo.title,
 				extraSearchText = objective,
@@ -35,7 +35,11 @@ function QuestLogSearchProvider:Get()
 				end,
 				---@param tooltip GameTooltip
 				tooltip = function(tooltip)
-					tooltip:SetHyperlink(hyperlink)
+					if hyperlink then
+						tooltip:SetHyperlink(hyperlink)
+					else
+						tooltip:SetText(objective, nil, nil, nil, nil, true)
+					end
 				end,
 				hyperlink = hyperlink,
 			}
