@@ -62,7 +62,24 @@ function QuestLogSearchProvider:GetQuestInfo(index)
 		return C_QuestLog.GetInfo(index)
 	end
 	-- Classic
-	local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isBounty, isStory, isHidden, isScaling = GetQuestLogTitle(index)
+	local title,
+	level,
+	suggestedGroup,
+	isHeader,
+	isCollapsed,
+	isComplete,
+	frequency,
+	questID,
+	startEvent,
+	displayQuestID,
+	isOnMap,
+	hasLocalPOI,
+	isTask,
+	isBounty,
+	isStory,
+	isHidden,
+	isScaling = GetQuestLogTitle(index)
+
 	if title then
 		return {
 			title = title,
