@@ -51,9 +51,9 @@ end
 
 function module:Show()
 	if self:IsVisible() or InCombatLockdown() then return end
-
-	self.searchUI:SetShowMouseoverTooltip(self:GetDB().profile.options.showMouseoverTooltip)
-	self.searchUI:SetHelpText(self:GetHelpText())
+	local options = self:GetDB().profile.options
+	self.searchUI:SetShowMouseoverTooltip(options.showMouseoverTooltip)
+	self.searchUI:SetHelpText(options.showHelp and self:GetHelpText() or nil)
 
 	local items = self.providerCollection:Get()
 	self.searchContext = ns.CombinedSearchContext.Create({

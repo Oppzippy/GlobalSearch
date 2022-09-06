@@ -293,7 +293,7 @@ function SearchUIPrototype:Render()
 		pageNumber:SetText(L.page_x_of_x:format(self:GetPage(), self:GetNumPages()))
 		pageNumber:SetFontObject("GameFontWhite")
 		self.widgets.resultsContainer:AddChild(pageNumber)
-	else
+	elseif self.helpText then
 		local help = AceGUI:Create("Label")
 		---@cast help AceGUILabel
 		help:SetText(self.helpText)

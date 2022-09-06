@@ -40,6 +40,13 @@ module.optionsTable = {
 					width = 1.6,
 					order = 2,
 				},
+				showHelp = {
+					type = "toggle",
+					name = L.show_help,
+					desc = L.show_help_desc,
+					width = 1.6,
+					order = 3,
+				}
 			},
 		},
 		keybindings = {

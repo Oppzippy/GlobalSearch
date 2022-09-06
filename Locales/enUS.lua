@@ -49,6 +49,8 @@ Next Item: %s
 Preivous Page: %s
 Next Page: %s]]
 L.not_bound = "Not Bound"
+L.show_help = "Show Help"
+L.show_help_desc = "If enabled, the GlobalSearch keybindings will be shown when the search has no results."
 
 L.achievements_search_provider_desc = "Provides all achievements. Includes earned, unearned, and achievements further in chains that aren't visible in the UI yet."
 L.bags_search_provider_desc = "Provides all usable items in bags."

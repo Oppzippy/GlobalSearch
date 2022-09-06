@@ -11,6 +11,7 @@ ns.dbDefaults = {
 		options = {
 			doesShowKeybindToggle = false,
 			showMouseoverTooltip = true,
+			showHelp = true,
 			disabledSearchProviders = {
 				GlobalSearch_Achievements = true,
 			},
