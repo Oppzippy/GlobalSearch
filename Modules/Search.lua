@@ -210,7 +210,7 @@ function module:GetHelpText()
 	local keybinds = self.searchUI.keybindingRegistry:GetKeyBindingsByCallbackName()
 	local function getKeybindText(callbackName)
 		if not keybinds[callbackName] then
-			return "Not Bound"
+			return L.not_bound
 		end
 		return table.concat(keybinds[callbackName], ", ")
 	end
