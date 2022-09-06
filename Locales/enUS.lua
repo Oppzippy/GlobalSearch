@@ -48,7 +48,7 @@ Previous Item: %s
 Next Item: %s
 Preivous Page: %s
 Next Page: %s]]
-L.not_boound = "Not Bound"
+L.not_bound = "Not Bound"
 
 L.achievements_search_provider_desc = "Provides all achievements. Includes earned, unearned, and achievements further in chains that aren't visible in the UI yet."
 L.bags_search_provider_desc = "Provides all usable items in bags."
