@@ -63,14 +63,14 @@ function module:Show()
 	})
 	self.searchUI:Show()
 	self.searchUI:SetOffset(options.position.xOffset, options.position.yOffset)
-	self.searchUI:SetSize(options.size.width)
+	self.searchUI:SetSize(options.size.width, options.size.height)
 end
 
 function module:OnPositionChanged()
 	if self.searchUI:IsVisible() then
 		local options = self:GetDB().profile.options
 		self.searchUI:SetOffset(options.position.xOffset, options.position.yOffset)
-		self.searchUI:SetSize(options.size.width)
+		self.searchUI:SetSize(options.size.width, options.size.height)
 	end
 end
 

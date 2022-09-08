@@ -13,6 +13,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 ---@field RegisterCallback function
 local SearchUIPrototype = {
 	resultsPerPage = 10,
+	barHeight = 40,
 }
 
 local function CreateSearchUI()
@@ -49,7 +50,7 @@ function SearchUIPrototype:Show()
 		self.keybindingRegistry:OnKeyDown(keyWithModifiers)
 	end)
 	searchBar:SetFullWidth(true)
-	searchBar:SetHeight(40)
+	searchBar:SetHeight(self.barHeight)
 
 	local resultsContainer = AceGUI:Create("SimpleGroup")
 	---@cast resultsContainer AceGUISimpleGroup
@@ -77,8 +78,12 @@ function SearchUIPrototype:SetOffset(xOffset, yOffset)
 	self.widgets.container:SetPoint("TOP", xOffset, yOffset)
 end
 
-function SearchUIPrototype:SetSize(width)
+function SearchUIPrototype:SetSize(width, height)
 	self.widgets.container:SetWidth(width)
+	-- Changing the search bar width triggers an OnTextChanged event for some reason, so we can just
+	-- let that trigger the rerender rather than calling Render here.
+	self.widgets.searchBar:SetHeight(height)
+	self.barHeight = height
 end
 
 function SearchUIPrototype:SetHelpText(helpText)
@@ -276,7 +281,7 @@ function SearchUIPrototype:Render()
 			end)
 		end
 		resultWidget:SetFullWidth(true)
-		resultWidget:SetHeight(40)
+		resultWidget:SetHeight(self.barHeight)
 		resultWidget:SetUserData("item", item)
 
 		if i == self.selectedIndex then

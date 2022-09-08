@@ -4,7 +4,8 @@ local AceGUI = LibStub("AceGUI-3.0")
 
 local methods = {
 	OnAcquire = function(self)
-		self.frame:SetSize(350, 40)
+		self.frame:SetWidth(350)
+		self:SetHeight(40)
 
 		-- This texture is provided to consumers of the api, so everything that can be modified (within reason)
 		-- should be reset. It's necessary to pass the actual texture rather than a read only view of it like
@@ -54,6 +55,10 @@ local methods = {
 	end,
 	SetMacroText = function(self, macroText)
 		self.frame:SetAttribute("macrotext", macroText)
+	end,
+	SetHeight = function(self, height)
+		self.frame:SetHeight(height)
+		self.textureFrame:SetWidth(height - 8) -- subtract top and bottom border
 	end,
 }
 
@@ -107,8 +112,9 @@ do
 		mouseoverHighlightTexture:Hide()
 
 		local textureFrame = CreateFrame("Frame", nil, frame)
-		textureFrame:SetPoint("LEFT", 4, 0)
-		textureFrame:SetSize(32, 32)
+		-- 4 pixel border on the top, bottom, and left.
+		textureFrame:SetPoint("TOPLEFT", 4, -4)
+		textureFrame:SetPoint("BOTTOMLEFT", 0, 4)
 
 		local texture = textureFrame:CreateTexture(nil, "OVERLAY")
 

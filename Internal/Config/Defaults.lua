@@ -18,6 +18,7 @@ ns.dbDefaults = {
 			},
 			size = {
 				width = 350,
+				height = 40,
 			},
 			disabledSearchProviders = {
 				GlobalSearch_Achievements = true,
