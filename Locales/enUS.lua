@@ -51,6 +51,11 @@ Next Page: %s]]
 L.not_bound = "Not Bound"
 L.show_help = "Show Help"
 L.show_help_desc = "If enabled, the GlobalSearch keybindings will be shown when the search has no results."
+L.x_offset_from_center = "X Offset from Center"
+L.y_offset_from_top = "Y Offset from Top"
+L.size = "Size"
+L.width = "Width"
+L.position = "Position"
 
 L.achievements_search_provider_desc = "Provides all achievements. Includes earned, unearned, and achievements further in chains that aren't visible in the UI yet."
 L.bags_search_provider_desc = "Provides all usable items in bags."

@@ -73,6 +73,14 @@ function SearchUIPrototype:Show()
 	self:Render()
 end
 
+function SearchUIPrototype:SetOffset(xOffset, yOffset)
+	self.widgets.container:SetPoint("TOP", xOffset, yOffset)
+end
+
+function SearchUIPrototype:SetSize(width)
+	self.widgets.container:SetWidth(width)
+end
+
 function SearchUIPrototype:SetHelpText(helpText)
 	self.helpText = helpText
 end

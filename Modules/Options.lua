@@ -46,7 +46,55 @@ module.optionsTable = {
 					desc = L.show_help_desc,
 					width = 1.6,
 					order = 3,
-				}
+				},
+				position = {
+					type = "group",
+					inline = true,
+					name = L.position,
+					order = 4,
+					get = "GetPosition",
+					set = "SetPosition",
+					args = {
+						xOffset = {
+							type = "range",
+							name = L.x_offset_from_center,
+							softMin = -1000,
+							softMax = 1000,
+							step = 0.01,
+							order = 1,
+							width = 1.6,
+						},
+						yOffset = {
+							type = "range",
+							name = L.y_offset_from_top,
+							softMin = -1000,
+							softMax = 0,
+							max = 0,
+							step = 0.01,
+							order = 2,
+							width = 1.6,
+						},
+					},
+				},
+				size = {
+					type = "group",
+					inline = true,
+					name = L.size,
+					order = 5,
+					get = "GetSize",
+					set = "SetSize",
+					args = {
+						width = {
+							type = "range",
+							name = L.width,
+							min = 100,
+							softMin = 200,
+							softMax = 1000,
+							width = 1.6,
+							order = 1,
+						},
+					},
+				},
 			},
 		},
 		keybindings = {
@@ -210,6 +258,24 @@ function module:SetProviderEnabled(info, val)
 	local providerName = info[#info]
 	self:GetOptions().disabledSearchProviders[providerName] = not val
 	module:SendMessage("GlobalSearch_OnProviderStatusChanged", providerName, val)
+end
+
+function module:GetPosition(info)
+	return self:GetOptions().position[info[#info]]
+end
+
+function module:SetPosition(info, val)
+	self:GetOptions().position[info[#info]] = val
+	self:SendMessage("GlobalSearch_OnPositionChanged")
+end
+
+function module:GetSize(info)
+	return self:GetOptions().size[info[#info]]
+end
+
+function module:SetSize(info, val)
+	self:GetOptions().size[info[#info]] = val
+	self:SendMessage("GlobalSearch_OnPositionChanged")
 end
 
 function module:GetOptions()

@@ -12,6 +12,13 @@ ns.dbDefaults = {
 			doesShowKeybindToggle = false,
 			showMouseoverTooltip = true,
 			showHelp = true,
+			position = {
+				xOffset = 0,
+				yOffset = -20,
+			},
+			size = {
+				width = 350,
+			},
 			disabledSearchProviders = {
 				GlobalSearch_Achievements = true,
 			},
