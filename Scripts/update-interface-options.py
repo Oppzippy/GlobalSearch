@@ -18,6 +18,10 @@ source_file_urls = {
         "https://raw.githubusercontent.com/BigWigsMods/WoWUI/tbc/Interface_TBC/FrameXML/InterfaceOptionsPanels.lua",
         "https://raw.githubusercontent.com/BigWigsMods/WoWUI/tbc/Interface_TBC/FrameXML/InterfaceOptionsPanels.xml",
     ],
+    2: [
+        "https://raw.githubusercontent.com/BigWigsMods/WoWUI/wrath/Interface_Wrath/FrameXML/InterfaceOptionsPanels.lua",
+        "https://raw.githubusercontent.com/BigWigsMods/WoWUI/wrath/Interface_Wrath/FrameXML/InterfaceOptionsPanels.xml",
+    ],
 }
 
 xml_namespace = "{http://www.blizzard.com/wow/ui/}"
