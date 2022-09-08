@@ -13,6 +13,10 @@ local methods = {
 	GetText = function(self)
 		return self.frame:GetText()
 	end,
+	SetFont = function(self, path, height)
+		local _, _, flags = self.font:GetFont()
+		self.font:SetFont(path, height, flags)
+	end,
 }
 
 do
@@ -54,7 +58,6 @@ do
 		}
 		frame:ApplyBackdrop()
 
-		frame:SetFontObject("GameFontWhite")
 		frame:SetJustifyH("CENTER")
 		frame:SetJustifyV("CENTER")
 
@@ -63,9 +66,15 @@ do
 		frame:SetScript("OnKeyDown", onKeyDown)
 		frame:SetScript("OnTextChanged", onTextChanged)
 
+		---@type Font
+		local font = CreateFont("AceGUI30GlobalSearch-SearchBarFont" .. AceGUI:GetNextWidgetNum(widgetType))
+		font:CopyFontObject("GameFontWhite")
+		frame:SetFontObject(font)
+
 		local widget = {
 			type = widgetType,
 			frame = frame,
+			font = font,
 		}
 
 		for method, func in next, methods do

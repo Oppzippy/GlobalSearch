@@ -20,6 +20,10 @@ ns.dbDefaults = {
 				width = 350,
 				height = 40,
 			},
+			font = {
+				font = "Friz Quadrata TT",
+				size = 12,
+			},
 			disabledSearchProviders = {
 				GlobalSearch_Achievements = true,
 			},

@@ -3,6 +3,7 @@ local ns = select(2, ...)
 
 local AceAddon = LibStub("AceAddon-3.0")
 local AceLocale = LibStub("AceLocale-3.0")
+local LibSharedMedia = LibStub("LibSharedMedia-3.0")
 
 local L = AceLocale:GetLocale("GlobalSearch")
 local addon = AceAddon:GetAddon("GlobalSearch")
@@ -38,7 +39,7 @@ function module:OnInitialize()
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "Hide")
 	self:RegisterMessage("GlobalSearch_OnKeybindingModified", "RegisterKeybindings")
 	self:RegisterMessage("GlobalSearch_OnProviderStatusChanged", "UpdateProviderCollection")
-	self:RegisterMessage("GlobalSearch_OnPositionChanged", "OnPositionChanged")
+	self:RegisterMessage("GlobalSearch_OnPositionChanged", "UpdateSizeAndPosition")
 end
 
 function module:OnEnable()
@@ -62,15 +63,16 @@ function module:Show()
 		ns.FullTextSearchContext.Create(items),
 	})
 	self.searchUI:Show()
-	self.searchUI:SetOffset(options.position.xOffset, options.position.yOffset)
-	self.searchUI:SetSize(options.size.width, options.size.height)
+	self:UpdateSizeAndPosition()
 end
 
-function module:OnPositionChanged()
+function module:UpdateSizeAndPosition()
 	if self.searchUI:IsVisible() then
 		local options = self:GetDB().profile.options
 		self.searchUI:SetOffset(options.position.xOffset, options.position.yOffset)
 		self.searchUI:SetSize(options.size.width, options.size.height)
+		local fontPath = LibSharedMedia:Fetch("font", options.font.font)
+		self.searchUI:SetFont(fontPath, options.font.size)
 	end
 end
 

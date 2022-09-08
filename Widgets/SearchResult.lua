@@ -60,6 +60,10 @@ local methods = {
 		self.frame:SetHeight(height)
 		self.textureFrame:SetWidth(height - 8) -- subtract top and bottom border
 	end,
+	SetFont = function(self, path, height)
+		local _, _, flags = self.font:GetFont()
+		self.font:SetFont(path, height, flags)
+	end,
 }
 
 do
@@ -124,16 +128,23 @@ do
 			group:AddButton(textureFrame, { Icon = texture })
 		end
 
-		local categoryFontString = frame:CreateFontString(nil, "OVERLAY", "GameFontWhite")
+		local categoryFontString = frame:CreateFontString(nil, "OVERLAY")
 		categoryFontString:SetPoint("RIGHT", frame, "RIGHT", -5, 0)
 		categoryFontString:SetTextColor(0.8, 0.8, 0.8, 1)
 		categoryFontString:SetJustifyH("RIGHT")
 
-		local fontString = frame:CreateFontString(nil, "OVERLAY", "GameFontWhite")
+		local fontString = frame:CreateFontString(nil, "OVERLAY")
 		fontString:SetPoint("LEFT", textureFrame, "RIGHT", 6, 0)
 		fontString:SetPoint("RIGHT", categoryFontString, "LEFT", -6, 0)
 		fontString:SetJustifyH("LEFT")
 		fontString:SetMaxLines(2)
+
+		---@type Font
+		local font = CreateFont("AceGUI30GlobalSearch-SearchResultFont" .. AceGUI:GetNextWidgetNum(widgetType))
+		font:CopyFontObject("GameFontWhite")
+
+		categoryFontString:SetFontObject(font)
+		fontString:SetFontObject(font)
 
 		local widget = {
 			type = widgetType,
@@ -144,6 +155,7 @@ do
 			mouseoverHighlightTexture = mouseoverHighlightTexture,
 			fontString = fontString,
 			categoryFontString = categoryFontString,
+			font = font,
 		}
 
 		for method, func in next, methods do

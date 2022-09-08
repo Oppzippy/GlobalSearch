@@ -5,6 +5,7 @@ local AceAddon = LibStub("AceAddon-3.0")
 local AceLocale = LibStub("AceLocale-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
+local LibSharedMedia = LibStub("LibSharedMedia-3.0")
 
 local L = AceLocale:GetLocale("GlobalSearch")
 
@@ -98,6 +99,32 @@ module.optionsTable = {
 							name = L.height,
 							softMin = 20,
 							softMax = 80,
+							width = 1.6,
+							order = 2,
+						},
+					},
+				},
+				font = {
+					type = "group",
+					inline = true,
+					name = L.font,
+					get = "GetFont",
+					set = "SetFont",
+					args = {
+						font = {
+							type = "select",
+							dialogControl = "LSM30_Font",
+							name = L.font,
+							values = LibSharedMedia:HashTable("font"),
+							width = 1.6,
+							order = 1,
+						},
+						size = {
+							type = "range",
+							name = L.size,
+							min = 1,
+							softMin = 8,
+							softMax = 32,
 							width = 1.6,
 							order = 2,
 						},
@@ -283,6 +310,15 @@ end
 
 function module:SetSize(info, val)
 	self:GetOptions().size[info[#info]] = val
+	self:SendMessage("GlobalSearch_OnPositionChanged")
+end
+
+function module:GetFont(info)
+	return self:GetOptions().font[info[#info]]
+end
+
+function module:SetFont(info, val)
+	self:GetOptions().font[info[#info]] = val
 	self:SendMessage("GlobalSearch_OnPositionChanged")
 end
 

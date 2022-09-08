@@ -11,6 +11,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 ---@field callbacks table
 ---@field keybindingRegistry KeybindingRegistry
 ---@field RegisterCallback function
+---@field font unknown[]
 local SearchUIPrototype = {
 	resultsPerPage = 10,
 	barHeight = 40,
@@ -21,6 +22,7 @@ local function CreateSearchUI()
 		widgets = { results = {} },
 		selectedIndex = 1,
 		page = 1,
+		font = { "Fonts\\__FRIZQT.TTF", 12 },
 		keybindingRegistry = ns.KeybindingRegistry.Create(CallbackHandler),
 	}, { __index = SearchUIPrototype })
 	searchUI.callbacks = CallbackHandler:New(searchUI)
@@ -51,6 +53,7 @@ function SearchUIPrototype:Show()
 	end)
 	searchBar:SetFullWidth(true)
 	searchBar:SetHeight(self.barHeight)
+	searchBar:SetFont(unpack(self.font))
 
 	local resultsContainer = AceGUI:Create("SimpleGroup")
 	---@cast resultsContainer AceGUISimpleGroup
@@ -84,6 +87,11 @@ function SearchUIPrototype:SetSize(width, height)
 	-- let that trigger the rerender rather than calling Render here.
 	self.widgets.searchBar:SetHeight(height)
 	self.barHeight = height
+end
+
+function SearchUIPrototype:SetFont(path, size)
+	self.widgets.searchBar:SetFont(path, size)
+	self.font = { path, size }
 end
 
 function SearchUIPrototype:SetHelpText(helpText)
@@ -282,6 +290,7 @@ function SearchUIPrototype:Render()
 		end
 		resultWidget:SetFullWidth(true)
 		resultWidget:SetHeight(self.barHeight)
+		resultWidget:SetFont(unpack(self.font))
 		resultWidget:SetUserData("item", item)
 
 		if i == self.selectedIndex then

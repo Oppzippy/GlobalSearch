@@ -57,6 +57,7 @@ L.y_offset_from_top = "Y Offset from Top"
 L.size = "Size"
 L.width = "Width"
 L.height = "Height"
+L.font = "Font"
 
 L.achievements_search_provider_desc = "Provides all achievements. Includes earned, unearned, and achievements further in chains that aren't visible in the UI yet."
 L.bags_search_provider_desc = "Provides all usable items in bags."

@@ -6,7 +6,7 @@
 ## Notes: Search for anything.
 ## Author: Oppzippy
 ## Version: @project-version@
-## OptionalDeps: Ace3
+## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets
 ## SavedVariables: GlobalSearchDB
 ## X-Curse-Project-ID: 638729
 ## X-Wago-ID: vEGPPkG1
