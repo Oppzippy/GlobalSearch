@@ -301,7 +301,7 @@ end
 
 function module:SetPosition(info, val)
 	self:GetOptions().position[info[#info]] = val
-	self:SendMessage("GlobalSearch_OnPositionChanged")
+	self:SendMessage("GlobalSearch_OnDisplaySettingsChanged")
 end
 
 function module:GetSize(info)
@@ -310,7 +310,7 @@ end
 
 function module:SetSize(info, val)
 	self:GetOptions().size[info[#info]] = val
-	self:SendMessage("GlobalSearch_OnPositionChanged")
+	self:SendMessage("GlobalSearch_OnDisplaySettingsChanged")
 end
 
 function module:GetFont(info)
@@ -319,7 +319,7 @@ end
 
 function module:SetFont(info, val)
 	self:GetOptions().font[info[#info]] = val
-	self:SendMessage("GlobalSearch_OnPositionChanged")
+	self:SendMessage("GlobalSearch_OnDisplaySettingsChanged")
 end
 
 function module:GetOptions()

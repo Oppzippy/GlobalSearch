@@ -39,7 +39,7 @@ function module:OnInitialize()
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "Hide")
 	self:RegisterMessage("GlobalSearch_OnKeybindingModified", "RegisterKeybindings")
 	self:RegisterMessage("GlobalSearch_OnProviderStatusChanged", "UpdateProviderCollection")
-	self:RegisterMessage("GlobalSearch_OnPositionChanged", "UpdateSizeAndPosition")
+	self:RegisterMessage("GlobalSearch_OnDisplaySettingsChanged", "UpdateDisplaySettings")
 end
 
 function module:OnEnable()
@@ -63,10 +63,10 @@ function module:Show()
 		ns.FullTextSearchContext.Create(items),
 	})
 	self.searchUI:Show()
-	self:UpdateSizeAndPosition()
+	self:UpdateDisplaySettings()
 end
 
-function module:UpdateSizeAndPosition()
+function module:UpdateDisplaySettings()
 	if self.searchUI:IsVisible() then
 		local options = self:GetDB().profile.options
 		self.searchUI:SetOffset(options.position.xOffset, options.position.yOffset)
