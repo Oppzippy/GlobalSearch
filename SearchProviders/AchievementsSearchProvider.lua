@@ -47,15 +47,15 @@ function AchievementsSearchProvider:Fetch()
 
 	local items = {}
 	for _, achievement in next, achievements do
-		local hyperlink = GetAchievementLink(achievement[1])
+		local hyperlink = GetAchievementLink(achievement.id)
 		items[#items + 1] = {
-			name = achievement[2],
-			texture = achievement[10],
-			extraSearchText = achievement[8],
+			name = achievement.name,
+			texture = achievement.icon,
+			extraSearchText = achievement.description,
 			action = function()
 				AchievementFrame_LoadUI()
 				ShowUIPanel(AchievementFrame)
-				AchievementFrame_SelectAchievement(achievement[1])
+				AchievementFrame_SelectAchievement(achievement.id)
 			end,
 			---@param tooltip GameTooltip
 			tooltip = function(tooltip)

@@ -20,7 +20,7 @@ local addon = AceAddon:GetAddon("GlobalSearch")
 local module = addon:NewModule("AchievementStorage", "AceEvent-3.0", "AceConsole-3.0")
 
 -- Update when cache structure changes
-local cacheVersion = 2
+local cacheVersion = 3
 
 function module:OnEnable()
 	local cache = self:GetDB().global.cache.achievements
@@ -45,9 +45,19 @@ function module:RebuildCache()
 
 		local cache = self:GetDB().global.cache.achievements
 		local _, _, _, tocVersion = GetBuildInfo()
-		cache.data = achievements
 		cache.tocVersion = tocVersion
 		cache.version = 2
+
+		-- By not saving fields we don't need, SavedVariables file size can be reduced by around 50%
+		cache.data = {}
+		for i, achievement in ipairs(achievements) do
+			cache.data[i] = {
+				id = achievement[1],
+				name = achievement[2],
+				description = achievement[8],
+				icon = achievement[10],
+			}
+		end
 
 		self:Print(L.done)
 		self.rebuildInProgress = false
