@@ -46,7 +46,7 @@ function module:RebuildCache()
 		local cache = self:GetDB().global.cache.achievements
 		local _, _, _, tocVersion = GetBuildInfo()
 		cache.tocVersion = tocVersion
-		cache.version = 2
+		cache.version = cacheVersion
 
 		-- By not saving fields we don't need, SavedVariables file size can be reduced by around 50%
 		cache.data = {}
