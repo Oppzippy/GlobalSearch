@@ -13,8 +13,7 @@ local methods = {
 	GetText = function(self)
 		return self.frame:GetText()
 	end,
-	SetFont = function(self, path, height)
-		local _, _, flags = self.font:GetFont()
+	SetFont = function(self, path, height, flags)
 		self.font:SetFont(path, height, flags)
 	end,
 }

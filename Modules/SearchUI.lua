@@ -22,7 +22,7 @@ local function CreateSearchUI()
 		widgets = { results = {} },
 		selectedIndex = 1,
 		page = 1,
-		font = { "Fonts\\__FRIZQT.TTF", 12 },
+		font = { "Fonts\\__FRIZQT.TTF", 12, "" },
 		keybindingRegistry = ns.KeybindingRegistry.Create(CallbackHandler),
 	}, { __index = SearchUIPrototype })
 	searchUI.callbacks = CallbackHandler:New(searchUI)
@@ -89,9 +89,9 @@ function SearchUIPrototype:SetSize(width, height)
 	self.barHeight = height
 end
 
-function SearchUIPrototype:SetFont(path, size)
-	self.widgets.searchBar:SetFont(path, size)
-	self.font = { path, size }
+function SearchUIPrototype:SetFont(path, size, flags)
+	self.widgets.searchBar:SetFont(path, size, flags)
+	self.font = { path, size, flags }
 end
 
 function SearchUIPrototype:SetHelpText(helpText)

@@ -71,8 +71,17 @@ function module:UpdateDisplaySettings()
 		local options = self:GetDB().profile.options
 		self.searchUI:SetOffset(options.position.xOffset, options.position.yOffset)
 		self.searchUI:SetSize(options.size.width, options.size.height)
+
 		local fontPath = LibSharedMedia:Fetch("font", options.font.font)
-		self.searchUI:SetFont(fontPath, options.font.size)
+		local fontFlags = {}
+		if options.font.outline then
+			fontFlags[#fontFlags + 1] = options.font.outline
+		end
+		if options.font.monochrome then
+			fontFlags[#fontFlags + 1] = "MONOCHROME"
+		end
+
+		self.searchUI:SetFont(fontPath, options.font.size, table.concat(fontFlags, ","))
 	end
 end
 
