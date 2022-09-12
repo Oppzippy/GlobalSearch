@@ -46,7 +46,7 @@ Select Item: ENTER
 Link Item in Chat: %s
 Previous Item: %s
 Next Item: %s
-Preivous Page: %s
+Previous Page: %s
 Next Page: %s]]
 L.not_bound = "Not Bound"
 L.show_help = "Show Help"
