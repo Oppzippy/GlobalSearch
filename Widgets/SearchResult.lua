@@ -121,12 +121,6 @@ do
 
 		local texture = textureFrame:CreateTexture(nil, "OVERLAY")
 
-		local Masque = LibStub("Masque", true)
-		if Masque then
-			local group = Masque:Group("GlobalSearch", "Search Results")
-			group:AddButton(textureFrame, { Icon = texture })
-		end
-
 		local categoryFontString = frame:CreateFontString(nil, "OVERLAY")
 		categoryFontString:SetPoint("RIGHT", frame, "RIGHT", -5, 0)
 		categoryFontString:SetTextColor(0.8, 0.8, 0.8, 1)
