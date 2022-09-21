@@ -90,6 +90,7 @@ function ToysSearchProvider:Fetch()
 		local itemID = C_ToyBox.GetToyFromIndex(i)
 		local _, name, icon = C_ToyBox.GetToyInfo(itemID)
 		items[#items + 1] = {
+			id = itemID,
 			name = name,
 			extraSearchText = tooltipStorage:GetTooltip(function(tooltip)
 				---@cast tooltip GameTooltip

@@ -39,6 +39,7 @@ function MountsSearchProvider:Fetch()
 
 		if isUsable then
 			items[#items + 1] = {
+				id = mountID,
 				name = name,
 				extraSearchText = string.format("%s %s", description, source),
 				texture = icon,

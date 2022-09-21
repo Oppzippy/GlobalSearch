@@ -52,6 +52,7 @@ function SpellsSearchProvider:Fetch()
 			end
 
 			items[#items + 1] = {
+				id = spellID,
 				name = displayName,
 				texture = icon,
 				extraSearchText = description,

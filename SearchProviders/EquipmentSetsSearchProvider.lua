@@ -35,6 +35,7 @@ function EquipmentSetsSearchProvider:Fetch()
 	for _, setID in ipairs(equipmentSetIDs) do
 		local setName, icon = C_EquipmentSet.GetEquipmentSetInfo(setID)
 		items[#items + 1] = {
+			id = setName,
 			name = setName,
 			texture = icon,
 			---@param tooltip GameTooltip

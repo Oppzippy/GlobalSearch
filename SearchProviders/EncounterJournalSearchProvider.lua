@@ -118,6 +118,7 @@ function EncounterJournalSearchProvider:Fetch()
 				for encounterInfo in self:IterateEncounterInfo(instanceInfo) do
 					local _, _, _, _, bossImage = EJ_GetCreatureInfo(1, encounterInfo.journalEncounterID)
 					items[#items + 1] = {
+						id = encounterInfo.journalEncounterID,
 						name = L.boss_from_instance:format(encounterInfo.name, instanceInfo.name),
 						tooltip = encounterInfo.description,
 						extraSearchText = encounterInfo.description,

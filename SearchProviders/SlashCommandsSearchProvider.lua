@@ -41,6 +41,7 @@ function SlashCommandsSearchProvider:Fetch()
 	local items = {}
 	for command in next, commands do
 		items[#items + 1] = {
+			id = command,
 			name = command:lower(),
 			texture = 136243, -- Interface/Icons/Trade_Engineering
 			macroText = command,

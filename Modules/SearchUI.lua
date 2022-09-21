@@ -74,7 +74,9 @@ function SearchUIPrototype:Show()
 	self.widgets.resultsContainer = resultsContainer
 
 	self.results = {}
-	self:Render()
+
+	-- The caller should be listening for this event and trigger a render
+	self.callbacks:Fire("OnTextChanged", "")
 end
 
 function SearchUIPrototype:SetOffset(xOffset, yOffset)

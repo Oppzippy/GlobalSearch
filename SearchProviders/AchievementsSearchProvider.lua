@@ -49,6 +49,7 @@ function AchievementsSearchProvider:Fetch()
 	for _, achievement in next, achievements do
 		local hyperlink = GetAchievementLink(achievement.id)
 		items[#items + 1] = {
+			id = achievement.id,
 			name = achievement.name,
 			texture = achievement.icon,
 			extraSearchText = achievement.description,

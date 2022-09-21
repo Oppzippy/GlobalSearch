@@ -58,6 +58,7 @@ function module:Show()
 	self.searchUI:SetHelpText(options.showHelp and self:GetHelpText() or nil)
 
 	local items = self.providerCollection:Get()
+	self.items = items
 	self.searchContext = ns.CombinedSearchContext.Create({
 		ns.ShortTextSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items),
 		ns.FullTextSearchContext.Create(items),
@@ -172,12 +173,31 @@ function module:ExecuteAction(resultIndex)
 	end
 end
 
+function module:OnMacroItemSelected(resultIndex)
+	self:Hide()
+	local db = self.GetDB().profile
+	local item = self.results[resultIndex].item
+	local newRecentItems = { item.id }
+	local seenItems = { [item.id] = true }
+	for _, itemID in ipairs(db.recentItems) do
+		if not seenItems[itemID] then
+			seenItems[itemID] = true
+			newRecentItems[#newRecentItems + 1] = itemID
+			if #newRecentItems == db.options.maxRecentItems then
+				break
+			end
+		end
+	end
+	db.recentItems = newRecentItems
+end
+
 ---@param item SearchItem
 ---@param resultIndex integer
 ---@return string
 function module:GetMacroText(item, resultIndex)
 	local macroText = {
-		[[/run LibStub("AceAddon-3.0"):GetAddon("GlobalSearch"):GetModule("Search"):Hide()]],
+		[[/run LibStub("AceAddon-3.0"):GetAddon("GlobalSearch"):GetModule("Search"):OnMacroItemSelected(]] .. resultIndex ..
+			")",
 	}
 	if item.action then
 		macroText[#macroText + 1] = [[/run LibStub("AceAddon-3.0"):GetAddon("GlobalSearch"):GetModule("Search"):ExecuteAction(]]
@@ -195,11 +215,29 @@ function module:Search(query)
 	local prevSelection = self.results and self.results[self.selectedIndex] or nil
 
 	self.searchQuery = query
-	local results = self.searchContext:Search(query)
-	self.results = results
+	if query == "" then
+		local itemOrder = {}
+		for i, itemID in next, self:GetDB().profile.recentItems do
+			if not itemOrder[itemID] then
+				itemOrder[itemID] = i
+			end
+		end
+
+		self.results = {}
+		for _, item in next, self.items do
+			if itemOrder[item.id] then
+				self.results[#self.results + 1] = { item = item }
+			end
+		end
+		table.sort(self.results, function(a, b)
+			return itemOrder[a.item.id] < itemOrder[b.item.id]
+		end)
+	else
+		self.results = self.searchContext:Search(query)
+	end
 
 	local newSelectedIndex = 1
-	for i, result in ipairs(results) do
+	for i, result in ipairs(self.results) do
 		if prevSelection and prevSelection.item == result.item then
 			newSelectedIndex = i
 			break
@@ -208,7 +246,7 @@ function module:Search(query)
 	end
 	self.selectedIndex = newSelectedIndex
 
-	self.searchUI:SetResults(results)
+	self.searchUI:SetResults(self.results)
 end
 
 function module:OnHyperlink(_, item)

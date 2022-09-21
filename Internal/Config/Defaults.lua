@@ -8,10 +8,12 @@ ns.dbDefaults = {
 		},
 	},
 	profile = {
+		recentItems = {},
 		options = {
 			doesShowKeybindToggle = false,
 			showMouseoverTooltip = true,
 			showHelp = true,
+			maxRecentItems = 20,
 			position = {
 				xOffset = 0,
 				yOffset = -20,

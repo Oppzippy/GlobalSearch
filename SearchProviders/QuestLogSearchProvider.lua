@@ -19,6 +19,7 @@ function QuestLogSearchProvider:Get()
 			local _, objective = GetQuestLogQuestText(questInfo.questLogIndex)
 			local hyperlink = GetQuestLink and GetQuestLink(questInfo.questID)
 			items[#items + 1] = {
+				id = questInfo.questID,
 				name = questInfo.title,
 				extraSearchText = objective,
 				texture = 136797, -- Interface/QuestFrame/UI-QuestLog-BookIcon

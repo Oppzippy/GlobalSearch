@@ -33,6 +33,7 @@ function InterfaceOptionsSearchProvider:Fetch()
 				if type(_G[option.text]) == "string" then
 					local tooltip = _G["OPTION_TOOLTIP_" .. option.text:gsub("_TEXT$", "")]
 					items[#items + 1] = {
+						id = optionGroup.frame:GetName() .. ":" .. option.text,
 						name = ns.Util.StripEscapeSequences(_G[option.text]),
 						texture = 136243, -- Interface/Icons/Trade_Engineering
 						tooltip = type(tooltip) == "string" and tooltip,

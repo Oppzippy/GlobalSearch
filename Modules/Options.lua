@@ -48,6 +48,17 @@ module.optionsTable = {
 					width = 1.5,
 					order = 3,
 				},
+				maxRecentItems = {
+					type = "range",
+					name = L.number_of_recent_items,
+					softMin = 0,
+					softMax = 100,
+					min = 0,
+					max = 1000,
+					step = 1,
+					width = 1.5,
+					order = 3.1,
+				},
 				position = {
 					type = "group",
 					inline = true,

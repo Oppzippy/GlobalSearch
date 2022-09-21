@@ -25,6 +25,7 @@ function MinimapTrackingSearchProvider:Fetch()
 	for i = 1, GetNumTrackingTypes() do
 		local name, texture = GetTrackingInfo(i)
 		items[i] = {
+			id = name,
 			name = name,
 			texture = texture,
 			action = function()

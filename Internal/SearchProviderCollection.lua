@@ -2,10 +2,10 @@
 local ns = select(2, ...)
 
 ---@class SearchProviderCollection
----@field providers SearchProvider[]
+---@field providers table<string, SearchProvider>
 local SearchProviderCollectionPrototype = {}
 
----@param providers SearchProvider[]
+---@param providers table<string, SearchProvider>
 ---@return SearchProviderCollection
 local function CreateSearchProviderCollection(providers)
 	local collection = setmetatable({
@@ -17,12 +17,13 @@ end
 ---@return SearchItem[]
 function SearchProviderCollectionPrototype:Get()
 	local items = {}
-	for _, provider in ipairs(self.providers) do
+	for name, provider in next, self.providers do
 		local success, itemGroup = xpcall(provider.Get, geterrorhandler and geterrorhandler() or print, provider)
 		if success then
 			for _, item in ipairs(itemGroup) do
 				items[#items + 1] = setmetatable({
 					category = provider.localizedName,
+					id = string.format("%s:%s", name, tostring(item.id)),
 				}, {
 					__index = item,
 				})

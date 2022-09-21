@@ -36,6 +36,7 @@ function InstanceOptionsSearchProvider:Fetch()
 	---@type SearchItem[]
 	local items = {
 		{
+			id = "resetAllInstances",
 			name = L.reset_all_instances,
 			texture = 337500, -- Interface/LFGFrame/UI-LFG-PORTRAIT
 			action = function()
@@ -43,6 +44,7 @@ function InstanceOptionsSearchProvider:Fetch()
 			end,
 		},
 		{
+			id = "legacyRaidDifficulty:3",
 			name = L.legacy_raid_difficulty_x:format(RAID_DIFFICULTY1),
 			texture = 341547, -- Interface/LFGFrame/UI-LFR-PORTRAIT
 			action = function()
@@ -50,6 +52,7 @@ function InstanceOptionsSearchProvider:Fetch()
 			end,
 		},
 		{
+			id = "legacyRaidDifficulty:4",
 			name = L.legacy_raid_difficulty_x:format(RAID_DIFFICULTY2),
 			texture = 341547, -- Interface/LFGFrame/UI-LFR-PORTRAIT
 			action = function()
@@ -59,6 +62,7 @@ function InstanceOptionsSearchProvider:Fetch()
 	}
 	for difficultyID, localizedName in next, dungeonDifficulties do
 		items[#items + 1] = {
+			id = "dungeonDifficulty:" .. difficultyID,
 			name = L.dungeon_difficulty_x:format(localizedName),
 			texture = 133076, -- Interface/Icons/INV_Helmet_08 (Dungeon Finder icon)
 			action = function()
@@ -68,6 +72,7 @@ function InstanceOptionsSearchProvider:Fetch()
 	end
 	for difficultyID, localizedName in next, raidDifficulties do
 		items[#items + 1] = {
+			id = "raidDifficulty:" .. difficultyID,
 			name = L.raid_difficulty_x:format(localizedName),
 			texture = 341547, -- Interface/LFGFrame/UI-LFR-PORTRAIT
 			action = function()

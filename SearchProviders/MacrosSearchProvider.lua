@@ -44,6 +44,7 @@ end
 function MacrosSearchProvider:GetItemByMacroIndex(index)
 	local name, icon, body = GetMacroInfo(index)
 	return {
+		id = name,
 		name = name,
 		texture = icon,
 		macroText = body,

@@ -108,6 +108,7 @@ end
 
 function MapsSearchProvider:CreateItem(name, mapID)
 	return {
+		id = mapID,
 		name = name,
 		texture = 137176, -- Interface/WorldMap/UI-World-Icon
 		action = function()

@@ -26,6 +26,7 @@ function EmotesSearchProvider:Fetch()
 	for cmd, emote in next, hash_EmoteTokenList do
 		local readableName = cmd:sub(2, 2) .. cmd:sub(3):lower()
 		items[#items + 1] = {
+			id = emote,
 			name = readableName,
 			texture = 1019848, -- Interface/GossipFrame/ChatBubbleGossipIcon
 			action = function()

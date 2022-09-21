@@ -41,6 +41,7 @@ function MountsSearchProvider_Classic:Fetch()
 		-- the wrong mount to be summoned if the new mount is learned while the search bar is opened, meaning the items won't
 		-- be refreshed. To get around this, we get the mount id when we need it by spell id since that won't change.
 		items[#items + 1] = {
+			id = spellID,
 			name = name,
 			texture = texture,
 			pickup = function()

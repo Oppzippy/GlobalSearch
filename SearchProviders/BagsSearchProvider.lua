@@ -38,6 +38,7 @@ function BagsSearchProvider:Fetch()
 		local spellName = GetItemSpell(itemLink)
 		if itemName and spellName then
 			items[#items + 1] = {
+				id = itemID,
 				name = itemName,
 				extraSearchText = tooltipStorage:GetTooltip(itemLink),
 				texture = icon,

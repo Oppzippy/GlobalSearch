@@ -33,7 +33,7 @@ function SearchProviderRegistryPrototype:GetProviderCollection(disabledProviders
 	local providers = {}
 	for name, provider in next, self.providers do
 		if not disabledProviders[name] then
-			providers[#providers + 1] = provider
+			providers[name] = provider
 		end
 	end
 	return ns.SearchProviderCollection.Create(providers)

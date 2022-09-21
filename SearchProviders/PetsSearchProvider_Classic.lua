@@ -38,6 +38,7 @@ function PetsSearchProvider_Classic:Fetch()
 		-- the wrong critter to be summoned if the new critter is learned while the search bar is opened, meaning the items won't
 		-- be refreshed. To get around this, we get the critter id when we need it by spell id since that won't change.
 		items[#items + 1] = {
+			id = spellID,
 			name = name,
 			texture = texture,
 			pickup = function()

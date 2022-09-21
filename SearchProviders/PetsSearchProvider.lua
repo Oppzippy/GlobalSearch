@@ -90,6 +90,7 @@ function PetsSearchProvider:Fetch()
 				name = string.format("%s (%s)", customName, speciesName)
 			end
 			items[#items + 1] = {
+				id = petID,
 				name = name,
 				extraSearchText = string.format("%s %s", source, description),
 				texture = icon,

@@ -51,6 +51,7 @@ do
 					local prefix = name:match("^([^_]+)")
 					local panelName = prefixToPanelName[prefix]
 					coroutine.yield({
+						id = name .. ":" .. option.name,
 						name = option.name,
 						texture = 136243, -- Interface/Icons/Trade_Engineering
 						tooltip = option.tooltip or option.description,
@@ -82,6 +83,7 @@ function SystemOptionsSearchProvider:GetOptionsFromCategoryFrame(categoryFrame)
 			if type(_G[option.text]) == "string" then
 				local tooltip = _G["OPTION_TOOLTIP_" .. option.text:gsub("_TEXT$", "")]
 				coroutine.yield({
+					id = categoryFrame:GetName() .. ":" .. option.text,
 					name = ns.Util.StripEscapeSequences(_G[option.text]),
 					texture = 136243, -- Interface/Icons/Trade_Engineering
 					tooltip = type(tooltip) == "string" and tooltip,
