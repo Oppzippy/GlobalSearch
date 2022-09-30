@@ -36,3 +36,32 @@ function TestSearchProviderCollection:TestCombinesAllChildren()
 
 	luaunit.assertEquals(#collection:Get(), 3)
 end
+
+function TestSearchProviderCollection:TestNilID()
+	local collection = SearchProviderCollection.Create({
+		CreateMockSearchProvider({
+			{
+				id = nil,
+				name = "1",
+			},
+		}),
+	})
+	luaunit.assertNil(collection:Get()[1].id)
+end
+
+function TestSearchProviderCollection:TestFalsyID()
+	local collection = SearchProviderCollection.Create({
+		CreateMockSearchProvider({
+			{
+				id = nil,
+				name = "1",
+			},
+			{
+				id = false,
+				name = "2",
+			},
+		}),
+	})
+	local results = collection:Get()
+	luaunit.assertNotEquals(results[1].id, results[2].id)
+end
