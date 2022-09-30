@@ -188,7 +188,7 @@ function module:OnMacroItemSelected(resultIndex)
 			if not seenItems[itemID] then
 				seenItems[itemID] = true
 				newRecentItems[#newRecentItems + 1] = itemID
-				if #newRecentItems == recentItemStorageLimit then
+				if #newRecentItems >= recentItemStorageLimit then
 					break
 				end
 			end
