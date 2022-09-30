@@ -179,11 +179,14 @@ function module:OnMacroItemSelected(resultIndex)
 	local item = self.results[resultIndex].item
 	local newRecentItems = { item.id }
 	local seenItems = { [item.id] = true }
+	-- Store more items than the limit since some items may be unavailable (bag items that were consumed, etc.)
+	local recentItemStorageLimit = db.options.maxRecentItems * 2
+
 	for _, itemID in ipairs(db.recentItems) do
 		if not seenItems[itemID] then
 			seenItems[itemID] = true
 			newRecentItems[#newRecentItems + 1] = itemID
-			if #newRecentItems == db.options.maxRecentItems then
+			if #newRecentItems == recentItemStorageLimit then
 				break
 			end
 		end
@@ -216,22 +219,13 @@ function module:Search(query)
 
 	self.searchQuery = query
 	if query == "" then
-		local itemOrder = {}
-		for i, itemID in next, self:GetDB().profile.recentItems do
-			if not itemOrder[itemID] then
-				itemOrder[itemID] = i
-			end
-		end
+		local results = self:GetRecentItemResults()
 
-		self.results = {}
-		for _, item in next, self.items do
-			if itemOrder[item.id] then
-				self.results[#self.results + 1] = { item = item }
-			end
+		-- We store more items than the max number of recent items to display, so remove the extras.
+		for i = self:GetDB().profile.options.maxRecentItems + 1, #results do
+			results[i] = nil
 		end
-		table.sort(self.results, function(a, b)
-			return itemOrder[a.item.id] < itemOrder[b.item.id]
-		end)
+		self.results = results
 	else
 		self.results = self.searchContext:Search(query)
 	end
@@ -247,6 +241,27 @@ function module:Search(query)
 	self.selectedIndex = newSelectedIndex
 
 	self.searchUI:SetResults(self.results)
+end
+
+function module:GetRecentItemResults()
+	local itemOrder = {}
+	for i, itemID in next, self:GetDB().profile.recentItems do
+		if not itemOrder[itemID] then
+			itemOrder[itemID] = i
+		end
+	end
+
+	local results = {}
+	for _, item in next, self.items do
+		if itemOrder[item.id] then
+			results[#results + 1] = { item = item }
+		end
+	end
+
+	table.sort(results, function(a, b)
+		return itemOrder[a.item.id] < itemOrder[b.item.id]
+	end)
+	return results
 end
 
 function module:OnHyperlink(_, item)
