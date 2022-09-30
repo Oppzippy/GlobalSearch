@@ -178,6 +178,11 @@ function module:OnMacroItemSelected(resultIndex)
 	local db = self.GetDB().profile
 	local item = self.results[resultIndex].item
 
+	if db.options.maxRecentItems == 0 then
+		db.recentItems = {}
+		return
+	end
+
 	if item.id then
 		local newRecentItems = { item.id }
 		local seenItems = { [item.id] = true }
