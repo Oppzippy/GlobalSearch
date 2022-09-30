@@ -177,21 +177,24 @@ function module:OnMacroItemSelected(resultIndex)
 	self:Hide()
 	local db = self.GetDB().profile
 	local item = self.results[resultIndex].item
-	local newRecentItems = { item.id }
-	local seenItems = { [item.id] = true }
-	-- Store more items than the limit since some items may be unavailable (bag items that were consumed, etc.)
-	local recentItemStorageLimit = db.options.maxRecentItems * 2
 
-	for _, itemID in ipairs(db.recentItems) do
-		if not seenItems[itemID] then
-			seenItems[itemID] = true
-			newRecentItems[#newRecentItems + 1] = itemID
-			if #newRecentItems == recentItemStorageLimit then
-				break
+	if item.id then
+		local newRecentItems = { item.id }
+		local seenItems = { [item.id] = true }
+		-- Store more items than the limit since some items may be unavailable (bag items that were consumed, etc.)
+		local recentItemStorageLimit = db.options.maxRecentItems * 2
+
+		for _, itemID in ipairs(db.recentItems) do
+			if not seenItems[itemID] then
+				seenItems[itemID] = true
+				newRecentItems[#newRecentItems + 1] = itemID
+				if #newRecentItems == recentItemStorageLimit then
+					break
+				end
 			end
 		end
+		db.recentItems = newRecentItems
 	end
-	db.recentItems = newRecentItems
 end
 
 ---@param item SearchItem
@@ -251,6 +254,7 @@ function module:GetRecentItemResults()
 		end
 	end
 
+	---@type SearchContextItem[]
 	local results = {}
 	for _, item in next, self.items do
 		if itemOrder[item.id] then

@@ -23,7 +23,7 @@ function SearchProviderCollectionPrototype:Get()
 			for _, item in ipairs(itemGroup) do
 				items[#items + 1] = setmetatable({
 					category = provider.localizedName,
-					id = string.format("%s:%s", name, tostring(item.id)),
+					id = item.id and string.format("%s:%s", name, tostring(item.id)),
 				}, {
 					__index = item,
 				})
