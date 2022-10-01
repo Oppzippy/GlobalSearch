@@ -5,6 +5,7 @@ ns.dbDefaults = {
 	global = {
 		cache = {
 			achievements = {},
+			items = {},
 		},
 	},
 	profile = {

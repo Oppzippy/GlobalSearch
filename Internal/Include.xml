@@ -7,4 +7,5 @@
 	<Script file="SearchProviderCollection.lua" />
 	<Script file="SearchProviderRegistry.lua" />
 	<Script file="Util.lua" />
+	<Script file="WaitGroup.lua" />
 </Ui>

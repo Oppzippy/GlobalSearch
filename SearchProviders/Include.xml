@@ -9,6 +9,7 @@
 	<Script file="InterfaceOptionsSearchProvider.lua" />
 	<Script file="MacrosSearchProvider.lua" />
 	<Script file="MapsSearchProvider.lua" />
+	<Script file="ItemsSearchProvider.lua" />
 	<Script file="MinimapTrackingSearchProvider.lua" />
 	<Script file="MountsSearchProvider_Classic.lua" />
 	<Script file="MountsSearchProvider.lua" />
