@@ -17,6 +17,8 @@ function module:OnInitialize()
 	self.searchQuery = ""
 	self.selectedIndex = 1
 	self.maxResults = 10
+	---@type table<SearchItem[], SearchContext[]>
+	self.contextCache = {}
 
 	self.providerCollection = ns.SearchProviderCollection.Create({})
 	self:UpdateProviderCollection()
@@ -66,11 +68,34 @@ end
 
 ---@param itemsBySearchProvider table<string, SearchItem[]>
 function module:GetCombinedSearchContext(itemsBySearchProvider)
-	local contexts = {}
-	for providerName, items in next, itemsBySearchProvider do
-		contexts[#contexts + 1] = ns.ShortTextSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items)
-		contexts[#contexts + 1] = ns.FullTextSearchContext.Create(items)
+	---@type table<SearchItem[], SearchContext[]>
+	local newContextCache = {}
+
+	for _, items in next, itemsBySearchProvider do
+		if self.contextCache[items] then
+			newContextCache[items] = self.contextCache[items]
+		else
+			local contextGroup = {}
+			contextGroup[#contextGroup + 1] = ns.ShortTextSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items)
+			contextGroup[#contextGroup + 1] = ns.FullTextSearchContext.Create(items)
+			newContextCache[items] = contextGroup
+		end
 	end
+	self.contextCache = newContextCache
+
+	---@type SearchContext[]
+	local contexts = {}
+	for _, contextGroup in next, newContextCache do
+		for _, context in next, contextGroup do
+			contexts[#contexts + 1] = context
+		end
+	end
+
+	-- If nobody else has a reference to the keys in the cache, it is impossible for the value to ever be accessed.
+	-- We can use a weak reference to prevent the key value pairs from being kept around longer than necessary.
+	setmetatable(newContextCache, {
+		__mode = "k", -- weak key references
+	})
 	return ns.CombinedSearchContext.Create(contexts)
 end
 
