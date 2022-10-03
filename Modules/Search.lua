@@ -57,14 +57,21 @@ function module:Show()
 	self.searchUI:SetShowMouseoverTooltip(options.showMouseoverTooltip)
 	self.searchUI:SetHelpText(options.showHelp and self:GetHelpText() or nil)
 
-	local items = self.providerCollection:Get()
-	self.items = items
-	self.searchContext = ns.CombinedSearchContext.Create({
-		ns.ShortTextSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items),
-		ns.FullTextSearchContext.Create(items),
-	})
+	local itemsBySearchProvider = self.providerCollection:Get()
+	self.itemsBySearchProvider = itemsBySearchProvider
+	self.searchContext = self:GetCombinedSearchContext(itemsBySearchProvider)
 	self.searchUI:Show()
 	self:UpdateDisplaySettings()
+end
+
+---@param itemsBySearchProvider table<string, SearchItem[]>
+function module:GetCombinedSearchContext(itemsBySearchProvider)
+	local contexts = {}
+	for providerName, items in next, itemsBySearchProvider do
+		contexts[#contexts + 1] = ns.ShortTextSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items)
+		contexts[#contexts + 1] = ns.FullTextSearchContext.Create(items)
+	end
+	return ns.CombinedSearchContext.Create(contexts)
 end
 
 function module:UpdateDisplaySettings()
@@ -179,26 +186,36 @@ function module:OnMacroItemSelected(resultIndex)
 	local item = self.results[resultIndex].item
 
 	if db.options.maxRecentItems == 0 then
-		db.recentItems = {}
+		db.recentItemsV2 = {}
 		return
 	end
 
 	if item.id then
-		local newRecentItems = { item.id }
-		local seenItems = { [item.id] = true }
+		local newRecentItems = {
+			{
+				provider = item.provider,
+				id = item.id,
+			},
+		}
+		local seenItems = {
+			[item.provider] = { [item.id] = true },
+		}
 		-- Store more items than the limit since some items may be unavailable (bag items that were consumed, etc.)
 		local recentItemStorageLimit = db.options.maxRecentItems * 2
 
-		for _, itemID in ipairs(db.recentItems) do
-			if not seenItems[itemID] then
-				seenItems[itemID] = true
-				newRecentItems[#newRecentItems + 1] = itemID
+		for _, recentItem in ipairs(db.recentItemsV2) do
+			if not seenItems[recentItem.provider] then
+				seenItems[recentItem.provider] = {}
+			end
+			if not seenItems[recentItem.provider][recentItem.id] then
+				seenItems[recentItem.provider][recentItem.id] = true
+				newRecentItems[#newRecentItems + 1] = recentItem
 				if #newRecentItems >= recentItemStorageLimit then
 					break
 				end
 			end
 		end
-		db.recentItems = newRecentItems
+		db.recentItemsV2 = newRecentItems
 	end
 end
 
@@ -252,23 +269,34 @@ function module:Search(query)
 end
 
 function module:GetRecentItemResults()
-	local itemOrder = {}
-	for i, itemID in next, self:GetDB().profile.recentItems do
-		if not itemOrder[itemID] then
-			itemOrder[itemID] = i
+	---@type table<string, table<unknown, number>>
+	local itemIDOrder = {}
+	for i, recentItem in next, self:GetDB().profile.recentItemsV2 do
+		if recentItem.provider then -- don't break on old format
+			if not itemIDOrder[recentItem.provider] then
+				itemIDOrder[recentItem.provider] = {}
+			end
+			itemIDOrder[recentItem.provider][recentItem.id] = i
 		end
 	end
 
 	---@type SearchContextItem[]
 	local results = {}
-	for _, item in next, self.items do
-		if itemOrder[item.id] then
-			results[#results + 1] = { item = item }
+	---@type table<SearchContextItem, number>
+	local resultOrder = {}
+	for providerName, items in next, self.itemsBySearchProvider do
+		for _, item in next, items do
+			local order = itemIDOrder[providerName] and itemIDOrder[providerName][item.id]
+			if order then
+				local result = { item = item }
+				results[#results + 1] = result
+				resultOrder[result] = order
+			end
 		end
 	end
 
 	table.sort(results, function(a, b)
-		return itemOrder[a.item.id] < itemOrder[b.item.id]
+		return resultOrder[a] < resultOrder[b]
 	end)
 	return results
 end

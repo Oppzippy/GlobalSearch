@@ -4,6 +4,18 @@ local ShortTextQueryMatcher = require("Internal.Search.ShortTextQueryMatcher")
 
 TestShortTextSearchContext = {}
 
+---@param results SearchContextItem[]
+---@param itemName string
+---@return SearchContextItem
+local function getResultByItemName(results, itemName)
+	for _, result in next, results do
+		if result.item.name == itemName then
+			return result
+		end
+	end
+	error("item not found")
+end
+
 function TestShortTextSearchContext:TestResultCaching()
 	local items = {
 		{
@@ -48,8 +60,7 @@ function TestShortTextSearchContext:TestSortingByNumMatches()
 	}
 	local context = ShortTextSearchContext.Create(ShortTextQueryMatcher.MatchesQuery, items)
 	local results = context:Search("ac")
-	luaunit.assertEquals(results[1].item.name, "ac")
-	luaunit.assertEquals(results[2].item.name, "abc")
+	luaunit.assertTrue(getResultByItemName(results, "abc").score < getResultByItemName(results, "ac").score)
 end
 
 function TestShortTextSearchContext:TestSortingByEarliestMatch()
@@ -64,8 +75,7 @@ function TestShortTextSearchContext:TestSortingByEarliestMatch()
 	}
 	local context = ShortTextSearchContext.Create(ShortTextQueryMatcher.MatchesQuery, items)
 	local results = context:Search("abcde")
-	luaunit.assertEquals(results[1].item.name, "abcde")
-	luaunit.assertEquals(results[2].item.name, "_____abcde")
+	luaunit.assertTrue(getResultByItemName(results, "_____abcde").score < getResultByItemName(results, "abcde").score)
 end
 
 function TestShortTextSearchContext:TestSortingByLongestFirstMatch()
@@ -79,8 +89,7 @@ function TestShortTextSearchContext:TestSortingByLongestFirstMatch()
 	}
 	local context = ShortTextSearchContext.Create(ShortTextQueryMatcher.MatchesQuery, items)
 	local results = context:Search("abc")
-	luaunit.assertEquals(results[1].item.name, "abc")
-	luaunit.assertEquals(results[2].item.name, "a_bc")
+	luaunit.assertTrue(getResultByItemName(results, "a_bc").score < getResultByItemName(results, "abc").score)
 end
 
 function TestShortTextSearchContext:TestSortingByStringLength()
@@ -94,8 +103,7 @@ function TestShortTextSearchContext:TestSortingByStringLength()
 	}
 	local context = ShortTextSearchContext.Create(ShortTextQueryMatcher.MatchesQuery, items)
 	local results = context:Search("ab")
-	luaunit.assertEquals(results[1].item.name, "abcd")
-	luaunit.assertEquals(results[2].item.name, "abcdefg")
+	luaunit.assertTrue(getResultByItemName(results, "abcdefg").score < getResultByItemName(results, "abcd").score)
 end
 
 function TestShortTextSearchContext:TestSortingBySmallestRange()
@@ -110,6 +118,6 @@ function TestShortTextSearchContext:TestSortingBySmallestRange()
 	}
 	local context = ShortTextSearchContext.Create(ShortTextQueryMatcher.MatchesQuery, items)
 	local results = context:Search("abcde")
-	luaunit.assertEquals(results[1].item.name, "abc_de________")
-	luaunit.assertEquals(results[2].item.name, "abc_____de")
+	luaunit.assertTrue(getResultByItemName(results, "abc_____de").score <
+		getResultByItemName(results, "abc_de________").score)
 end

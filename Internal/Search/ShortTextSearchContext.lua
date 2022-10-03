@@ -48,8 +48,6 @@ function ShortTextSearchContextPrototype:SearchItems(query, items)
 	query = query:lower()
 	---@type SearchContextItem[]
 	local matches = {}
-	---@type table<SearchContextItem, number>
-	local scores = {}
 	local numItems = #items
 	for i = 1, numItems do
 		local item = items[i]
@@ -58,35 +56,29 @@ function ShortTextSearchContextPrototype:SearchItems(query, items)
 			local match = {
 				item = item,
 				matchRanges = matchRanges,
+				score = self:GetMatchScore(item, matchRanges),
 			}
 			matches[#matches + 1] = match
-			scores[match] = self:GetMatchScore(match)
 		end
 	end
 
-	table.sort(matches, function(a, b)
-		local aScore, bScore = scores[a], scores[b]
-		if aScore ~= bScore then
-			return aScore > bScore
-		end
-		return a.item.name < b.item.name
-	end)
 	return matches
 end
 
----@param match SearchContextItem
+---@param item SearchItem
+---@param matchRanges MatchRange[]
 ---@return number
-function ShortTextSearchContextPrototype:GetMatchScore(match)
-	local numMatchRanges = #match.matchRanges
+function ShortTextSearchContextPrototype:GetMatchScore(item, matchRanges)
+	local numMatchRanges = #matchRanges
 
 	-- Prioritize shorter names
-	local score = -(#match.item.name)
+	local score = -(#item.name)
 
 	-- Prioritize earlier first match
-	score = score - match.matchRanges[1].from * 10
+	score = score - matchRanges[1].from * 10
 
 	-- Prioritize smaller distance between the first and last match
-	score = score - (match.matchRanges[#match.matchRanges].to - match.matchRanges[1].from) * 10
+	score = score - (matchRanges[#matchRanges].to - matchRanges[1].from) * 10
 
 	-- Prioritize fewer matches
 	score = score - numMatchRanges * 100

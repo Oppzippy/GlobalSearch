@@ -8,7 +8,7 @@ ns.dbDefaults = {
 		},
 	},
 	profile = {
-		recentItems = {},
+		recentItemsV2 = {},
 		options = {
 			doesShowKeybindToggle = false,
 			showMouseoverTooltip = true,

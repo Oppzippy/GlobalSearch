@@ -25,15 +25,23 @@ end
 ---@return SearchContextItem[]
 function FullTextSearchContextPrototype:Search(query)
 	if query == "" then return {} end
-	local items = {}
-	local results = self.index:Search(query)
-	local numResults = #results
-	for i = 1, numResults do
-		items[i] = {
-			item = results[i],
+	local weightedResults = self.index:Search(query)
+	local results = self:ScoreWeightedResults(weightedResults)
+
+	return results
+end
+
+---@param weightedResults table<SearchItem, number>
+function FullTextSearchContextPrototype:ScoreWeightedResults(weightedResults)
+	local results = {}
+	for value, weight in next, weightedResults do
+		results[#results + 1] = {
+			item = value,
+			score = weight - 50000, -- TODO configurable or something
 		}
 	end
-	return items
+
+	return results
 end
 
 local export = { Create = CreateFullTextSearchContext }

@@ -14,23 +14,23 @@ local function CreateSearchProviderCollection(providers)
 	return collection
 end
 
----@return SearchItem[]
+---@return table<string, SearchItem[]>
 function SearchProviderCollectionPrototype:Get()
-	local items = {}
+	local itemsBySearchProvider = {}
 	for name, provider in next, self.providers do
 		local success, itemGroup = xpcall(provider.Get, geterrorhandler and geterrorhandler() or print, provider)
+		local decoratedItemGroup = {}
+		for i, item in ipairs(itemGroup) do
+			decoratedItemGroup[i] = setmetatable({
+				provider = name,
+				category = provider.localizedName,
+			}, { __index = item })
+		end
 		if success then
-			for _, item in ipairs(itemGroup) do
-				items[#items + 1] = setmetatable({
-					category = provider.localizedName,
-					id = item.id and string.format("%s:%s", name, tostring(item.id)),
-				}, {
-					__index = item,
-				})
-			end
+			itemsBySearchProvider[name] = decoratedItemGroup
 		end
 	end
-	return items
+	return itemsBySearchProvider
 end
 
 local export = { Create = CreateSearchProviderCollection }

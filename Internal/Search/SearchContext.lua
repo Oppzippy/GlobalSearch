@@ -1,5 +1,6 @@
 ---@class SearchContextItem
 ---@field item SearchItem
+---@field score number
 ---@field matchRanges? MatchRange[]
 
 ---@class SearchContext

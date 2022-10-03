@@ -1,5 +1,6 @@
 ---@class SearchItem
 ---@field id? any
+---@field provider? string
 ---@field name string
 ---@field category string
 ---@field texture number|string|fun(texture: Texture)

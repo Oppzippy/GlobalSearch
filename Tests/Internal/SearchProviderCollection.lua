@@ -51,7 +51,7 @@ end
 
 function TestSearchProviderCollection:TestFalsyID()
 	local collection = SearchProviderCollection.Create({
-		CreateMockSearchProvider({
+		MockProvider = CreateMockSearchProvider({
 			{
 				id = nil,
 				name = "1",
@@ -63,5 +63,5 @@ function TestSearchProviderCollection:TestFalsyID()
 		}),
 	})
 	local results = collection:Get()
-	luaunit.assertNotEquals(results[1].id, results[2].id)
+	luaunit.assertNotEquals(results.MockProvider[1].id, results.MockProvider[2].id)
 end

@@ -18,29 +18,45 @@ end
 ---@param query string
 ---@return SearchContextItem[]
 function CombinedSearchContextPrototype:Search(query)
-	local results = {}
+	local resultGroups = {}
 	for i, context in ipairs(self.contexts) do
-		results[i] = context:Search(query)
+		resultGroups[i] = context:Search(query)
 	end
-	return self:FlattenAndDeduplicate(results)
+
+	local results = self:Flatten(resultGroups)
+	table.sort(results, function(a, b)
+		if a.score ~= b.score then
+			return a.score > b.score
+		end
+		return a.item.name < b.item.name
+	end)
+	local deduplicated = self:Deduplicate(results)
+
+	return deduplicated
 end
 
----@param results SearchContextItem[][]
+---@param resultGroups SearchContextItem[][]
 ---@return SearchContextItem[]
-function CombinedSearchContextPrototype:FlattenAndDeduplicate(results)
-	local seen = {}
-	local deduplicated = {}
-	-- Outer loop runs very few times so ipairs is fine
-	for _, contextResults in ipairs(results) do
+function CombinedSearchContextPrototype:Flatten(resultGroups)
+	local flattened = {}
+	for _, contextResults in ipairs(resultGroups) do
 		local numContextResults = #contextResults
-		-- Standard for loop for performance
 		for i = 1, numContextResults do
-			local result = contextResults[i]
-			local item = result.item
-			if not seen[item] then
-				seen[item] = true
-				deduplicated[#deduplicated + 1] = result
-			end
+			flattened[#flattened + 1] = contextResults[i]
+		end
+	end
+	return flattened
+end
+
+---@param results SearchContextItem[]
+---@return SearchContextItem[]
+function CombinedSearchContextPrototype:Deduplicate(results)
+	local deduplicated = {}
+	local seen = {}
+	for _, result in ipairs(results) do
+		if not seen[result.item] then
+			seen[result.item] = true
+			deduplicated[#deduplicated + 1] = result
 		end
 	end
 	return deduplicated
