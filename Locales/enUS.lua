@@ -65,6 +65,7 @@ L.thick = "Thick"
 L.monochrome = "Monochrome"
 L.number_of_recent_items = "Number of Recent Items"
 L.building_item_cache = "Building Item Cache"
+L.items = "Items"
 
 L.achievements_search_provider_desc = "Provides all achievements. Includes earned, unearned, and achievements further in chains that aren't visible in the UI yet."
 L.bags_search_provider_desc = "Provides all usable items in bags."

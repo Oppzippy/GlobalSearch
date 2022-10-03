@@ -76,8 +76,11 @@ function module:GetCombinedSearchContext(itemsBySearchProvider)
 			newContextCache[items] = self.contextCache[items]
 		else
 			local contextGroup = {}
-			contextGroup[#contextGroup + 1] = ns.ShortTextSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items)
-			contextGroup[#contextGroup + 1] = ns.FullTextSearchContext.Create(items)
+			-- Short text is O(n) so we need to cap it somewhere for performance
+			if #items < 10000 then
+				contextGroup[#contextGroup + 1] = ns.ShortTextSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items)
+				contextGroup[#contextGroup + 1] = ns.FullTextSearchContext.Create(items)
+			end
 			newContextCache[items] = contextGroup
 		end
 	end
