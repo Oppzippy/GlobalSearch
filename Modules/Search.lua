@@ -246,7 +246,24 @@ function module:Search(query)
 		end
 		self.results = results
 	else
-		self.results = self.searchContext:Search(query)
+		local specificProvider, specificProviderQuery = query:match("^#([^ ]+) (.*)$")
+		if specificProvider then
+			specificProvider = specificProvider:lower()
+
+			---@type table<string, boolean>
+			local matchingProviderIDs = {}
+			for id, provider in next, self:GetSearchProviderRegistry():GetProviders() do
+				local localizedName = provider.localizedName or id
+				if localizedName:gsub(" ", ""):lower() == specificProvider then
+					matchingProviderIDs[id] = true
+				end
+			end
+
+			local context = self.searchContextCache:GetCombinedContextForProviders(matchingProviderIDs)
+			self.results = context:Search(specificProviderQuery)
+		else
+			self.results = self.searchContext:Search(query)
+		end
 	end
 
 	local newSelectedIndex = 1
