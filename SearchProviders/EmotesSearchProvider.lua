@@ -6,7 +6,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class EmotesSearchProvider : SearchProvider
 local EmotesSearchProvider = {
-	localizedName = L.emotes,
+	name = L.emotes,
 	category = L.global_search,
 }
 

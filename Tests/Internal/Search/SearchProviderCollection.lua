@@ -3,9 +3,9 @@ local SearchProviderCollection = require("Internal.SearchProviderCollection")
 
 TestSearchProviderCollection = {}
 
-local CreateMockSearchProvider = function(items, localizedName)
+local CreateMockSearchProvider = function(items, name)
 	return {
-		localizedName = localizedName,
+		name = name,
 		Get = function()
 			return items
 		end,

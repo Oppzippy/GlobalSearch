@@ -10,7 +10,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class PetsSearchProvider : SearchProvider, AceEvent-3.0
 local PetsSearchProvider = {
-	localizedName = L.pets,
+	name = L.pets,
 	description = L.pets_search_provider_desc,
 	category = L.global_search,
 }

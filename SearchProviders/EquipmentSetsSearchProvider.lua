@@ -10,7 +10,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class EquipmentSetsSearchProvider : SearchProvider, AceEvent-3.0
 local EquipmentSetsSearchProvider = {
-	localizedName = L.equipment_sets,
+	name = L.equipment_sets,
 	category = L.global_search,
 }
 AceEvent:Embed(EquipmentSetsSearchProvider)

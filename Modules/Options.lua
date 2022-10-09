@@ -241,7 +241,7 @@ end
 function module:RenderProviderEnableOption(providerID, provider)
 	return {
 		type = "toggle",
-		name = provider.localizedName or providerID,
+		name = provider.name or providerID,
 		desc = provider.description,
 		order = self.numProviders,
 	}
@@ -252,7 +252,7 @@ function module:RenderProviderOptions(providerID, provider)
 	if optionsTable then
 		local options = {
 			type = "group",
-			name = provider.localizedName or providerID,
+			name = provider.name or providerID,
 			order = self.numProviders,
 			set = optionsTable.set,
 			get = optionsTable.get,

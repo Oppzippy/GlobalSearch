@@ -14,7 +14,7 @@ local providerID = "GlobalSearch_EncounterJournal"
 
 ---@class EncounterJournalSearchProvider : SearchProvider
 local EncounterJournalSearchProvider = {
-	localizedName = L.encounter_journal,
+	name = L.encounter_journal,
 	description = L.encounter_journal_search_provider_desc,
 	category = L.global_search,
 }

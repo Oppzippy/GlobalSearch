@@ -6,7 +6,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class MinimapTrackingSearchProvider : SearchProvider
 local MinimapTrackingSearchProvider = {
-	localizedName = L.minimap_tracking,
+	name = L.minimap_tracking,
 	category = L.global_search,
 }
 

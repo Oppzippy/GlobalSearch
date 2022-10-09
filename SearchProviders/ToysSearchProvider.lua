@@ -14,7 +14,7 @@ local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
 
 ---@class ToysSearchProvider : SearchProvider, AceEvent-3.0
 local ToysSearchProvider = {
-	localizedName = L.toys,
+	name = L.toys,
 	description = L.toys_search_provider_desc,
 	category = L.global_search,
 }

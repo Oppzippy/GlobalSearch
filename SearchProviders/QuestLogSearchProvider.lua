@@ -6,7 +6,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class QuestLogSearchProvider : SearchProvider, AceEvent-3.0
 local QuestLogSearchProvider = {
-	localizedName = L.quest_log,
+	name = L.quest_log,
 	category = L.global_search,
 }
 

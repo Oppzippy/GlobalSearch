@@ -41,7 +41,7 @@ function SearchProviderCollectionPrototype:GetProviderItems(providerID)
 			for i, item in ipairs(itemGroup) do
 				decoratedItemGroup[i] = setmetatable({
 					providerID = providerID,
-					category = provider.localizedName,
+					category = provider.name,
 				}, { __index = item })
 			end
 			decoratedItemGroupCache[itemGroup] = decoratedItemGroup

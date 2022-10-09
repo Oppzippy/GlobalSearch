@@ -1,5 +1,5 @@
 ---@class SearchProvider
----@field localizedName string
+---@field name string
 ---@field description string
 ---@field category string
 ---@field optionsTable? AceConfigOptionsTable

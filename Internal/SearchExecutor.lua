@@ -44,8 +44,8 @@ function SearchExecutorPrototype:Search(query)
 			---@type table<string, boolean>
 			local matchingProviderIDs = {}
 			for id, provider in next, self.searchProviderCollection:GetProviders() do
-				local localizedName = provider.localizedName or id
-				if localizedName:gsub(" ", ""):lower() == specificProvider then
+				local name = provider.name or id
+				if name:gsub(" ", ""):lower() == specificProvider then
 					matchingProviderIDs[id] = true
 				end
 			end

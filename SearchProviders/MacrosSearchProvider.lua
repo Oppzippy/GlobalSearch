@@ -7,7 +7,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class MacrosSearchProvider : SearchProvider, AceEvent-3.0
 local MacrosSearchProvider = {
-	localizedName = L.macros,
+	name = L.macros,
 	category = L.global_search,
 }
 AceEvent:Embed(MacrosSearchProvider)
