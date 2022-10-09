@@ -89,17 +89,17 @@ end
 function module:IterateAchievements()
 	return coroutine.wrap(function()
 		---@type table<number, boolean>
-		local seenIds = {}
+		local seenIDs = {}
 		local categoryIDs = GetCategoryList()
 		for _, categoryID in next, categoryIDs do
 			for i = 1, GetCategoryNumAchievements(categoryID, false) do
 				local achievement = { GetAchievementInfo(categoryID, i) }
-				if not seenIds[achievement[1]] then
-					seenIds[achievement[1]] = true
+				if not seenIDs[achievement[1]] then
+					seenIDs[achievement[1]] = true
 					coroutine.yield(achievement)
-					for siblingId in self:IterateSiblingAchievements(achievement[1]) do
-						seenIds[siblingId] = true
-						coroutine.yield({ GetAchievementInfo(siblingId) })
+					for siblingID in self:IterateSiblingAchievements(achievement[1]) do
+						seenIDs[siblingID] = true
+						coroutine.yield({ GetAchievementInfo(siblingID) })
 					end
 				end
 			end
