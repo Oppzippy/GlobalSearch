@@ -18,7 +18,6 @@ function module:OnInitialize()
 	self.selectedIndex = 1
 	self.maxResults = 10
 
-	self.providerCollection = ns.SearchProviderCollection.Create({})
 	self:UpdateProviderCollection()
 
 	self.searchUI = ns.SearchUI.Create()
@@ -48,8 +47,8 @@ end
 
 function module:UpdateProviderCollection()
 	local disabledProviders = self:GetDB().profile.options.disabledSearchProviders
-	local providerCollection = self:GetSearchProviderRegistry():GetProviderCollection(disabledProviders)
-	self.searchContextCache = ns.SearchContextCache.Create(providerCollection)
+	self.providerCollection = self:GetSearchProviderRegistry():GetProviderCollection(disabledProviders)
+	self.searchContextCache = ns.SearchContextCache.Create(self.providerCollection)
 end
 
 function module:Show()
@@ -58,12 +57,7 @@ function module:Show()
 	self.searchUI:SetShowMouseoverTooltip(options.showMouseoverTooltip)
 	self.searchUI:SetHelpText(options.showHelp and self:GetHelpText() or nil)
 
-	local itemsBySearchProvider = {}
-	for id in next, self.providerCollection:GetProviderIDs() do
-		itemsBySearchProvider[id] = self.providerCollection:GetProviderItems(id)
-	end
-	self.itemsBySearchProvider = itemsBySearchProvider
-	self.searchContext = self.searchContextCache:GetCombinedContextForProviders(self.searchContextCache:GetProviderIDs())
+	self.searchExecutor = ns.SearchExecutor.Create(self:GetDB(), self.providerCollection, self.searchContextCache)
 	self.searchUI:Show()
 	self:UpdateDisplaySettings()
 end
@@ -90,7 +84,7 @@ end
 function module:Hide()
 	if not self:IsVisible() then return end
 
-	self.searchContext = nil
+	self.searchExecutor = nil
 	self.searchUI:SetSearchQuery("")
 	self.searchUI:Hide()
 	ClearOverrideBindings(searchExecute)
@@ -234,82 +228,8 @@ end
 
 ---@param query string
 function module:Search(query)
-	local prevSelection = self.results and self.results[self.selectedIndex] or nil
-
-	self.searchQuery = query
-	if query == "" then
-		local results = self:GetRecentItemResults()
-
-		-- We store more items than the max number of recent items to display, so remove the extras.
-		for i = self:GetDB().profile.options.maxRecentItems + 1, #results do
-			results[i] = nil
-		end
-		self.results = results
-	else
-		local specificProvider, specificProviderQuery = query:match("^#([^ ]+) (.*)$")
-		if specificProvider then
-			specificProvider = specificProvider:lower()
-
-			---@type table<string, boolean>
-			local matchingProviderIDs = {}
-			for id, provider in next, self:GetSearchProviderRegistry():GetProviders() do
-				local localizedName = provider.localizedName or id
-				if localizedName:gsub(" ", ""):lower() == specificProvider then
-					matchingProviderIDs[id] = true
-				end
-			end
-
-			local context = self.searchContextCache:GetCombinedContextForProviders(matchingProviderIDs)
-			self.results = context:Search(specificProviderQuery)
-		else
-			self.results = self.searchContext:Search(query)
-		end
-	end
-
-	local newSelectedIndex = 1
-	for i, result in ipairs(self.results) do
-		if prevSelection and prevSelection.item == result.item then
-			newSelectedIndex = i
-			break
-		end
-		if i >= self.maxResults then break end
-	end
-	self.selectedIndex = newSelectedIndex
-
+	self.results = self.searchExecutor:Search(query)
 	self.searchUI:SetResults(self.results)
-end
-
-function module:GetRecentItemResults()
-	---@type table<string, table<unknown, number>>
-	local itemIDOrder = {}
-	for i, recentItem in next, self:GetDB().profile.recentItemsV2 do
-		if recentItem.provider then -- don't break on old format
-			if not itemIDOrder[recentItem.provider] then
-				itemIDOrder[recentItem.provider] = {}
-			end
-			itemIDOrder[recentItem.provider][recentItem.id] = i
-		end
-	end
-
-	---@type SearchContextItem[]
-	local results = {}
-	---@type table<SearchContextItem, number>
-	local resultOrder = {}
-	for providerName, items in next, self.itemsBySearchProvider do
-		for _, item in next, items do
-			local order = itemIDOrder[providerName] and itemIDOrder[providerName][item.id]
-			if order then
-				local result = { item = item }
-				results[#results + 1] = result
-				resultOrder[result] = order
-			end
-		end
-	end
-
-	table.sort(results, function(a, b)
-		return resultOrder[a] < resultOrder[b]
-	end)
-	return results
 end
 
 function module:OnHyperlink(_, item)

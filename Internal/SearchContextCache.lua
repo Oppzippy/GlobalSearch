@@ -27,6 +27,21 @@ local function CreateSearchContextCache(providerCollection)
 	return collection
 end
 
+---@return CombinedSearchContext
+function SearchContextCachePrototype:GetCombinedContext()
+	---@type SearchContext[]
+	local contexts = {}
+
+
+	for providerID in next, self.providerCollection:GetProviders() do
+		for context in self:IterateContextsForProvider(providerID) do
+			contexts[#contexts + 1] = context
+		end
+	end
+
+	return ns.CombinedSearchContext.Create(contexts)
+end
+
 ---@param providerIDs table<string, boolean>
 ---@return CombinedSearchContext
 function SearchContextCachePrototype:GetCombinedContextForProviders(providerIDs)
@@ -34,6 +49,18 @@ function SearchContextCachePrototype:GetCombinedContextForProviders(providerIDs)
 	local contexts = {}
 
 	for providerID in next, providerIDs do
+		for context in self:IterateContextsForProvider(providerID) do
+			contexts[#contexts + 1] = context
+		end
+	end
+
+	return ns.CombinedSearchContext.Create(contexts)
+end
+
+---@param providerID string
+---@return fun(): SearchContext
+function SearchContextCachePrototype:IterateContextsForProvider(providerID)
+	return coroutine.wrap(function()
 		local items = self.providerCollection:GetProviderItems(providerID)
 		if items then
 			if self.items[providerID] ~= items then
@@ -45,16 +72,14 @@ function SearchContextCachePrototype:GetCombinedContextForProviders(providerIDs)
 			end
 
 			for _, context in next, self.contexts[items] do
-				contexts[#contexts + 1] = context
+				coroutine.yield(context)
 			end
 		end
-	end
-
-	return ns.CombinedSearchContext.Create(contexts)
+	end)
 end
 
-function SearchContextCachePrototype:GetProviderIDs()
-	return self.providerCollection:GetProviderIDs()
+function SearchContextCachePrototype:GetProviders()
+	return self.providerCollection:GetProviders()
 end
 
 local export = { Create = CreateSearchContextCache }

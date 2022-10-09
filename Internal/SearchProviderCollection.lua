@@ -20,13 +20,9 @@ local decoratedItemGroupCache = setmetatable({}, {
 	__mode = "k", -- weak key references (https://www.lua.org/pil/17.html)
 })
 
----@return table<string, boolean>
-function SearchProviderCollectionPrototype:GetProviderIDs()
-	local ids = {}
-	for id in next, self.providers do
-		ids[id] = true
-	end
-	return ids
+---@return table<string, SearchProvider>
+function SearchProviderCollectionPrototype:GetProviders()
+	return self.providers
 end
 
 ---@param providerID string
