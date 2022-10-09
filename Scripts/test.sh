@@ -2,4 +2,4 @@
 set -e
 set -o pipefail
 
-lua Tests/Test.lua
+lua5.1 Tests/Test.lua
