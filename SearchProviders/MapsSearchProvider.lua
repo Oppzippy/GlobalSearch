@@ -7,7 +7,7 @@ local AceLocale = LibStub("AceLocale-3.0")
 local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
 ---@cast GlobalSearch GlobalSearch
 local L = AceLocale:GetLocale("GlobalSearch")
-local providerName = "GlobalSearch_Maps"
+local providerID = "GlobalSearch_Maps"
 
 ---@class MapsSearchProvider : SearchProvider
 local MapsSearchProvider = {
@@ -18,11 +18,11 @@ local MapsSearchProvider = {
 MapsSearchProvider.optionsTable = {
 	type = "group",
 	get = function(info)
-		local db = GlobalSearch:GetProviderOptionsDB(providerName)
+		local db = GlobalSearch:GetProviderOptionsDB(providerID)
 		return db[info[#info]]
 	end,
 	set = function(info, value)
-		local db = GlobalSearch:GetProviderOptionsDB(providerName)
+		local db = GlobalSearch:GetProviderOptionsDB(providerID)
 		db[info[#info]] = value
 		MapsSearchProvider.cache = nil
 	end,
@@ -47,11 +47,11 @@ for name, mapTypeID in next, Enum.UIMapType do
 		name = name,
 		type = "toggle",
 		get = function()
-			local db = GlobalSearch:GetProviderOptionsDB(providerName)
+			local db = GlobalSearch:GetProviderOptionsDB(providerID)
 			return not db.disabledMapTypes[mapTypeID]
 		end,
 		set = function(_, value)
-			local db = GlobalSearch:GetProviderOptionsDB(providerName)
+			local db = GlobalSearch:GetProviderOptionsDB(providerID)
 			db.disabledMapTypes[mapTypeID] = not value
 			MapsSearchProvider.cache = nil
 		end,
@@ -68,7 +68,7 @@ end
 
 ---@return SearchItem[]
 function MapsSearchProvider:Fetch()
-	local db = GlobalSearch:GetProviderOptionsDB(providerName)
+	local db = GlobalSearch:GetProviderOptionsDB(providerID)
 	---@type SearchItem[]
 	local items = {}
 	local mapGroupIDs = {}
@@ -133,4 +133,4 @@ function MapsSearchProvider:CreateItem(name, mapID)
 	}
 end
 
-GlobalSearchAPI:RegisterProvider(providerName, MapsSearchProvider)
+GlobalSearchAPI:RegisterProvider(providerID, MapsSearchProvider)

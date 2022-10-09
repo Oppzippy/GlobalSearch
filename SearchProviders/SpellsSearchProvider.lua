@@ -6,7 +6,7 @@ local AceEvent = LibStub("AceEvent-3.0")
 
 local L = AceLocale:GetLocale("GlobalSearch")
 
-local providerName = "GlobalSearch_Spells"
+local providerID = "GlobalSearch_Spells"
 
 ---@class SpellsSearchProvider : SearchProvider, AceEvent-3.0
 local SpellsSearchProvider = {
@@ -98,4 +98,4 @@ function SpellsSearchProvider:IterateSpellTabs()
 end
 
 SpellsSearchProvider:RegisterEvent("SPELLS_CHANGED", "ClearCache")
-GlobalSearchAPI:RegisterProvider(providerName, SpellsSearchProvider)
+GlobalSearchAPI:RegisterProvider(providerID, SpellsSearchProvider)

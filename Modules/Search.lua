@@ -181,22 +181,22 @@ function module:OnMacroItemSelected(resultIndex)
 	if item.id then
 		local newRecentItems = {
 			{
-				provider = item.provider,
+				provider = item.providerID,
 				id = item.id,
 			},
 		}
 		local seenItems = {
-			[item.provider] = { [item.id] = true },
+			[item.providerID] = { [item.id] = true },
 		}
 		-- Store more items than the limit since some items may be unavailable (bag items that were consumed, etc.)
 		local recentItemStorageLimit = db.options.maxRecentItems * 2
 
 		for _, recentItem in ipairs(db.recentItemsV2) do
-			if not seenItems[recentItem.provider] then
-				seenItems[recentItem.provider] = {}
+			if not seenItems[recentItem.providerID] then
+				seenItems[recentItem.providerID] = {}
 			end
-			if not seenItems[recentItem.provider][recentItem.id] then
-				seenItems[recentItem.provider][recentItem.id] = true
+			if not seenItems[recentItem.providerID][recentItem.id] then
+				seenItems[recentItem.providerID][recentItem.id] = true
 				newRecentItems[#newRecentItems + 1] = recentItem
 				if #newRecentItems >= recentItemStorageLimit then
 					break

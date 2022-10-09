@@ -31,35 +31,35 @@ function GlobalSearch:OnEnable()
 	self.queuedMessages = nil
 end
 
----@param name string
+---@param providerID string
 ---@param provider SearchProvider
-function GlobalSearch:RegisterSearchProvider(name, provider)
-	self.providerRegistry:Register(name, provider)
+function GlobalSearch:RegisterSearchProvider(providerID, provider)
+	self.providerRegistry:Register(providerID, provider)
 	-- If providers are registered before OnInitialize, modules won't be ready to receive these events.
 	-- In that case, we can queue up the messages and send them after OnInitialize has run for all modules.
 	if self.queuedMessages then
-		self.queuedMessages[#self.queuedMessages + 1] = { "GlobalSearch_OnProviderRegistered", name, provider }
+		self.queuedMessages[#self.queuedMessages + 1] = { "GlobalSearch_OnProviderRegistered", providerID, provider }
 	else
-		self:SendMessage("GlobalSearch_OnProviderRegistered", name, provider)
+		self:SendMessage("GlobalSearch_OnProviderRegistered", providerID, provider)
 	end
 end
 
 ---@return boolean
-function GlobalSearch:HasSearchProvider(name)
-	return self.providerRegistry:Has(name)
+function GlobalSearch:HasSearchProvider(providerID)
+	return self.providerRegistry:Has(providerID)
 end
 
 function GlobalSearch:ProfilingResults()
-	for name, provider in pairs(self.providerRegistry:GetProviders()) do
+	for providerID, provider in pairs(self.providerRegistry:GetProviders()) do
 		local time, count = GetFunctionCPUUsage(provider.Get, true)
-		self:Printf("%s: %d / %d", name, time, count)
+		self:Printf("%s: %d / %d", providerID, time, count)
 	end
 end
 
-function GlobalSearch:GetProviderOptionsDB(name)
+function GlobalSearch:GetProviderOptionsDB(providerID)
 	local providerOptions = self.db.profile.options.searchProviders
-	if not providerOptions[name] then
-		providerOptions[name] = {}
+	if not providerOptions[providerID] then
+		providerOptions[providerID] = {}
 	end
-	return providerOptions[name]
+	return providerOptions[providerID]
 end

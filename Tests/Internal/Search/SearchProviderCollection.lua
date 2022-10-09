@@ -69,5 +69,5 @@ function TestSearchProviderCollection:TestSearchProviderID()
 		}, "Mock Provider")
 	})
 	local results = collection:GetProviderItems("MockProvider")
-	luaunit.assertEquals(results[1].provider, "MockProvider")
+	luaunit.assertEquals(results[1].providerID, "MockProvider")
 end

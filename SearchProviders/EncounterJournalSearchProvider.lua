@@ -10,7 +10,7 @@ local AceLocale = LibStub("AceLocale-3.0")
 local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
 ---@cast GlobalSearch GlobalSearch
 local L = AceLocale:GetLocale("GlobalSearch")
-local providerName = "GlobalSearch_EncounterJournal"
+local providerID = "GlobalSearch_EncounterJournal"
 
 ---@class EncounterJournalSearchProvider : SearchProvider
 local EncounterJournalSearchProvider = {
@@ -22,11 +22,11 @@ local EncounterJournalSearchProvider = {
 EncounterJournalSearchProvider.optionsTable = {
 	type = "group",
 	get = function(info)
-		local db = GlobalSearch:GetProviderOptionsDB(providerName)
+		local db = GlobalSearch:GetProviderOptionsDB(providerID)
 		return db[info[#info]]
 	end,
 	set = function(info, value)
-		local db = GlobalSearch:GetProviderOptionsDB(providerName)
+		local db = GlobalSearch:GetProviderOptionsDB(providerID)
 		db[info[#info]] = value
 		EncounterJournalSearchProvider.cache = nil
 	end,
@@ -95,7 +95,7 @@ end
 
 ---@return SearchItem[]
 function EncounterJournalSearchProvider:Fetch()
-	local db = GlobalSearch:GetProviderOptionsDB(providerName)
+	local db = GlobalSearch:GetProviderOptionsDB(providerID)
 	---@type SearchItem[]
 	local items = {}
 	-- Dungeons that are used in more than one expansion are listed more than once
@@ -249,4 +249,4 @@ function EncounterJournalSearchProvider:IterateInstanceInfo(includeDungeons, inc
 	end)
 end
 
-GlobalSearchAPI:RegisterProvider(providerName, EncounterJournalSearchProvider)
+GlobalSearchAPI:RegisterProvider(providerID, EncounterJournalSearchProvider)

@@ -78,7 +78,7 @@ function SearchExecutorPrototype:GetRecentItemResults()
 	local resultOrder = {}
 	for providerID in next, self.searchProviderCollection:GetProviders() do
 		for _, item in next, self.searchProviderCollection:GetProviderItems(providerID) do
-			local order = itemIDOrder[item.provider] and itemIDOrder[item.provider][item.id]
+			local order = itemIDOrder[item.providerID] and itemIDOrder[item.providerID][item.id]
 			if order then
 				local result = { item = item }
 				results[#results + 1] = result

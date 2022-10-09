@@ -4,10 +4,10 @@ local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
 
 GlobalSearchAPI = {}
 
----@param name string
+---@param providerID string
 ---@param provider SearchProvider
-function GlobalSearchAPI:RegisterProvider(name, provider)
-	assert(type(name) == "string", "name must be a string")
+function GlobalSearchAPI:RegisterProvider(providerID, provider)
+	assert(type(providerID) == "string", "providerID must be a string")
 	assert(type(provider) == "table", "provider must be a table")
 	-- Asserting that it's a table changes the type to table
 	---@cast provider SearchProvider
@@ -19,12 +19,12 @@ function GlobalSearchAPI:RegisterProvider(name, provider)
 	assert(provider.optionsTable == nil or type(provider.optionsTable) == "table",
 		"provider optionsTable must be a table or nil")
 
-	GlobalSearch:RegisterSearchProvider(name, provider)
+	GlobalSearch:RegisterSearchProvider(providerID, provider)
 end
 
----@param name string
-function GlobalSearchAPI:HasProvider(name)
-	return GlobalSearch:HasSearchProvider(name)
+---@param providerID string
+function GlobalSearchAPI:HasProvider(providerID)
+	return GlobalSearch:HasSearchProvider(providerID)
 end
 
 function GlobalSearchAPI:Show()

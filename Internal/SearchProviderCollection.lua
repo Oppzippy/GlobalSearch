@@ -40,7 +40,7 @@ function SearchProviderCollectionPrototype:GetProviderItems(providerID)
 			decoratedItemGroup = {}
 			for i, item in ipairs(itemGroup) do
 				decoratedItemGroup[i] = setmetatable({
-					provider = providerID,
+					providerID = providerID,
 					category = provider.localizedName,
 				}, { __index = item })
 			end

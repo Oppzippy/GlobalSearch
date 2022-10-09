@@ -216,13 +216,13 @@ function module:OnInitialize()
 	module:RegisterMessage("GlobalSearch_OnProviderRegistered", "OnProviderRegistered")
 end
 
-function module:OnProviderRegistered(_, name, provider)
+function module:OnProviderRegistered(_, providerID, provider)
 	self.numProviders = self.numProviders + 1
-	self:AddProviderEnableOption(name, provider)
-	self.optionsTable.args.providerOptions.args[name] = self:RenderProviderOptions(name, provider)
+	self:AddProviderEnableOption(providerID, provider)
+	self.optionsTable.args.providerOptions.args[providerID] = self:RenderProviderOptions(providerID, provider)
 end
 
-function module:AddProviderEnableOption(name, provider)
+function module:AddProviderEnableOption(providerID, provider)
 	local groupsOptionTable = self.optionsTable.args.enabledProviders
 	local groupKey = provider.category or ""
 	if not groupsOptionTable.args[groupKey] then
@@ -235,24 +235,24 @@ function module:AddProviderEnableOption(name, provider)
 			args = {}
 		}
 	end
-	groupsOptionTable.args[groupKey].args[name] = self:RenderProviderEnableOption(name, provider)
+	groupsOptionTable.args[groupKey].args[providerID] = self:RenderProviderEnableOption(providerID, provider)
 end
 
-function module:RenderProviderEnableOption(name, provider)
+function module:RenderProviderEnableOption(providerID, provider)
 	return {
 		type = "toggle",
-		name = provider.localizedName or name,
+		name = provider.localizedName or providerID,
 		desc = provider.description,
 		order = self.numProviders,
 	}
 end
 
-function module:RenderProviderOptions(name, provider)
+function module:RenderProviderOptions(providerID, provider)
 	local optionsTable = provider.optionsTable
 	if optionsTable then
 		local options = {
 			type = "group",
-			name = provider.localizedName or name,
+			name = provider.localizedName or providerID,
 			order = self.numProviders,
 			set = optionsTable.set,
 			get = optionsTable.get,
@@ -261,7 +261,7 @@ function module:RenderProviderOptions(name, provider)
 			plugins = optionsTable.plugins,
 		}
 		local success, error = pcall(function()
-			AceConfigRegistry:ValidateOptionsTable(options, name)
+			AceConfigRegistry:ValidateOptionsTable(options, providerID)
 		end)
 		if success then
 			return options
@@ -319,9 +319,9 @@ function module:IsProviderEnabled(info)
 end
 
 function module:SetProviderEnabled(info, val)
-	local providerName = info[#info]
-	self:GetOptions().disabledSearchProviders[providerName] = not val
-	module:SendMessage("GlobalSearch_OnProviderStatusChanged", providerName, val)
+	local providerID = info[#info]
+	self:GetOptions().disabledSearchProviders[providerID] = not val
+	module:SendMessage("GlobalSearch_OnProviderStatusChanged", providerID, val)
 end
 
 function module:GetPosition(info)

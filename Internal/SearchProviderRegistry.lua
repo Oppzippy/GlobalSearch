@@ -12,28 +12,28 @@ local function CreateSearchProviderRegistry()
 	return registry
 end
 
----@param name string
+---@param providerID string
 ---@param provider SearchProvider
-function SearchProviderRegistryPrototype:Register(name, provider)
-	if self.providers[name] then
-		error(string.format("A search provider named %s is already registered.", name))
+function SearchProviderRegistryPrototype:Register(providerID, provider)
+	if self.providers[providerID] then
+		error(string.format("A search provider with id %s is already registered.", providerID))
 	end
-	self.providers[name] = provider
+	self.providers[providerID] = provider
 end
 
----@param name string
+---@param providerID string
 ---@return boolean
-function SearchProviderRegistryPrototype:Has(name)
-	return self.providers[name] ~= nil
+function SearchProviderRegistryPrototype:Has(providerID)
+	return self.providers[providerID] ~= nil
 end
 
 ---@param disabledProviders table<string, true>
 ---@return SearchProviderCollection
 function SearchProviderRegistryPrototype:GetProviderCollection(disabledProviders)
 	local providers = {}
-	for name, provider in next, self.providers do
-		if not disabledProviders[name] then
-			providers[name] = provider
+	for providerID, provider in next, self.providers do
+		if not disabledProviders[providerID] then
+			providers[providerID] = provider
 		end
 	end
 	return ns.SearchProviderCollection.Create(providers)
