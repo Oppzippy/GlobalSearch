@@ -29,6 +29,9 @@ end
 ---@return SearchItem[]
 function SearchProviderCollectionPrototype:GetProviderItems(providerID)
 	local provider = self.providers[providerID]
+	if not provider then
+		return {}
+	end
 	local success, itemGroup = xpcall(provider.Get, geterrorhandler and geterrorhandler() or print, provider)
 
 	if success then

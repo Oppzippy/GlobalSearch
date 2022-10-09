@@ -13,18 +13,18 @@ end
 
 function TestSearchProviderCollection:TestNoProviders()
 	local collection = SearchProviderCollection.Create({})
-	luaunit.assertEquals(#collection:Get(), 0)
+	luaunit.assertEquals(#collection:GetProviderItems("none"), 0)
 end
 
 function TestSearchProviderCollection:TestCombinesAllChildren()
 	local collection = SearchProviderCollection.Create({
-		CreateMockSearchProvider({
+		Provider1 = CreateMockSearchProvider({
 			{
 				name = "1",
 			},
 		}),
-		CreateMockSearchProvider({}),
-		CreateMockSearchProvider({
+		Provider2 = CreateMockSearchProvider({}),
+		Provider3 = CreateMockSearchProvider({
 			{
 				name = "2",
 			},
@@ -34,19 +34,21 @@ function TestSearchProviderCollection:TestCombinesAllChildren()
 		}),
 	})
 
-	luaunit.assertEquals(#collection:Get(), 3)
+	luaunit.assertEquals(#collection:GetProviderItems("Provider1"), 1)
+	luaunit.assertEquals(#collection:GetProviderItems("Provider2"), 0)
+	luaunit.assertEquals(#collection:GetProviderItems("Provider3"), 2)
 end
 
 function TestSearchProviderCollection:TestNilID()
 	local collection = SearchProviderCollection.Create({
-		CreateMockSearchProvider({
+		Provider1 = CreateMockSearchProvider({
 			{
 				id = nil,
 				name = "1",
 			},
 		}),
 	})
-	luaunit.assertNil(collection:Get()[1].id)
+	luaunit.assertNil(collection:GetProviderItems("Provider1")[1].id)
 end
 
 function TestSearchProviderCollection:TestFalsyID()
@@ -62,6 +64,6 @@ function TestSearchProviderCollection:TestFalsyID()
 			},
 		}),
 	})
-	local results = collection:Get()
-	luaunit.assertNotEquals(results.MockProvider[1].id, results.MockProvider[2].id)
+	local results = collection:GetProviderItems("MockProvider")
+	luaunit.assertNotEquals(results[1].id, results[2].id)
 end
