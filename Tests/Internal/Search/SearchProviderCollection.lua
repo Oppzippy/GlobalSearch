@@ -3,8 +3,9 @@ local SearchProviderCollection = require("Internal.SearchProviderCollection")
 
 TestSearchProviderCollection = {}
 
-local CreateMockSearchProvider = function(items)
+local CreateMockSearchProvider = function(items, localizedName)
 	return {
+		localizedName = localizedName,
 		Get = function()
 			return items
 		end,
@@ -16,39 +17,16 @@ function TestSearchProviderCollection:TestNoProviders()
 	luaunit.assertEquals(#collection:GetProviderItems("none"), 0)
 end
 
-function TestSearchProviderCollection:TestCombinesAllChildren()
-	local collection = SearchProviderCollection.Create({
-		Provider1 = CreateMockSearchProvider({
-			{
-				name = "1",
-			},
-		}),
-		Provider2 = CreateMockSearchProvider({}),
-		Provider3 = CreateMockSearchProvider({
-			{
-				name = "2",
-			},
-			{
-				name = "3",
-			},
-		}),
-	})
-
-	luaunit.assertEquals(#collection:GetProviderItems("Provider1"), 1)
-	luaunit.assertEquals(#collection:GetProviderItems("Provider2"), 0)
-	luaunit.assertEquals(#collection:GetProviderItems("Provider3"), 2)
-end
-
 function TestSearchProviderCollection:TestNilID()
 	local collection = SearchProviderCollection.Create({
-		Provider1 = CreateMockSearchProvider({
+		MockProvider = CreateMockSearchProvider({
 			{
 				id = nil,
 				name = "1",
 			},
 		}),
 	})
-	luaunit.assertNil(collection:GetProviderItems("Provider1")[1].id)
+	luaunit.assertNil(collection:GetProviderItems("MockProvider")[1].id)
 end
 
 function TestSearchProviderCollection:TestFalsyID()
@@ -66,4 +44,30 @@ function TestSearchProviderCollection:TestFalsyID()
 	})
 	local results = collection:GetProviderItems("MockProvider")
 	luaunit.assertNotEquals(results[1].id, results[2].id)
+	luaunit.assertNil(results[1].id)
+	luaunit.assertFalse(results[2].id)
+end
+
+function TestSearchProviderCollection:TestItemCategory()
+	local collection = SearchProviderCollection.Create({
+		MockProvider = CreateMockSearchProvider({
+			{
+				name = "1",
+			},
+		}, "Mock Provider")
+	})
+	local results = collection:GetProviderItems("MockProvider")
+	luaunit.assertEquals(results[1].category, "Mock Provider")
+end
+
+function TestSearchProviderCollection:TestSearchProviderID()
+	local collection = SearchProviderCollection.Create({
+		MockProvider = CreateMockSearchProvider({
+			{
+				name = "1",
+			},
+		}, "Mock Provider")
+	})
+	local results = collection:GetProviderItems("MockProvider")
+	luaunit.assertEquals(results[1].provider, "MockProvider")
 end
