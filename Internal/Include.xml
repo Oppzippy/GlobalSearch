@@ -4,6 +4,7 @@
 	<Include file="Search\Include.xml" />
 	<Script file="KeybindingRegistry.lua" />
 	<Script file="LimitedTooltip.lua" />
+	<Script file="SearchContextCache.lua" />
 	<Script file="SearchProviderCollection.lua" />
 	<Script file="SearchProviderRegistry.lua" />
 	<Script file="Util.lua" />

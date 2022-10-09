@@ -20,29 +20,37 @@ local decoratedItemGroupCache = setmetatable({}, {
 	__mode = "k", -- weak key references (https://www.lua.org/pil/17.html)
 })
 
----@return table<string, SearchItem[]>
-function SearchProviderCollectionPrototype:Get()
-	local itemsBySearchProvider = {}
-	for name, provider in next, self.providers do
-		local success, itemGroup = xpcall(provider.Get, geterrorhandler and geterrorhandler() or print, provider)
-
-		if success then
-			local decoratedItemGroup = decoratedItemGroupCache[itemGroup]
-			if not decoratedItemGroup then
-				decoratedItemGroup = {}
-				for i, item in ipairs(itemGroup) do
-					decoratedItemGroup[i] = setmetatable({
-						provider = name,
-						category = provider.localizedName,
-					}, { __index = item })
-				end
-				decoratedItemGroupCache[itemGroup] = decoratedItemGroup
-			end
-
-			itemsBySearchProvider[name] = decoratedItemGroup
-		end
+---@return table<string, boolean>
+function SearchProviderCollectionPrototype:GetProviderIDs()
+	local ids = {}
+	for id in next, self.providers do
+		ids[id] = true
 	end
-	return itemsBySearchProvider
+	return ids
+end
+
+---@param providerID string
+---@return SearchItem[]
+function SearchProviderCollectionPrototype:GetProviderItems(providerID)
+	local provider = self.providers[providerID]
+	local success, itemGroup = xpcall(provider.Get, geterrorhandler and geterrorhandler() or print, provider)
+
+	if success then
+		local decoratedItemGroup = decoratedItemGroupCache[itemGroup]
+		if not decoratedItemGroup then
+			decoratedItemGroup = {}
+			for i, item in ipairs(itemGroup) do
+				decoratedItemGroup[i] = setmetatable({
+					provider = providerID,
+					category = provider.localizedName,
+				}, { __index = item })
+			end
+			decoratedItemGroupCache[itemGroup] = decoratedItemGroup
+		end
+
+		return decoratedItemGroup
+	end
+	return {}
 end
 
 local export = { Create = CreateSearchProviderCollection }
