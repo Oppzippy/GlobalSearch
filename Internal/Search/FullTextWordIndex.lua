@@ -40,8 +40,7 @@ end
 ---@param query string
 ---@return table<unknown, number> weightedResults
 function FullTextWordIndexPrototype:Search(query)
-	local words = { strsplit(" ", self:Normalize(query)) }
-	local weightedWords = self:WeightWords(words)
+	local weightedWords = self:WeightWords(query)
 
 	local weightedResults = {}
 	for word, weight in next, weightedWords do
@@ -54,9 +53,11 @@ function FullTextWordIndexPrototype:Search(query)
 	return weightedResults
 end
 
-function FullTextWordIndexPrototype:WeightWords(words)
+function FullTextWordIndexPrototype:WeightWords(query)
+	local wordIterator = self:Normalize(query):gmatch("([^ ]+)")
+
 	local weightedWords = {}
-	for _, word in next, words do
+	for word in wordIterator do
 		weightedWords[word] = (weightedWords[word] or 0) + 1
 	end
 	return weightedWords
