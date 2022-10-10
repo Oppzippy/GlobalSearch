@@ -1,5 +1,6 @@
+---@type ns
+local ns = select(2, ...)
 local luaunit = require("luaunit")
-local SearchProviderCollection = require("Internal.SearchProviderCollection")
 
 TestSearchProviderCollection = {}
 
@@ -13,12 +14,12 @@ local CreateMockSearchProvider = function(items, name)
 end
 
 function TestSearchProviderCollection:TestNoProviders()
-	local collection = SearchProviderCollection.Create({})
+	local collection = ns.SearchProviderCollection.Create({})
 	luaunit.assertEquals(#collection:GetProviderItems("none"), 0)
 end
 
 function TestSearchProviderCollection:TestNilID()
-	local collection = SearchProviderCollection.Create({
+	local collection = ns.SearchProviderCollection.Create({
 		MockProvider = CreateMockSearchProvider({
 			{
 				id = nil,
@@ -30,7 +31,7 @@ function TestSearchProviderCollection:TestNilID()
 end
 
 function TestSearchProviderCollection:TestFalsyID()
-	local collection = SearchProviderCollection.Create({
+	local collection = ns.SearchProviderCollection.Create({
 		MockProvider = CreateMockSearchProvider({
 			{
 				id = nil,
@@ -49,7 +50,7 @@ function TestSearchProviderCollection:TestFalsyID()
 end
 
 function TestSearchProviderCollection:TestItemCategory()
-	local collection = SearchProviderCollection.Create({
+	local collection = ns.SearchProviderCollection.Create({
 		MockProvider = CreateMockSearchProvider({
 			{
 				name = "1",
@@ -61,7 +62,7 @@ function TestSearchProviderCollection:TestItemCategory()
 end
 
 function TestSearchProviderCollection:TestSearchProviderID()
-	local collection = SearchProviderCollection.Create({
+	local collection = ns.SearchProviderCollection.Create({
 		MockProvider = CreateMockSearchProvider({
 			{
 				name = "1",

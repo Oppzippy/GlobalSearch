@@ -1,9 +1,11 @@
+---@type ns
+local ns = select(2, ...)
 local luaunit = require("luaunit")
-local ShortTextQueryMatcher = require("Internal.Search.ShortTextQueryMatcher")
+
 TestShortTextQueryMatcher = {}
 
 function TestShortTextQueryMatcher:TestSkippedCharacters()
-	local isMatch, ranges = ShortTextQueryMatcher.MatchesQuery("bcf", "abcdefg")
+	local isMatch, ranges = ns.ShortTextQueryMatcher.MatchesQuery("bcf", "abcdefg")
 	luaunit.assertTrue(isMatch)
 	luaunit.assertEquals(ranges,
 		{
@@ -20,22 +22,22 @@ function TestShortTextQueryMatcher:TestSkippedCharacters()
 end
 
 function TestShortTextQueryMatcher:TestPartialMatchAtStart()
-	local isMatch = ShortTextQueryMatcher.MatchesQuery("abc", "abdefg")
+	local isMatch = ns.ShortTextQueryMatcher.MatchesQuery("abc", "abdefg")
 	luaunit.assertFalse(isMatch)
 end
 
 function TestShortTextQueryMatcher:TestPartialMatchAtEnd()
-	local isMatch = ShortTextQueryMatcher.MatchesQuery("def", "abcef")
+	local isMatch = ns.ShortTextQueryMatcher.MatchesQuery("def", "abcef")
 	luaunit.assertFalse(isMatch)
 end
 
 function TestShortTextQueryMatcher:TestLongerQueryThanText()
-	local isMatch = ShortTextQueryMatcher.MatchesQuery("abcdef", "abc")
+	local isMatch = ns.ShortTextQueryMatcher.MatchesQuery("abcdef", "abc")
 	luaunit.assertFalse(isMatch)
 end
 
 function TestShortTextQueryMatcher:TestShorterQueryThanText()
-	local isMatch, ranges = ShortTextQueryMatcher.MatchesQuery("abc", "abcdef")
+	local isMatch, ranges = ns.ShortTextQueryMatcher.MatchesQuery("abc", "abcdef")
 	luaunit.assertTrue(isMatch)
 	luaunit.assertEquals(ranges,
 		{
@@ -48,7 +50,7 @@ function TestShortTextQueryMatcher:TestShorterQueryThanText()
 end
 
 function TestShortTextQueryMatcher:TestFullMatch()
-	local isMatch, ranges = ShortTextQueryMatcher.MatchesQuery("abc", "abc")
+	local isMatch, ranges = ns.ShortTextQueryMatcher.MatchesQuery("abc", "abc")
 	luaunit.assertTrue(isMatch)
 	luaunit.assertEquals(ranges,
 		{

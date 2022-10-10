@@ -1,9 +1,11 @@
 local luaunit = require("luaunit")
 
-require("Tests.Internal.Search.ShortTextQueryMatcher")
-require("Tests.Internal.Search.ShortTextSearchContext")
-require("Tests.Internal.Search.SearchProviderCollection")
-require("Tests.Internal.Search.SearchProviderRegistry")
-require("Tests.Internal.Util")
+require("Tests.WoWEnvironment")
+
+DoWoWFile("Tests/Internal/Search/ShortTextQueryMatcher.lua")
+DoWoWFile("Tests/Internal/Search/ShortTextSearchContext.lua")
+DoWoWFile("Tests/Internal/Search/SearchProviderCollection.lua")
+DoWoWFile("Tests/Internal/Search/SearchProviderRegistry.lua")
+DoWoWFile("Tests/Internal/Util.lua")
 
 os.exit(luaunit.LuaUnit.run())

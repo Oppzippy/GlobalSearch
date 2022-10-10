@@ -20,6 +20,7 @@ Internal\Include.xml
 Bindings.xml
 Bindings.lua
 
+LimitedTooltip.lua
 ModulePrototype.lua
 GlobalSearch.lua
 Modules\Modules.xml

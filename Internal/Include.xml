@@ -3,7 +3,6 @@
 	<Script file="Config\Defaults.lua" />
 	<Include file="Search\Include.xml" />
 	<Script file="KeybindingRegistry.lua" />
-	<Script file="LimitedTooltip.lua" />
 	<Script file="SearchContextCache.lua" />
 	<Script file="SearchExecutor.lua" />
 	<Script file="SearchProviderCollection.lua" />
