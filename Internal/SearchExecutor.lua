@@ -64,11 +64,11 @@ function SearchExecutorPrototype:GetRecentItemResults()
 	---@type table<string, table<unknown, number>>
 	local itemIDOrder = {}
 	for i, recentItem in next, self.db.profile.recentItemsV2 do
-		if recentItem.provider then -- don't break on old format
-			if not itemIDOrder[recentItem.provider] then
-				itemIDOrder[recentItem.provider] = {}
+		if recentItem.providerID then -- don't break on old format
+			if not itemIDOrder[recentItem.providerID] then
+				itemIDOrder[recentItem.providerID] = {}
 			end
-			itemIDOrder[recentItem.provider][recentItem.id] = i
+			itemIDOrder[recentItem.providerID][recentItem.id] = i
 		end
 	end
 

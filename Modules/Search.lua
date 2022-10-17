@@ -181,7 +181,7 @@ function module:OnMacroItemSelected(resultIndex)
 	if item.id then
 		local newRecentItems = {
 			{
-				provider = item.providerID,
+				providerID = item.providerID,
 				id = item.id,
 			},
 		}
@@ -192,6 +192,11 @@ function module:OnMacroItemSelected(resultIndex)
 		local recentItemStorageLimit = db.options.maxRecentItems * 2
 
 		for _, recentItem in ipairs(db.recentItemsV2) do
+			if recentItem.provider then
+				-- Migration for renamed field
+				recentItem.providerID = recentItem.provider
+				recentItem.provider = nil
+			end
 			if not seenItems[recentItem.providerID] then
 				seenItems[recentItem.providerID] = {}
 			end
