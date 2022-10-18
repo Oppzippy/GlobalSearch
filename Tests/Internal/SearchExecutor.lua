@@ -8,7 +8,10 @@ TestSearchExecutor = {}
 local function createMockDB()
 	return {
 		profile = {
-			recentItems = {},
+			recentItemsV2 = {},
+			options = {
+				maxRecentItems = 20,
+			},
 		},
 	}
 end
@@ -45,7 +48,7 @@ local function createPrepopulatedProviderCollection()
 		SecondProvider = createProvider("Second Provider", {
 			{
 				id = 1,
-				name = "Fouth Item",
+				name = "Fourth Item",
 			},
 			{
 				id = 2,
@@ -74,4 +77,37 @@ function TestSearchExecutor:TestShortTextAndFullTextOrdering()
 
 	luaunit.assertEquals(results[1].item.name, "Third Item")
 	luaunit.assertEquals(#results, 6)
+end
+
+function TestSearchExecutor:TestRecentItems()
+	local db = createMockDB()
+	db.profile.recentItemsV2 = {
+		{
+			providerID = "SecondProvider",
+			id = 1,
+		},
+		{
+			providerID = "FirstProvider",
+			id = 2,
+		},
+	}
+
+	local providerCollection = createPrepopulatedProviderCollection()
+	local contextCache = ns.SearchContextCache.Create(providerCollection)
+	local executor = ns.SearchExecutor.Create(db, providerCollection, contextCache);
+
+	local results = executor:GetRecentItemResults()
+	luaunit.assertEquals(results[1].item.name, "Fourth Item")
+	luaunit.assertEquals(results[2].item.name, "Second Item")
+end
+
+function TestSearchExecutor:TestEmptyRecentItems()
+	local db = createMockDB()
+
+	local providerCollection = createPrepopulatedProviderCollection()
+	local contextCache = ns.SearchContextCache.Create(providerCollection)
+	local executor = ns.SearchExecutor.Create(db, providerCollection, contextCache);
+
+	local results = executor:GetRecentItemResults()
+	luaunit.assertEquals(#results, 0)
 end
