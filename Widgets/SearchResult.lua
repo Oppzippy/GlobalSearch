@@ -21,7 +21,14 @@ local methods = {
 		self.texture:SetVertexColor(1, 1, 1, 1)
 		self.texture:SetRotation(0)
 		self.texture:SetSnapToPixelGrid()
-		self.texture:SetNonBlocking(true)
+		if self.texture.SetNonBlocking then
+			-- Shadowlands and classic
+			self.texture:SetNonBlocking(true)
+		end
+		if self.texture.SetBlockingLoadsRequested then
+			-- Dragonflight
+			self.texture:SetBlockingLoadsRequested(false)
+		end
 		self.texture:SetVertexOffset(1, 0, 0)
 		self.texture:SetVertexOffset(2, 0, 0)
 		self.texture:SetVertexOffset(3, 0, 0)
