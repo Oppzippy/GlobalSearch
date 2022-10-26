@@ -31,7 +31,7 @@ end
 ---@return SearchItem[]
 function InterfaceOptionsSearchProvider:Fetch()
 	local items = {}
-	for i, optionGroup in optionGroups do
+	for i, optionGroup in ipairs(optionGroups) do
 		if optionGroup.frame and optionGroup.options then
 			for _, option in next, optionGroup.options do
 				if type(_G[option.text]) == "string" then
