@@ -6,10 +6,6 @@ import requests
 import re
 
 source_file_urls = {
-    "default": [
-        "https://raw.githubusercontent.com/BigWigsMods/WoWUI/live/FrameXML/InterfaceOptionsPanels.lua",
-        "https://raw.githubusercontent.com/BigWigsMods/WoWUI/live/FrameXML/InterfaceOptionsPanels.xml",
-    ],
     0: [
         "https://raw.githubusercontent.com/BigWigsMods/WoWUI/vanilla/Interface_Vanilla/FrameXML/InterfaceOptionsPanels.lua",
         "https://raw.githubusercontent.com/BigWigsMods/WoWUI/vanilla/Interface_Vanilla/FrameXML/InterfaceOptionsPanels.xml",
