@@ -1,6 +1,10 @@
 ---@class ns
 local ns = select(2, ...)
 
+-- Disable on retail
+local optionGroups = ns.InterfaceOptionsPanels[GetClientDisplayExpansionLevel()] or ns.InterfaceOptionsPanels.default
+if not optionGroups then return end
+
 local AceAddon = LibStub("AceAddon-3.0")
 local AceLocale = LibStub("AceLocale-3.0")
 
@@ -27,7 +31,7 @@ end
 ---@return SearchItem[]
 function InterfaceOptionsSearchProvider:Fetch()
 	local items = {}
-	for i, optionGroup in ipairs(self:GetInterfaceOptionsPanels()) do
+	for i, optionGroup in optionGroups do
 		if optionGroup.frame and optionGroup.options then
 			for _, option in next, optionGroup.options do
 				if type(_G[option.text]) == "string" then
@@ -48,11 +52,6 @@ function InterfaceOptionsSearchProvider:Fetch()
 		end
 	end
 	return items
-end
-
-function InterfaceOptionsSearchProvider:GetInterfaceOptionsPanels()
-	local expansion = GetClientDisplayExpansionLevel()
-	return ns.InterfaceOptionsPanels[expansion] or ns.InterfaceOptionsPanels.default
 end
 
 GlobalSearchAPI:RegisterProvider("GlobalSearch_InterfaceOptions", InterfaceOptionsSearchProvider)

@@ -1,3 +1,6 @@
+-- Disable on retail
+if not VideoOptionsFrame then return end
+
 ---@class ns
 local ns = select(2, ...)
 
