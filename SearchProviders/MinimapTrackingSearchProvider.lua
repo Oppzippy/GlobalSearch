@@ -18,6 +18,10 @@ function MinimapTrackingSearchProvider:Get()
 	return self.cache
 end
 
+local SetTracking = SetTracking or C_Minimap.SetTracking
+local GetTrackingInfo = GetTrackingInfo or C_Minimap.GetTrackingInfo
+local GetNumTrackingTypes = GetNumTrackingTypes or C_Minimap.GetNumTrackingTypes
+
 ---@return SearchItem[]
 function MinimapTrackingSearchProvider:Fetch()
 	---@type SearchItem[]
