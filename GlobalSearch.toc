@@ -17,7 +17,6 @@ Generated\Include.xml
 Locales\Include.xml
 Widgets\Include.xml
 Internal\Include.xml
-Bindings.xml
 Bindings.lua
 
 LimitedTooltip.lua
