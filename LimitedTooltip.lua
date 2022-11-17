@@ -9,6 +9,7 @@ local whitelist = {
 	AdvanceSecondaryCompareItem = true,
 	ResetSecondaryCompareItem = true,
 	AppendText = true,
+	SetText = true,
 }
 
 local frame = CreateFrame("Frame")
@@ -21,9 +22,14 @@ local function getAllowedFunctions()
 		end
 
 		local allowedFunctions = {}
-		for key, value in next, getmetatable(GameTooltip).__index do
+		for key in next, whitelist do
+			allowedFunctions[key] = true
+		end
+		-- Retail has set functions on the table itself as of 10.0.2, and classic still has them in the metatable
+		local functionTable = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and GameTooltip or getmetatable(GameTooltip).__index
+		for key, value in next, functionTable do
 			if type(key) == "string" and type(value) == "function" and not disallowedFunctions[key] then
-				if key:find("^Set[A-Z]") or whitelist[key] then
+				if key:find("^Set[A-Z]") then
 					allowedFunctions[key] = true
 				end
 			end

@@ -9,12 +9,8 @@ local addon = AceAddon:GetAddon("GlobalSearch")
 local module = addon:NewModule("TooltipStorage", "AceEvent-3.0", "AceConsole-3.0")
 
 function module:OnEnable()
-	self.tooltip = CreateFrame("GameTooltip", "GlobalSearchHiddenTooltip")
+	self.tooltip = CreateFrame("GameTooltip", "GlobalSearchHiddenTooltip", nil, "GameTooltipTemplate")
 	self.tooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
-	self.tooltip:AddFontStrings(
-		self.tooltip:CreateFontString("$parentTextLeft1", nil, "GameTooltipText"),
-		self.tooltip:CreateFontString("$parentTextRight1", nil, "GameTooltipText")
-	)
 	self.limitedTooltip = ns.LimitedTooltip.Limit(self.tooltip)
 end
 
