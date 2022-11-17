@@ -1,5 +1,9 @@
 <Bindings>
-	<Binding name="GLOBALSEARCH_SHOW" category="BINDING_HEADER_GLOBALSEARCH" default="ALT-SPACE">
+	<!-- category needs to be plain text to avoid taint. There is currently no GlobalSearch global,
+		 but I put a space after just so I don't have to worry about it in the future if I ever add one.
+		 https://us.forums.blizzard.com/en/wow/t/bindingsxml-taint-and-other-issues/1394681/9
+		 -->
+	<Binding name="GLOBALSEARCH_SHOW" category="GlobalSearch " default="ALT-SPACE">
 		-- Show on the next frame to prevent the keypress event from reaching the search EditBox
 		C_Timer.After(0, function()
 			GlobalSearchAPI:Show()
