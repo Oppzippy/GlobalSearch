@@ -1,5 +1,5 @@
 <Bindings>
-	<Binding name="GLOBALSEARCH_SHOW" header="GLOBALSEARCH" category="ADDONS" default="ALT-SPACE">
+	<Binding name="GLOBALSEARCH_SHOW" category="BINDING_HEADER_GLOBALSEARCH" default="ALT-SPACE">
 		-- Show on the next frame to prevent the keypress event from reaching the search EditBox
 		C_Timer.After(0, function()
 			GlobalSearchAPI:Show()
