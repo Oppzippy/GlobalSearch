@@ -5,7 +5,6 @@ local AceGUI = LibStub("AceGUI-3.0")
 local methods = {
 	OnAcquire = function(self)
 		self.frame:ClearLines()
-		self.frame:ResetSecondaryCompareItem()
 		self.frame:Show()
 	end,
 }
