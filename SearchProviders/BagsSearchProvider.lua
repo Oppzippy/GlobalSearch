@@ -9,6 +9,9 @@ local L = AceLocale:GetLocale("GlobalSearch")
 local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
 ---@cast GlobalSearch GlobalSearch
 
+local GetContainerNumSlots = GetContainerNumSlots or C_Container.GetContainerNumSlots
+local GetContainerItemID = GetContainerItemID or C_Container.GetContainerItemID
+
 ---@class BagsSearchProvider : SearchProvider, AceEvent-3.0
 local BagsSearchProvider = {
 	name = L.bags,
