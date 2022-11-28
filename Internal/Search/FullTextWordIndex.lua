@@ -22,7 +22,7 @@ end
 ---@param text string
 function FullTextWordIndexPrototype:AddString(value, text)
 	local normalized = self:Normalize(text)
-	for word in normalized:gmatch("([^ ]+)") do
+	for word in normalized:gmatch("([^ \n]+)") do
 		if not self.wordValues[word] then
 			self.wordValues[word] = {}
 			local words = self.words
