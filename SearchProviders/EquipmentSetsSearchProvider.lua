@@ -40,7 +40,7 @@ function EquipmentSetsSearchProvider:Fetch()
 			texture = icon,
 			---@param tooltip GameTooltip
 			tooltip = function(tooltip)
-				tooltip:SetEquipmentSet(setName)
+				tooltip:SetEquipmentSet(setID)
 			end,
 			action = function()
 				C_EquipmentSet.UseEquipmentSet(setID)
