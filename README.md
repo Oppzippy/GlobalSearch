@@ -1,5 +1,7 @@
 # GlobalSearch
 
+[demo.webm](https://user-images.githubusercontent.com/2236514/204933165-726a1bd0-726a-4c72-a915-9895823232d0.webm)
+
 Does not work in combat.
 
 The keybinding can be set in Keybindings > AddOns > GlobalSearch > Show.
