@@ -1,6 +1,6 @@
 # GlobalSearch
 
-[demo.webm](https://user-images.githubusercontent.com/2236514/204933165-726a1bd0-726a-4c72-a915-9895823232d0.webm)
+[demo.webm](https://user-images.githubusercontent.com/2236514/204933466-dfda85c6-cf1e-4afc-80a8-b854f13ed654.webm)
 
 Does not work in combat.
 
