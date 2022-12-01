@@ -35,6 +35,7 @@ end
 ---@return SearchItem[]
 function BagsSearchProvider:Fetch()
 	local tooltipStorage = GlobalSearch:GetModule("TooltipStorage")
+	---@cast tooltipStorage TooltipStorageModule
 	local items = {}
 	for itemID in next, self:GetItemSet() do
 		local itemName, itemLink, _, _, _, _, _, _, _, icon = GetItemInfo(itemID)
@@ -43,7 +44,7 @@ function BagsSearchProvider:Fetch()
 			items[#items + 1] = {
 				id = itemID,
 				name = itemName,
-				extraSearchText = tooltipStorage:GetTooltip(itemLink),
+				extraSearchText = tooltipStorage:GetHyperlink(itemLink),
 				texture = icon,
 				macroText = "/use " .. itemName,
 				---@param tooltip GameTooltip

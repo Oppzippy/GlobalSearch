@@ -83,6 +83,7 @@ end
 ---@return SearchItem[]
 function ToysSearchProvider:Fetch()
 	local tooltipStorage = GlobalSearch:GetModule("TooltipStorage")
+	---@cast tooltipStorage TooltipStorageModule
 	local items = {}
 	local prevSettings = GetToyBoxSettings()
 	SetToyBoxSettings(toyBoxSettings)
@@ -92,10 +93,7 @@ function ToysSearchProvider:Fetch()
 		items[#items + 1] = {
 			id = itemID,
 			name = name,
-			extraSearchText = tooltipStorage:GetTooltip(function(tooltip)
-				---@cast tooltip GameTooltip
-				tooltip:SetToyByItemID(itemID)
-			end),
+			extraSearchText = tooltipStorage:GetToyByItemID(itemID),
 			texture = icon,
 			---@param tooltip GameTooltip
 			tooltip = function(tooltip)
