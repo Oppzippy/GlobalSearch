@@ -45,7 +45,20 @@ function module:OnEnable()
 
 	C_Timer.After(5, function()
 		local task = coroutine.create(function()
-			self.searchContextCache:GetCombinedContext()
+			-- Prefill caches
+			for _, provider in next, self.providerCollection:GetProviders() do
+				if provider.RefreshCacheAsync then
+					provider:RefreshCacheAsync()
+				end
+			end
+
+			-- Prebuild indexes
+			for providerID in next, self.searchContextCache:GetProviders() do
+				local iter = self.searchContextCache:IterateContextsForProvider(providerID)
+				while iter() do
+					coroutine.yield()
+				end
+			end
 		end)
 
 		self:SendMessage("GlobalSearch_QueueTask", task)

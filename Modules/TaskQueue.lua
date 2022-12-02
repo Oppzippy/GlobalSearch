@@ -10,7 +10,7 @@ local addon = AceAddon:GetAddon("GlobalSearch")
 local module = addon:NewModule("TaskQueue", "AceEvent-3.0")
 ---@type thread[]
 module.taskQueue = {}
-module.timeLimitPerFrame = 0.01
+module.timeLimitPerFrame = 0.005
 
 function module:OnInitialize()
 	self:RegisterMessage("GlobalSearch_QueueTask", "OnQueueTask")

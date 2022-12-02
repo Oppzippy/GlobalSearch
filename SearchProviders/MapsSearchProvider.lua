@@ -10,10 +10,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 local providerID = "GlobalSearch_Maps"
 
 ---@class MapsSearchProvider : SearchProvider
-local MapsSearchProvider = {
-	name = L.maps,
-	category = L.global_search,
-}
+local MapsSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.maps)
 ---@type AceConfigOptionsTable
 MapsSearchProvider.optionsTable = {
 	type = "group",
@@ -58,52 +55,43 @@ for name, mapTypeID in next, Enum.UIMapType do
 	}
 end
 
----@return SearchItem[]
-function MapsSearchProvider:Get()
-	if not self.cache then
-		self.cache = self:Fetch()
-	end
-	return self.cache
-end
-
----@return SearchItem[]
+---@return fun(): SearchItem?
 function MapsSearchProvider:Fetch()
-	local db = GlobalSearch:GetProviderOptionsDB(providerID)
-	---@type SearchItem[]
-	local items = {}
-	local mapGroupIDs = {}
-	for _, mapTypeID in next, Enum.UIMapType do
-		if not db.disabledMapTypes[mapTypeID] then
-			-- Cosmic if available, otherwise Azeroth
-			local uiMapDetails = C_Map.GetMapChildrenInfo(946, mapTypeID, true) or C_Map.GetMapChildrenInfo(947, mapTypeID, true)
-			for _, details in next, uiMapDetails do
-				local groupID = C_Map.GetMapGroupID(details.mapID)
-				-- Separate individual maps from groups of maps (dungeons, raids, anything with floors)
-				-- so that we can provide the option of only showing one floor per group
-				if groupID then
-					mapGroupIDs[groupID] = true
-				else
-					items[#items + 1] = self:CreateItem(details.name, details.mapID)
+	return coroutine.wrap(function(...)
+		local db = GlobalSearch:GetProviderOptionsDB(providerID)
+		---@type table<number, boolean>
+		local mapGroupIDs = {}
+		for _, mapTypeID in next, Enum.UIMapType do
+			if not db.disabledMapTypes[mapTypeID] then
+				-- Cosmic if available, otherwise Azeroth
+				local uiMapDetails = C_Map.GetMapChildrenInfo(946, mapTypeID, true) or C_Map.GetMapChildrenInfo(947, mapTypeID, true)
+				for _, details in next, uiMapDetails do
+					local groupID = C_Map.GetMapGroupID(details.mapID)
+					-- Separate individual maps from groups of maps (dungeons, raids, anything with floors)
+					-- so that we can provide the option of only showing one floor per group
+					if groupID then
+						mapGroupIDs[groupID] = true
+					else
+						coroutine.yield(self:CreateItem(details.name, details.mapID))
+					end
 				end
 			end
 		end
-	end
 
-	for groupID in next, mapGroupIDs do
-		local mapGroupMemberInfo = C_Map.GetMapGroupMembersInfo(groupID)
-		if db.listFloorsSeparately then
-			for _, memberInfo in next, mapGroupMemberInfo do
+		for groupID in next, mapGroupIDs do
+			local mapGroupMemberInfo = C_Map.GetMapGroupMembersInfo(groupID)
+			if db.listFloorsSeparately then
+				for _, memberInfo in next, mapGroupMemberInfo do
+					local mapInfo = C_Map.GetMapInfo(memberInfo.mapID)
+					coroutine.yield(self:CreateItem(L.map_with_floor:format(mapInfo.name, memberInfo.name), memberInfo.mapID))
+				end
+			elseif #mapGroupMemberInfo >= 1 then
+				local memberInfo = mapGroupMemberInfo[1]
 				local mapInfo = C_Map.GetMapInfo(memberInfo.mapID)
-				items[#items + 1] = self:CreateItem(L.map_with_floor:format(mapInfo.name, memberInfo.name), memberInfo.mapID)
+				coroutine.yield(self:CreateItem(mapInfo.name, memberInfo.mapID))
 			end
-		elseif #mapGroupMemberInfo >= 1 then
-			local memberInfo = mapGroupMemberInfo[1]
-			local mapInfo = C_Map.GetMapInfo(memberInfo.mapID)
-			items[#items + 1] = self:CreateItem(mapInfo.name, memberInfo.mapID)
 		end
-	end
-
-	return items
+	end)
 end
 
 function MapsSearchProvider:CreateItem(name, mapID)

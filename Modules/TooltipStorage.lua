@@ -27,6 +27,12 @@ function module:GetItemByID(itemID)
 	return self:GetTooltip("ItemByID", itemID)
 end
 
+---@param spellID number
+---@return string
+function module:GetMountBySpellID(spellID)
+	return self:GetTooltip("MountBySpellID", spellID)
+end
+
 ---@param functionSuffix string
 ---@param ... unknown
 ---@return string

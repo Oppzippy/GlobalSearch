@@ -32,7 +32,6 @@ function SearchContextCachePrototype:GetCombinedContext()
 	---@type SearchContext[]
 	local contexts = {}
 
-
 	for providerID in next, self.providerCollection:GetProviders() do
 		for context in self:IterateContextsForProvider(providerID) do
 			contexts[#contexts + 1] = context
@@ -57,20 +56,17 @@ function SearchContextCachePrototype:GetCombinedContextForProviders(providerIDs)
 	return ns.CombinedSearchContext.Create(contexts)
 end
 
---- This will yield after work is done so it can be run by TaskQueue
 ---@param providerID string
 ---@return fun(): SearchContext?
 function SearchContextCachePrototype:IterateContextsForProvider(providerID)
 	-- Expensive if items aren't cached
 	local items = self.providerCollection:GetProviderItems(providerID)
-	if coroutine.running() then coroutine.yield() end
 	if items then
 		if self.items[providerID] ~= items then
 			local contextGroup = {}
 			contextGroup[#contextGroup + 1] = ns.ShortTextSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items)
 			-- Expensive to build index
 			contextGroup[#contextGroup + 1] = ns.FullTextSearchContext.Create(items)
-			if coroutine.running() then coroutine.yield() end
 
 			self.contexts[items] = contextGroup
 			self.items[providerID] = items

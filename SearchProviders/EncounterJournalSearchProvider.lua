@@ -13,11 +13,8 @@ local L = AceLocale:GetLocale("GlobalSearch")
 local providerID = "GlobalSearch_EncounterJournal"
 
 ---@class EncounterJournalSearchProvider : SearchProvider
-local EncounterJournalSearchProvider = {
-	name = L.encounter_journal,
-	description = L.encounter_journal_search_provider_desc,
-	category = L.global_search,
-}
+local EncounterJournalSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.encounter_journal)
+EncounterJournalSearchProvider.description = L.encounter_journal_search_provider_desc
 ---@type AceConfigOptionsTable
 EncounterJournalSearchProvider.optionsTable = {
 	type = "group",
@@ -68,15 +65,6 @@ EncounterJournalSearchProvider.optionsTable = {
 	},
 }
 
----@return SearchItem[]
-function EncounterJournalSearchProvider:Get()
-	if not self.cache then
-		self.cache = self:Fetch()
-	end
-
-	return self.cache
-end
-
 ---@param journalInstanceID number
 ---@param journalEncounterID? number
 local function createDisplayInstanceEncounterAction(journalInstanceID, journalEncounterID)
@@ -93,53 +81,51 @@ local function createDisplayInstanceEncounterAction(journalInstanceID, journalEn
 	end
 end
 
----@return SearchItem[]
+---@return fun(): SearchItem?
 function EncounterJournalSearchProvider:Fetch()
 	local db = GlobalSearch:GetProviderOptionsDB(providerID)
-	---@type SearchItem[]
-	local items = {}
-	-- Dungeons that are used in more than one expansion are listed more than once
-	-- For example, Deadmines is listed under Classic and Cataclysm
-	local seenInstanceIDs = {}
-	for instanceInfo in self:IterateInstanceInfo(db.enableDungeons, db.enableRaids) do
-		if not seenInstanceIDs[instanceInfo.journalInstanceID] then
-			seenInstanceIDs[instanceInfo.journalInstanceID] = true
-			if db.enableInstances then
-				items[#items + 1] = {
-					name = instanceInfo.name,
-					tooltip = instanceInfo.description,
-					extraSearchText = instanceInfo.description,
-					texture = instanceInfo.buttonImage2,
-					action = createDisplayInstanceEncounterAction(instanceInfo.journalInstanceID),
-				}
-			end
+	return coroutine.wrap(function(...)
+		-- Dungeons that are used in more than one expansion are listed more than once
+		-- For example, Deadmines is listed under Classic and Cataclysm
+		local seenInstanceIDs = {}
+		for instanceInfo in self:IterateInstanceInfo(db.enableDungeons, db.enableRaids) do
+			if not seenInstanceIDs[instanceInfo.journalInstanceID] then
+				seenInstanceIDs[instanceInfo.journalInstanceID] = true
+				if db.enableInstances then
+					coroutine.yield({
+						name = instanceInfo.name,
+						tooltip = instanceInfo.description,
+						extraSearchText = instanceInfo.description,
+						texture = instanceInfo.buttonImage2,
+						action = createDisplayInstanceEncounterAction(instanceInfo.journalInstanceID),
+					})
+				end
 
-			if db.enableBosses then
-				for encounterInfo in self:IterateEncounterInfo(instanceInfo) do
-					local _, _, _, _, bossImage = EJ_GetCreatureInfo(1, encounterInfo.journalEncounterID)
-					items[#items + 1] = {
-						id = encounterInfo.journalEncounterID,
-						name = L.boss_from_instance:format(encounterInfo.name, instanceInfo.name),
-						tooltip = encounterInfo.description,
-						extraSearchText = encounterInfo.description,
-						---@param texture Texture
-						texture = function(texture)
-							if bossImage then
-								texture:SetTexture(bossImage)
-								-- 2:1 aspect ratio
-								texture:SetTexCoord(0.25, 0.75, 0, 1)
-							else
-								texture:SetTexture(instanceInfo.buttonImage2)
-							end
-						end,
-						action = createDisplayInstanceEncounterAction(encounterInfo.journalInstanceID, encounterInfo.journalEncounterID),
-					}
+				if db.enableBosses then
+					for encounterInfo in self:IterateEncounterInfo(instanceInfo) do
+						local _, _, _, _, bossImage = EJ_GetCreatureInfo(1, encounterInfo.journalEncounterID)
+						coroutine.yield({
+							id = encounterInfo.journalEncounterID,
+							name = L.boss_from_instance:format(encounterInfo.name, instanceInfo.name),
+							tooltip = encounterInfo.description,
+							extraSearchText = encounterInfo.description,
+							---@param texture Texture
+							texture = function(texture)
+								if bossImage then
+									texture:SetTexture(bossImage)
+									-- 2:1 aspect ratio
+									texture:SetTexCoord(0.25, 0.75, 0, 1)
+								else
+									texture:SetTexture(instanceInfo.buttonImage2)
+								end
+							end,
+							action = createDisplayInstanceEncounterAction(encounterInfo.journalInstanceID, encounterInfo.journalEncounterID),
+						})
+					end
 				end
 			end
 		end
-	end
-
-	return items
+	end)
 end
 
 ---@class EncounterJournalSearchProvider.EncounterInfo

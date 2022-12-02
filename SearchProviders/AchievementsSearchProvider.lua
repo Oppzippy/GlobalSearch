@@ -12,11 +12,8 @@ if not AchievementStorage then return end
 ---@cast AchievementStorage AchievementStorageModule
 
 ---@class AchievementsSearchProvider : SearchProvider
-local AchievementsSearchProvider = {
-	name = L.achievements,
-	description = L.achievements_search_provider_desc,
-	category = L.global_search,
-}
+local AchievementsSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.achievements)
+AchievementsSearchProvider.description = L.achievements_search_provider_desc
 AchievementsSearchProvider.optionsTable = {
 	type = "group",
 	args = {
@@ -30,15 +27,6 @@ AchievementsSearchProvider.optionsTable = {
 		},
 	},
 }
-
----@return SearchItem[]
-function AchievementsSearchProvider:Get()
-	if not self.cache then
-		self.cache = self:Fetch()
-	end
-
-	return self.cache or {}
-end
 
 ---@return SearchItem[]?
 function AchievementsSearchProvider:Fetch()

@@ -13,11 +13,8 @@ local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
 ---@cast GlobalSearch GlobalSearch
 
 ---@class ToysSearchProvider : SearchProvider, AceEvent-3.0
-local ToysSearchProvider = {
-	name = L.toys,
-	description = L.toys_search_provider_desc,
-	category = L.global_search,
-}
+local ToysSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.toys)
+ToysSearchProvider.description = L.toys_search_provider_desc
 AceEvent:Embed(ToysSearchProvider)
 
 local toyBoxSettings
@@ -66,18 +63,6 @@ local function SetToyBoxSettings(settings)
 	for i = 1, C_PetJournal.GetNumPetSources() do -- Blizzard uses the pet journal to get num sources in Blizzard_ToyBox.lua
 		C_ToyBox.SetSourceTypeFilter(i, settings.source[i])
 	end
-end
-
----@return SearchItem[]
-function ToysSearchProvider:Get()
-	if not self.cache then
-		self.cache = self:Fetch()
-	end
-	return self.cache
-end
-
-function ToysSearchProvider:ClearCache()
-	self.cache = nil
 end
 
 ---@return SearchItem[]

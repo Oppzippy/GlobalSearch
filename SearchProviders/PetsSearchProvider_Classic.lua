@@ -9,23 +9,8 @@ local AceEvent = LibStub("AceEvent-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class PetsSearchProvider_Classic : SearchProvider
-local PetsSearchProvider_Classic = {
-	name = L.pets,
-	category = L.global_search,
-}
+local PetsSearchProvider_Classic = GlobalSearchAPI:CreateProvider(L.global_search, L.pets)
 AceEvent:Embed(PetsSearchProvider_Classic)
-
----@return SearchItem[]
-function PetsSearchProvider_Classic:Get()
-	if not self.cache then
-		self.cache = self:Fetch()
-	end
-	return self.cache
-end
-
-function PetsSearchProvider_Classic:ClearCache()
-	self.cache = nil
-end
 
 ---@return SearchItem[]
 function PetsSearchProvider_Classic:Fetch()

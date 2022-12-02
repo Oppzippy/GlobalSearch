@@ -5,19 +5,8 @@ local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class SlashCommandsSearchProvider : SearchProvider
-local SlashCommandsSearchProvider = {
-	name = L.slash_commands,
-	description = L.slash_commands_search_provider_desc,
-	category = L.global_search,
-}
-
----@return SearchItem[]
-function SlashCommandsSearchProvider:Get()
-	if not self.cache then
-		self.cache = self:Fetch()
-	end
-	return self.cache
-end
+local SlashCommandsSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.slash_commands)
+SlashCommandsSearchProvider.description = L.slash_commands_search_provider_desc
 
 ---@return SearchItem[]
 function SlashCommandsSearchProvider:Fetch()
