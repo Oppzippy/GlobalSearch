@@ -67,8 +67,9 @@ local methods = {
 		self.frame:SetHeight(height)
 		self.textureFrame:SetWidth(height - 8) -- subtract top and bottom border
 	end,
-	SetFont = function(self, path, height, flags)
-		self.font:SetFont(path, height, flags)
+	SetFontObject = function(self, font)
+		self.fontString:SetFontObject(font)
+		self.categoryFontString:SetFontObject(font)
 	end,
 }
 
@@ -139,12 +140,8 @@ do
 		fontString:SetJustifyH("LEFT")
 		fontString:SetMaxLines(2)
 
-		---@type Font
-		local font = CreateFont("AceGUI30GlobalSearch-SearchResultFont" .. AceGUI:GetNextWidgetNum(widgetType))
-		font:CopyFontObject("GameFontWhite")
-
-		categoryFontString:SetFontObject(font)
-		fontString:SetFontObject(font)
+		categoryFontString:SetFontObject("GameFontWhite")
+		fontString:SetFontObject("GameFontWhite")
 
 		local widget = {
 			type = widgetType,
@@ -155,7 +152,6 @@ do
 			mouseoverHighlightTexture = mouseoverHighlightTexture,
 			fontString = fontString,
 			categoryFontString = categoryFontString,
-			font = font,
 		}
 
 		for method, func in next, methods do

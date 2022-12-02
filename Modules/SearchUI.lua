@@ -11,7 +11,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 ---@field callbacks table
 ---@field keybindingRegistry KeybindingRegistry
 ---@field RegisterCallback function
----@field font unknown[]
+---@field font Font
 local SearchUIPrototype = {
 	resultsPerPage = 10,
 	barHeight = 40,
@@ -22,10 +22,10 @@ local function CreateSearchUI()
 		widgets = { results = {} },
 		selectedIndex = 1,
 		page = 1,
-		font = { "Fonts\\__FRIZQT.TTF", 12, "" },
 		keybindingRegistry = ns.KeybindingRegistry.Create(CallbackHandler),
 	}, { __index = SearchUIPrototype })
 	searchUI.callbacks = CallbackHandler:New(searchUI)
+	searchUI.font = CreateFont("GlobalSearch_SearchUIFont")
 	return searchUI
 end
 
@@ -53,7 +53,7 @@ function SearchUIPrototype:Show()
 	end)
 	searchBar:SetFullWidth(true)
 	searchBar:SetHeight(self.barHeight)
-	searchBar:SetFont(unpack(self.font))
+	searchBar:SetFontObject(self.font)
 
 	local resultsContainer = AceGUI:Create("SimpleGroup")
 	---@cast resultsContainer AceGUISimpleGroup
@@ -92,8 +92,7 @@ function SearchUIPrototype:SetSize(width, height)
 end
 
 function SearchUIPrototype:SetFont(path, size, flags)
-	self.widgets.searchBar:SetFont(path, size, flags)
-	self.font = { path, size, flags }
+	self.font:SetFont(path, size, flags)
 end
 
 function SearchUIPrototype:SetHelpText(helpText)
@@ -292,7 +291,7 @@ function SearchUIPrototype:Render()
 		end
 		resultWidget:SetFullWidth(true)
 		resultWidget:SetHeight(self.barHeight)
-		resultWidget:SetFont(unpack(self.font))
+		resultWidget:SetFontObject(self.font)
 		resultWidget:SetUserData("item", item)
 
 		if i == self.selectedIndex then
@@ -311,17 +310,18 @@ function SearchUIPrototype:Render()
 		self.widgets.resultsContainer:AddChild(resultWidget)
 		self.widgets.results[#self.widgets.results + 1] = resultWidget
 	end
+
 	if self:GetNumPages() >= 1 then
 		local pageNumber = AceGUI:Create("Label")
 		---@cast pageNumber AceGUILabel
 		pageNumber:SetText(L.page_x_of_x:format(self:GetPage(), self:GetNumPages()))
-		pageNumber:SetFontObject("GameFontWhite")
+		pageNumber:SetFontObject(self.font)
 		self.widgets.resultsContainer:AddChild(pageNumber)
 	elseif self.helpText then
 		local help = AceGUI:Create("Label")
 		---@cast help AceGUILabel
 		help:SetText(self.helpText)
-		help:SetFontObject("GameFontWhite")
+		help:SetFontObject(self.font)
 		self.widgets.resultsContainer:AddChild(help)
 	end
 
