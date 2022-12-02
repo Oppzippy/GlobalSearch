@@ -57,25 +57,32 @@ function SearchContextCachePrototype:GetCombinedContextForProviders(providerIDs)
 	return ns.CombinedSearchContext.Create(contexts)
 end
 
+--- This will yield after work is done so it can be run by TaskQueue
 ---@param providerID string
----@return fun(): SearchContext
+---@return fun(): SearchContext?
 function SearchContextCachePrototype:IterateContextsForProvider(providerID)
-	return coroutine.wrap(function()
-		local items = self.providerCollection:GetProviderItems(providerID)
-		if items then
-			if self.items[providerID] ~= items then
-				local contextGroup = {}
-				contextGroup[#contextGroup + 1] = ns.ShortTextSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items)
-				contextGroup[#contextGroup + 1] = ns.FullTextSearchContext.Create(items)
-				self.contexts[items] = contextGroup
-				self.items[providerID] = items
-			end
+	-- Expensive if items aren't cached
+	local items = self.providerCollection:GetProviderItems(providerID)
+	if coroutine.running() then coroutine.yield() end
+	if items then
+		if self.items[providerID] ~= items then
+			local contextGroup = {}
+			contextGroup[#contextGroup + 1] = ns.ShortTextSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items)
+			-- Expensive to build index
+			contextGroup[#contextGroup + 1] = ns.FullTextSearchContext.Create(items)
+			if coroutine.running() then coroutine.yield() end
 
+			self.contexts[items] = contextGroup
+			self.items[providerID] = items
+		end
+
+		return coroutine.wrap(function(...)
 			for _, context in next, self.contexts[items] do
 				coroutine.yield(context)
 			end
-		end
-	end)
+		end)
+	end
+	return function() end
 end
 
 function SearchContextCachePrototype:GetProviders()

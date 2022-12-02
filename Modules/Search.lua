@@ -42,6 +42,14 @@ end
 
 function module:OnEnable()
 	self:RegisterKeybindings()
+
+	C_Timer.After(5, function()
+		local task = coroutine.create(function()
+			self.searchContextCache:GetCombinedContext()
+		end)
+
+		self:SendMessage("GlobalSearch_QueueTask", task)
+	end)
 end
 
 function module:UpdateProviderCollection()
