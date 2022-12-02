@@ -44,7 +44,7 @@ function BagsSearchProvider:Fetch()
 			items[#items + 1] = {
 				id = itemID,
 				name = itemName,
-				extraSearchText = tooltipStorage:GetHyperlink(itemLink),
+				extraSearchText = tooltipStorage:GetItemByID(itemID),
 				texture = icon,
 				macroText = "/use " .. itemName,
 				---@param tooltip GameTooltip

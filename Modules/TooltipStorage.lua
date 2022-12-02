@@ -15,16 +15,16 @@ end
 
 -- This module is for internal use only, so we can add functions as needed
 
----@param hyperlink string
----@return string
-function module:GetHyperlink(hyperlink)
-	return self:GetTooltip("Hyperlink", hyperlink)
-end
-
 ---@param itemID number
 ---@return string
 function module:GetToyByItemID(itemID)
 	return self:GetTooltip("ToyByItemID", itemID)
+end
+
+---@param itemID number
+---@return string
+function module:GetItemByID(itemID)
+	return self:GetTooltip("ItemByID", itemID)
 end
 
 ---@param functionSuffix string
