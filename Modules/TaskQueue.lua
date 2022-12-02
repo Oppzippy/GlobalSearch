@@ -10,7 +10,7 @@ local addon = AceAddon:GetAddon("GlobalSearch")
 local module = addon:NewModule("TaskQueue", "AceEvent-3.0")
 ---@type thread[]
 module.taskQueue = {}
-module.timeLimitPerFrame = 0.005
+module.timeLimitPerFrameInSeconds = 0.005
 
 function module:OnInitialize()
 	self:RegisterMessage("GlobalSearch_QueueTask", "OnQueueTask")
@@ -32,10 +32,11 @@ function module:Trigger()
 end
 
 function module:Run()
+	local timeLimit = self:GetDB().profile.options.taskQueueTimeAllocationInMilliseconds / 1000
 	local time = GetTimePreciseSec()
 	repeat
 		self:RunIteration()
-	until self.ticker == nil or (GetTimePreciseSec() - time) > self.timeLimitPerFrame -- Time limit per frame
+	until self.ticker == nil or (GetTimePreciseSec() - time) > timeLimit -- Time limit per frame
 end
 
 function module:RunIteration()

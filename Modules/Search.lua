@@ -43,26 +43,28 @@ end
 function module:OnEnable()
 	self:RegisterKeybindings()
 
-	C_Timer.After(5, function()
-		local task = coroutine.create(function()
-			-- Prefill caches
-			for _, provider in next, self.providerCollection:GetProviders() do
-				if provider.RefreshCacheAsync then
-					provider:RefreshCacheAsync()
+	if self:GetDB().profile.options.preloadCache then
+		C_Timer.After(5, function()
+			local task = coroutine.create(function()
+				-- Prefill caches
+				for _, provider in next, self.providerCollection:GetProviders() do
+					if provider.RefreshCacheAsync then
+						provider:RefreshCacheAsync()
+					end
 				end
-			end
 
-			-- Prebuild indexes
-			for providerID in next, self.searchContextCache:GetProviders() do
-				local iter = self.searchContextCache:IterateContextsForProvider(providerID)
-				while iter() do
-					coroutine.yield()
+				-- Prebuild indexes
+				for providerID in next, self.searchContextCache:GetProviders() do
+					local iter = self.searchContextCache:IterateContextsForProvider(providerID)
+					while iter() do
+						coroutine.yield()
+					end
 				end
-			end
+			end)
+
+			self:SendMessage("GlobalSearch_QueueTask", task)
 		end)
-
-		self:SendMessage("GlobalSearch_QueueTask", task)
-	end)
+	end
 end
 
 function module:UpdateProviderCollection()
