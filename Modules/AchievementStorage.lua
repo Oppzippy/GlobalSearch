@@ -41,8 +41,6 @@ function module:RebuildCache()
 	self.rebuildInProgress = true
 	self:Print(L.building_achievement_cache)
 	self:FetchAchievementsAsync(function(achievements)
-		self.achievements = achievements
-
 		local cache = self:GetDB().global.cache.achievements
 		local _, _, _, tocVersion = GetBuildInfo()
 		cache.tocVersion = tocVersion
@@ -58,6 +56,7 @@ function module:RebuildCache()
 				icon = achievement[10],
 			}
 		end
+		self.achievements = cache.data
 
 		self:Print(L.done)
 		self.rebuildInProgress = false
