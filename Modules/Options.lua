@@ -10,7 +10,7 @@ local LibSharedMedia = LibStub("LibSharedMedia-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
 local addon = AceAddon:GetAddon("GlobalSearch")
----@class OptionsModule : AceConsole-3.0, AceEvent-3.0, ModulePrototype
+---@class OptionsModule : AceModule, AceConsole-3.0, AceEvent-3.0, ModulePrototype
 ---@field RegisterEvent function
 local module = addon:NewModule("Options", "AceEvent-3.0", "AceConsole-3.0")
 module.numProviders = 0

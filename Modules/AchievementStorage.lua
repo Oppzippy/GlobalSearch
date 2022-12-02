@@ -15,7 +15,7 @@ local GetNextAchievement, GetPreviousAchievement = GetNextAchievement, GetPrevio
 local GetTimePreciseSec = GetTimePreciseSec
 
 local addon = AceAddon:GetAddon("GlobalSearch")
----@class AchievementStorageModule : AceConsole-3.0, AceEvent-3.0, ModulePrototype
+---@class AchievementStorageModule : AceModule, AceConsole-3.0, AceEvent-3.0, ModulePrototype
 ---@field RegisterEvent function
 local module = addon:NewModule("AchievementStorage", "AceEvent-3.0", "AceConsole-3.0")
 

@@ -1,3 +1,5 @@
+---@meta
+
 ---@class SearchContextItem
 ---@field item SearchItem
 ---@field score number

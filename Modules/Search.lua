@@ -7,7 +7,7 @@ local LibSharedMedia = LibStub("LibSharedMedia-3.0")
 
 local L = AceLocale:GetLocale("GlobalSearch")
 local addon = AceAddon:GetAddon("GlobalSearch")
----@class SearchModule : AceConsole-3.0, AceEvent-3.0, ModulePrototype
+---@class SearchModule : AceModule, AceConsole-3.0, AceEvent-3.0, ModulePrototype
 ---@field RegisterEvent function
 local module = addon:NewModule("Search", "AceEvent-3.0", "AceConsole-3.0")
 local searchExecute = CreateFrame("Button", "GlobalSearchExecuteButton", nil, "InsecureActionButtonTemplate")
