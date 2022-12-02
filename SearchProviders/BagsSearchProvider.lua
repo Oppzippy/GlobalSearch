@@ -13,7 +13,7 @@ local GetContainerNumSlots = GetContainerNumSlots or C_Container.GetContainerNum
 local GetContainerItemID = GetContainerItemID or C_Container.GetContainerItemID
 
 ---@class BagsSearchProvider : SearchProvider, AceEvent-3.0
-local BagsSearchProvider = GlobalSearchAPI:CreateProvider(L.bags, L.global_search)
+local BagsSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.bags)
 BagsSearchProvider.description = L.bags_search_provider_desc
 AceEvent:Embed(BagsSearchProvider)
 
