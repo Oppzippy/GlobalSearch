@@ -34,7 +34,7 @@ function SearchUIPrototype:Show()
 
 	self.selectedIndex = 1
 
-	local container = AceGUI:Create("SimpleGroup")
+	local container = AceGUI:Create("GlobalSearch-Container")
 	---@cast container AceGUISimpleGroup
 	container:SetLayout("List")
 	container:SetPoint("TOP", 0, -20)
@@ -95,6 +95,12 @@ function SearchUIPrototype:SetFont(path, size, flags)
 	self.font:SetFont(path, size, flags)
 end
 
+---@param strata FrameStrata
+function SearchUIPrototype:SetFrameStrata(strata)
+	self.frameStrata = strata
+	self.widgets.container:SetFrameStrata(strata)
+end
+
 function SearchUIPrototype:SetHelpText(helpText)
 	self.helpText = helpText
 end
@@ -128,6 +134,8 @@ function SearchUIPrototype:ShowTooltip(tooltipFunc)
 	tooltip:ClearAllPoints()
 	tooltip.frame:SetOwner(UIParent, "ANCHOR_NONE")
 	tooltip:SetPoint("TOPLEFT", self.widgets.resultsContainer.frame, "TOPRIGHT", 4, 0)
+	-- Since tooltip isn't a child of self.widgets.container, its frame strata will not be inherited
+	tooltip:SetFrameStrata(self.frameStrata)
 
 	local limitedTooltip = ns.LimitedTooltip.Limit(tooltip.frame)
 	xpcall(function()

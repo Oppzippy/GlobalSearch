@@ -71,6 +71,32 @@ module.optionsTable = {
 						module:Print(L.x_items_removed:format(numItems))
 					end,
 				},
+				frameStrata = {
+					type = "select",
+					name = L.frame_strata,
+					values = {
+						["BACKGROUND"] = "BACKGROUND",
+						["LOW"] = "LOW",
+						["MEDIUM"] = "MEDIUM",
+						["HIGH"] = "HIGH",
+						["DIALOG"] = "DIALOG",
+						["FULLSCREEN"] = "FULLSCREEN",
+						["FULLSCREEN_DIALOG"] = "FULLSCREEN_DIALOG",
+						["TOOLTIP"] = "TOOLTIP",
+					},
+					sorting = {
+						"BACKGROUND",
+						"LOW",
+						"MEDIUM",
+						"HIGH",
+						"DIALOG",
+						"FULLSCREEN",
+						"FULLSCREEN_DIALOG",
+						"TOOLTIP",
+					},
+					order = 3.3,
+					width = 1.5,
+				},
 				position = {
 					type = "group",
 					inline = true,
@@ -133,6 +159,7 @@ module.optionsTable = {
 					name = L.font,
 					get = "GetFont",
 					set = "SetFont",
+					order = 7,
 					args = {
 						font = {
 							type = "select",

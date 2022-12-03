@@ -6,6 +6,10 @@ local methods = {
 	OnAcquire = function(self)
 		self.frame:ClearLines()
 		self.frame:Show()
+		self.frame:SetFrameStrata("MEDIUM")
+	end,
+	SetFrameStrata = function(self, strata)
+		self.frame:SetFrameStrata(strata)
 	end,
 }
 

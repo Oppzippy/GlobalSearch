@@ -14,6 +14,7 @@ ns.dbDefaults = {
 			showMouseoverTooltip = true,
 			showHelp = true,
 			maxRecentItems = 20,
+			frameStrata = "DIALOG",
 			position = {
 				xOffset = 0,
 				yOffset = -20,

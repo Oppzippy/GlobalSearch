@@ -78,6 +78,7 @@ function module:UpdateDisplaySettings()
 		end
 
 		self.searchUI:SetFont(fontPath, options.font.size, table.concat(fontFlags, ","))
+		self.searchUI:SetFrameStrata(options.frameStrata)
 	end
 end
 
