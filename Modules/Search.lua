@@ -16,7 +16,6 @@ searchExecute:RegisterForClicks("AnyDown", "AnyUp")
 function module:OnInitialize()
 	self.searchQuery = ""
 	self.selectedIndex = 1
-	self.maxResults = 10
 
 	self:UpdateProviderCollection()
 
@@ -81,6 +80,7 @@ do
 			local options = self:GetDB().profile.options
 			self.searchUI:SetOffset(options.position.xOffset, options.position.yOffset)
 			self.searchUI:SetSize(options.size.width, options.size.height)
+			self.searchUI:SetNumResultsPerPage(options.resultsPerPage)
 
 			self.searchUI:SetFont(getFontFromFontOptions(options.font))
 			self.searchUI:SetTooltipFont(getFontFromFontOptions(options.tooltipFont))

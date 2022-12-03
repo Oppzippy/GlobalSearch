@@ -48,6 +48,19 @@ module.optionsTable = {
 					width = 1.5,
 					order = 3,
 				},
+				resultsPerPage = {
+					type = "range",
+					name = L.results_per_page,
+					get = "Get",
+					set = "SetAndFireDisplaySettingsChanged",
+					softMin = 3,
+					softMax = 20,
+					min = 1,
+					max = 50,
+					step = 1,
+					width = 1.5,
+					order = 3.05,
+				},
 				maxRecentItems = {
 					type = "range",
 					name = L.number_of_recent_items,
@@ -407,12 +420,17 @@ function module:RenderProviderOptions(providerID, provider)
 	end
 end
 
-function module:Get(info, val)
+function module:Get(info)
 	return self:GetOptions()[info[#info]]
 end
 
 function module:Set(info, val)
 	self:GetOptions()[info[#info]] = val
+end
+
+function module:SetAndFireDisplaySettingsChanged(info, val)
+	self:GetOptions()[info[#info]] = val
+	self:SendMessage("GlobalSearch_OnDisplaySettingsChanged")
 end
 
 function module:GetKeybinding(info)

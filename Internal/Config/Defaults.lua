@@ -15,6 +15,7 @@ ns.dbDefaults = {
 			showHelp = true,
 			maxRecentItems = 20,
 			frameStrata = "DIALOG",
+			resultsPerPage = 10,
 			position = {
 				xOffset = 0,
 				yOffset = -20,

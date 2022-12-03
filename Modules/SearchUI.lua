@@ -113,6 +113,11 @@ function SearchUIPrototype:SetFrameStrata(strata)
 	self.widgets.container:SetFrameStrata(strata)
 end
 
+---@param resultsPerPage number
+function SearchUIPrototype:SetNumResultsPerPage(resultsPerPage)
+	self.resultsPerPage = resultsPerPage
+end
+
 function SearchUIPrototype:SetHelpText(helpText)
 	self.helpText = helpText
 end
