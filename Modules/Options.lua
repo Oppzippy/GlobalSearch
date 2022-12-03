@@ -59,6 +59,18 @@ module.optionsTable = {
 					width = 1.5,
 					order = 3.1,
 				},
+				clearRecentItems = {
+					name = L.clear_recent_items,
+					type = "execute",
+					width = 1.5,
+					order = 3.2,
+					func = function()
+						local profile = module:GetDB().profile
+						local numItems = #profile.recentItemsV2
+						profile.recentItemsV2 = {}
+						module:Print(L.x_items_removed:format(numItems))
+					end,
+				},
 				position = {
 					type = "group",
 					inline = true,
