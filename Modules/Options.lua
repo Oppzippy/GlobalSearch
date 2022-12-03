@@ -71,6 +71,13 @@ module.optionsTable = {
 						module:Print(L.x_items_removed:format(numItems))
 					end,
 				},
+			},
+		},
+		appearance = {
+			type = "group",
+			order = 2,
+			name = L.appearance,
+			args = {
 				frameStrata = {
 					type = "select",
 					name = L.frame_strata,
@@ -94,14 +101,14 @@ module.optionsTable = {
 						"FULLSCREEN_DIALOG",
 						"TOOLTIP",
 					},
-					order = 3.3,
+					order = 1,
 					width = 1.5,
 				},
 				position = {
 					type = "group",
 					inline = true,
 					name = L.position,
-					order = 4,
+					order = 2,
 					get = "GetPosition",
 					set = "SetPosition",
 					args = {
@@ -130,7 +137,7 @@ module.optionsTable = {
 					type = "group",
 					inline = true,
 					name = L.size,
-					order = 5,
+					order = 3,
 					get = "GetSize",
 					set = "SetSize",
 					args = {
@@ -159,7 +166,7 @@ module.optionsTable = {
 					name = L.font,
 					get = "GetFont",
 					set = "SetFont",
-					order = 7,
+					order = 4,
 					args = {
 						font = {
 							type = "select",
@@ -203,7 +210,7 @@ module.optionsTable = {
 		keybindings = {
 			type = "group",
 			name = L.key_bindings,
-			order = 2,
+			order = 3,
 			get = "GetKeybinding",
 			set = "SetKeybinding",
 			validate = "ValidateKeybinding",
@@ -235,7 +242,7 @@ module.optionsTable = {
 			name = L.enabled_providers,
 			get = "IsProviderEnabled",
 			set = "SetProviderEnabled",
-			order = 3,
+			order = 4,
 			args = {},
 		},
 		providerOptions = {
@@ -244,7 +251,7 @@ module.optionsTable = {
 			get = function() end,
 			set = function() end,
 			handler = {},
-			order = 4,
+			order = 5,
 			args = {},
 		},
 	},
