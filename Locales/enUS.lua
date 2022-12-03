@@ -69,6 +69,7 @@ L.x_items_removed = "%d items removed."
 L.frame_strata = "Frame Strata"
 L.appearance = "Appearance"
 L.tooltip_font = "Tooltip Font"
+L.help_text_font = "Help Text Font"
 
 L.achievements_search_provider_desc = "Provides all achievements. Includes earned, unearned, and achievements further in chains that aren't visible in the UI yet."
 L.bags_search_provider_desc = "Provides all usable items in bags."

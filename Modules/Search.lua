@@ -84,6 +84,7 @@ do
 
 			self.searchUI:SetFont(getFontFromFontOptions(options.font))
 			self.searchUI:SetTooltipFont(getFontFromFontOptions(options.tooltipFont))
+			self.searchUI:SetHelpTextFont(getFontFromFontOptions(options.helpTextFont))
 			self.searchUI:SetFrameStrata(options.frameStrata)
 		end
 	end

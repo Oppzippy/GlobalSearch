@@ -29,6 +29,12 @@ ns.dbDefaults = {
 				outline = false,
 				monochrome = false,
 			},
+			helpTextFont = {
+				font = "Friz Quadrata TT",
+				size = 12,
+				outline = "OUTLINE",
+				monochrome = false,
+			},
 			tooltipFont = {
 				font = "Friz Quadrata TT",
 				size = 12,

@@ -13,6 +13,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 ---@field RegisterCallback function
 ---@field font Font
 ---@field tooltipFont Font
+---@field helpTextFont Font
 local SearchUIPrototype = {
 	resultsPerPage = 10,
 	barHeight = 40,
@@ -27,6 +28,7 @@ local function CreateSearchUI()
 	}, { __index = SearchUIPrototype })
 	searchUI.callbacks = CallbackHandler:New(searchUI)
 	searchUI.font = CreateFont("GlobalSearch_SearchUIFont")
+	searchUI.helpTextFont = CreateFont("GlobalSearch_SearchUIHelpTextFont")
 	searchUI.tooltipFont = CreateFont("GlobalSearch_SearchUITooltipFont")
 	return searchUI
 end
@@ -99,6 +101,10 @@ end
 
 function SearchUIPrototype:SetTooltipFont(path, size, flags)
 	self.tooltipFont:SetFont(path, size, flags)
+end
+
+function SearchUIPrototype:SetHelpTextFont(path, size, flags)
+	self.helpTextFont:SetFont(path, size, flags)
 end
 
 ---@param strata FrameStrata
@@ -330,13 +336,13 @@ function SearchUIPrototype:Render()
 		local pageNumber = AceGUI:Create("Label")
 		---@cast pageNumber AceGUILabel
 		pageNumber:SetText(L.page_x_of_x:format(self:GetPage(), self:GetNumPages()))
-		pageNumber:SetFontObject(self.font)
+		pageNumber:SetFontObject(self.helpTextFont)
 		self.widgets.resultsContainer:AddChild(pageNumber)
 	elseif self.helpText then
 		local help = AceGUI:Create("Label")
 		---@cast help AceGUILabel
 		help:SetText(self.helpText)
-		help:SetFontObject(self.font)
+		help:SetFontObject(self.helpTextFont)
 		self.widgets.resultsContainer:AddChild(help)
 	end
 
