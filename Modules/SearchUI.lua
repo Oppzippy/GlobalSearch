@@ -12,6 +12,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 ---@field keybindingRegistry KeybindingRegistry
 ---@field RegisterCallback function
 ---@field font Font
+---@field tooltipFont Font
 local SearchUIPrototype = {
 	resultsPerPage = 10,
 	barHeight = 40,
@@ -26,6 +27,7 @@ local function CreateSearchUI()
 	}, { __index = SearchUIPrototype })
 	searchUI.callbacks = CallbackHandler:New(searchUI)
 	searchUI.font = CreateFont("GlobalSearch_SearchUIFont")
+	searchUI.tooltipFont = CreateFont("GlobalSearch_SearchUITooltipFont")
 	return searchUI
 end
 
@@ -95,6 +97,10 @@ function SearchUIPrototype:SetFont(path, size, flags)
 	self.font:SetFont(path, size, flags)
 end
 
+function SearchUIPrototype:SetTooltipFont(path, size, flags)
+	self.tooltipFont:SetFont(path, size, flags)
+end
+
 ---@param strata FrameStrata
 function SearchUIPrototype:SetFrameStrata(strata)
 	self.frameStrata = strata
@@ -132,7 +138,8 @@ function SearchUIPrototype:ShowTooltip(tooltipFunc)
 	self.widgets.tooltip = tooltip
 
 	tooltip:ClearAllPoints()
-	tooltip.frame:SetOwner(UIParent, "ANCHOR_NONE")
+	tooltip:SetFontObject(self.tooltipFont)
+	tooltip:SetOwner(UIParent, "ANCHOR_NONE")
 	tooltip:SetPoint("TOPLEFT", self.widgets.resultsContainer.frame, "TOPRIGHT", 4, 0)
 	-- Since tooltip isn't a child of self.widgets.container, its frame strata will not be inherited
 	tooltip:SetFrameStrata(self.frameStrata)

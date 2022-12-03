@@ -62,23 +62,30 @@ function module:Show()
 	self:UpdateDisplaySettings()
 end
 
-function module:UpdateDisplaySettings()
-	if self.searchUI:IsVisible() then
-		local options = self:GetDB().profile.options
-		self.searchUI:SetOffset(options.position.xOffset, options.position.yOffset)
-		self.searchUI:SetSize(options.size.width, options.size.height)
-
-		local fontPath = LibSharedMedia:Fetch("font", options.font.font)
+do
+	local function getFontFromFontOptions(fontOptions)
+		local fontPath = LibSharedMedia:Fetch("font", fontOptions.font)
 		local fontFlags = {}
-		if options.font.outline then
-			fontFlags[#fontFlags + 1] = options.font.outline
+		if fontOptions.outline then
+			fontFlags[#fontFlags + 1] = fontOptions.outline
 		end
-		if options.font.monochrome then
+		if fontOptions.monochrome then
 			fontFlags[#fontFlags + 1] = "MONOCHROME"
 		end
 
-		self.searchUI:SetFont(fontPath, options.font.size, table.concat(fontFlags, ","))
-		self.searchUI:SetFrameStrata(options.frameStrata)
+		return fontPath, fontOptions.size, table.concat(fontFlags, ",")
+	end
+
+	function module:UpdateDisplaySettings()
+		if self.searchUI:IsVisible() then
+			local options = self:GetDB().profile.options
+			self.searchUI:SetOffset(options.position.xOffset, options.position.yOffset)
+			self.searchUI:SetSize(options.size.width, options.size.height)
+
+			self.searchUI:SetFont(getFontFromFontOptions(options.font))
+			self.searchUI:SetTooltipFont(getFontFromFontOptions(options.tooltipFont))
+			self.searchUI:SetFrameStrata(options.frameStrata)
+		end
 	end
 end
 

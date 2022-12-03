@@ -7,9 +7,23 @@ local methods = {
 		self.frame:ClearLines()
 		self.frame:Show()
 		self.frame:SetFrameStrata("MEDIUM")
+		self.frame.TextLeft1:SetFontObject(GameTooltipHeaderText)
+		self.frame.TextRight1:SetFontObject(GameTooltipHeaderText)
+		self.frame.TextLeft2:SetFontObject(GameTooltipText)
+		self.frame.TextRight2:SetFontObject(GameTooltipText)
 	end,
 	SetFrameStrata = function(self, strata)
 		self.frame:SetFrameStrata(strata)
+	end,
+	SetOwner = function(self, ...)
+		self.frame:SetOwner(...)
+	end,
+	---@param font Font
+	SetFontObject = function(self, font)
+		self.frame.TextLeft1:SetFontObject(font)
+		self.frame.TextRight1:SetFontObject(font)
+		self.frame.TextLeft2:SetFontObject(font)
+		self.frame.TextRight2:SetFontObject(font)
 	end,
 }
 

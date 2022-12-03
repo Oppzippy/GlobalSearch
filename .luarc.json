@@ -106,6 +106,8 @@
         "QuestLog_Update",
         "QuestLogFrame",
         "WorldMapFrame",
-        "MaximizeUIPanel"
+        "MaximizeUIPanel",
+        "GameTooltipHeaderText",
+        "GameTooltipText"
     ]
 }

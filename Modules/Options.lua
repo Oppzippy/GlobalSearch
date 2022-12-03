@@ -205,6 +205,51 @@ module.optionsTable = {
 						},
 					},
 				},
+				tooltipFont = {
+					type = "group",
+					inline = true,
+					name = L.tooltip_font,
+					get = "GetTooltipFont",
+					set = "SetTooltipFont",
+					order = 4,
+					args = {
+						font = {
+							type = "select",
+							dialogControl = "LSM30_Font",
+							name = L.font,
+							values = LibSharedMedia:HashTable("font"),
+							width = 1.5,
+							order = 1,
+						},
+						size = {
+							type = "range",
+							name = L.size,
+							min = 1,
+							softMin = 8,
+							softMax = 32,
+							width = 1.5,
+							order = 2,
+						},
+						outline = {
+							type = "select",
+							name = L.outline,
+							values = {
+								[false] = L.none,
+								OUTLINE = L.thin,
+								THICKOUTLINE = L.thick,
+							},
+							sorting = { false, "OUTLINE", "THICKOUTLINE" },
+							width = 1.5,
+							order = 3,
+						},
+						monochrome = {
+							type = "toggle",
+							name = L.monochrome,
+							width = 1.5,
+							order = 4,
+						},
+					},
+				},
 			},
 		},
 		keybindings = {
@@ -394,6 +439,15 @@ end
 
 function module:SetFont(info, val)
 	self:GetOptions().font[info[#info]] = val
+	self:SendMessage("GlobalSearch_OnDisplaySettingsChanged")
+end
+
+function module:GetTooltipFont(info)
+	return self:GetOptions().tooltipFont[info[#info]]
+end
+
+function module:SetTooltipFont(info, val)
+	self:GetOptions().tooltipFont[info[#info]] = val
 	self:SendMessage("GlobalSearch_OnDisplaySettingsChanged")
 end
 

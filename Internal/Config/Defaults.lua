@@ -29,6 +29,12 @@ ns.dbDefaults = {
 				outline = false,
 				monochrome = false,
 			},
+			tooltipFont = {
+				font = "Friz Quadrata TT",
+				size = 12,
+				outline = false,
+				monochrome = false,
+			},
 			disabledSearchProviders = {
 				GlobalSearch_Achievements = true,
 			},
