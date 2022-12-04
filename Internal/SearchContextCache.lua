@@ -27,58 +27,66 @@ local function CreateSearchContextCache(providerCollection)
 	return collection
 end
 
----@return CombinedSearchContext
-function SearchContextCachePrototype:GetCombinedContext()
-	---@type SearchContext[]
-	local contexts = {}
+-- Async job returns CombinedSearchContext
+---@return AsyncJob
+function SearchContextCachePrototype:GetCombinedContextAsync()
+	return ns.AsyncJob.Create(coroutine.create(function()
+		---@type SearchContext[]
+		local contexts = {}
 
-	for providerID in next, self.providerCollection:GetProviders() do
-		for context in self:IterateContextsForProvider(providerID) do
-			contexts[#contexts + 1] = context
+		for providerID in next, self.providerCollection:GetProviders() do
+			self:GetContextsForProviderAsync(providerID):Then(ns.AsyncJob.Create(coroutine.create(function(providerContexts)
+				---@cast providerContexts SearchContext[]
+				for _, context in ipairs(providerContexts) do
+					contexts[#contexts + 1] = context
+				end
+			end))):PollToCompletionAsync()
 		end
-	end
 
-	return ns.CombinedSearchContext.Create(contexts)
+		return ns.CombinedSearchContext.Create(contexts)
+	end))
 end
 
+-- Async job returns CombinedSearchContext
 ---@param providerIDs table<string, boolean>
----@return CombinedSearchContext
-function SearchContextCachePrototype:GetCombinedContextForProviders(providerIDs)
-	---@type SearchContext[]
-	local contexts = {}
+---@return AsyncJob
+function SearchContextCachePrototype:GetCombinedContextForProvidersAsync(providerIDs)
+	return ns.AsyncJob.Create(coroutine.create(function()
+		---@type SearchContext[]
+		local contexts = {}
 
-	for providerID in next, providerIDs do
-		for context in self:IterateContextsForProvider(providerID) do
-			contexts[#contexts + 1] = context
+		for providerID in next, providerIDs do
+			self:GetContextsForProviderAsync(providerID):Then(ns.AsyncJob.Create(coroutine.create(function(providerContexts)
+				---@cast providerContexts SearchContext[]
+				for _, context in ipairs(providerContexts) do
+					contexts[#contexts + 1] = context
+				end
+			end))):PollToCompletionAsync()
 		end
-	end
 
-	return ns.CombinedSearchContext.Create(contexts)
+		return ns.CombinedSearchContext.Create(contexts)
+	end))
 end
 
+-- Async job returns SearchContext[]
 ---@param providerID string
----@return fun(): SearchContext?
-function SearchContextCachePrototype:IterateContextsForProvider(providerID)
-	-- Expensive if items aren't cached
-	local items = self.providerCollection:GetProviderItems(providerID)
-	if items then
-		if self.items[providerID] ~= items then
-			local contextGroup = {}
-			contextGroup[#contextGroup + 1] = ns.ShortTextSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items)
-			-- Expensive to build index
-			contextGroup[#contextGroup + 1] = ns.FullTextSearchContext.Create(items)
+---@return AsyncJob
+function SearchContextCachePrototype:GetContextsForProviderAsync(providerID)
+	return self.providerCollection:GetProviderItemsAsync(providerID):Then(ns.AsyncJob.Create(coroutine.create(function(items)
+		if items then
+			if self.items[providerID] ~= items then
+				local contextGroup = {}
+				contextGroup[#contextGroup + 1] = ns.ShortTextSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items)
+				-- Expensive to build index
+				contextGroup[#contextGroup + 1] = ns.FullTextSearchContext.CreateAsync(items):PollToCompletionAsync()
 
-			self.contexts[items] = contextGroup
-			self.items[providerID] = items
-		end
-
-		return coroutine.wrap(function(...)
-			for _, context in next, self.contexts[items] do
-				coroutine.yield(context)
+				self.contexts[items] = contextGroup
+				self.items[providerID] = items
 			end
-		end)
-	end
-	return function() end
+			return self.contexts[items]
+		end
+		return {}
+	end)))
 end
 
 function SearchContextCachePrototype:GetProviders()

@@ -63,7 +63,7 @@ function AsyncJobPrototype:PollToCompletionAsync()
 	return self:Results()
 end
 
----@return any[]?
+---@return ...
 function AsyncJobPrototype:Results()
 	if self.results then
 		return unpack(self.results)

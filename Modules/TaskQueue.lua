@@ -8,7 +8,7 @@ local GetTimePreciseSec = GetTimePreciseSec
 local addon = AceAddon:GetAddon("GlobalSearch")
 ---@class TaskQueueModule : AceModule, ModulePrototype, AceEvent-3.0
 local module = addon:NewModule("TaskQueue", "AceEvent-3.0")
----@type thread[]
+---@type AsyncJob[]
 module.taskQueue = {}
 module.timeLimitPerFrameInSeconds = 0.005
 
@@ -17,7 +17,7 @@ function module:OnInitialize()
 end
 
 ---@param _ any
----@param task thread
+---@param task AsyncJob
 function module:OnQueueTask(_, task)
 	self.taskQueue[#self.taskQueue + 1] = task
 	self:Trigger()
@@ -35,17 +35,13 @@ function module:Run()
 	local timeLimit = self:GetDB().profile.options.taskQueueTimeAllocationInMilliseconds / 1000
 	local time = GetTimePreciseSec()
 	repeat
-		self:RunIteration()
-	until self.ticker == nil or (GetTimePreciseSec() - time) > timeLimit -- Time limit per frame
-end
-
-function module:RunIteration()
-	local unfinished = coroutine.resume(self.taskQueue[1])
-	if not unfinished then
-		table.remove(self.taskQueue, 1)
-		if #self.taskQueue == 0 then
-			self.ticker:Cancel()
-			self.ticker = nil
+		local unfinished = self.taskQueue[1]:Poll()
+		if not unfinished then
+			table.remove(self.taskQueue, 1)
+			if #self.taskQueue == 0 then
+				self.ticker:Cancel()
+				self.ticker = nil
+			end
 		end
-	end
+	until self.ticker == nil or (GetTimePreciseSec() - time) > timeLimit -- Time limit per frame
 end

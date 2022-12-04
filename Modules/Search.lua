@@ -45,24 +45,22 @@ function module:OnEnable()
 
 	if self:GetDB().profile.options.preloadCache then
 		C_Timer.After(5, function()
-			local task = coroutine.create(function()
+			local job = ns.AsyncJob.Create(coroutine.create(function()
+				print("task start")
 				-- Prefill caches
 				for _, provider in next, self.providerCollection:GetProviders() do
 					if provider.RefreshCacheAsync then
 						provider:RefreshCacheAsync()
 					end
 				end
-
 				-- Prebuild indexes
 				for providerID in next, self.searchContextCache:GetProviders() do
-					local iter = self.searchContextCache:IterateContextsForProvider(providerID)
-					while iter() do
-						coroutine.yield()
-					end
+					self.searchContextCache:GetContextsForProviderAsync(providerID):PollToCompletionAsync()
 				end
-			end)
+				print("task done")
+			end))
 
-			self:SendMessage("GlobalSearch_QueueTask", task)
+			self:SendMessage("GlobalSearch_QueueTask", job)
 		end)
 	end
 end
@@ -79,7 +77,8 @@ function module:Show()
 	self.searchUI:SetShowMouseoverTooltip(options.showMouseoverTooltip)
 	self.searchUI:SetHelpText(options.showHelp and self:GetHelpText() or nil)
 
-	self.searchExecutor = ns.SearchExecutor.Create(self:GetDB(), self.providerCollection, self.searchContextCache)
+	self.searchExecutor = ns.SearchExecutor.CreateAsync(self:GetDB(), self.providerCollection, self.searchContextCache):
+		PollToCompletion()
 	self.searchUI:Show()
 	self:UpdateDisplaySettings()
 end

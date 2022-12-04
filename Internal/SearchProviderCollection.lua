@@ -26,30 +26,34 @@ function SearchProviderCollectionPrototype:GetProviders()
 end
 
 ---@param providerID string
----@return SearchItem[]
-function SearchProviderCollectionPrototype:GetProviderItems(providerID)
-	local provider = self.providers[providerID]
-	if not provider then
-		return {}
-	end
-	local success, itemGroup = xpcall(provider.Get, geterrorhandler and geterrorhandler() or print, provider)
-
-	if success then
-		local decoratedItemGroup = decoratedItemGroupCache[itemGroup]
-		if not decoratedItemGroup then
-			decoratedItemGroup = {}
-			for i, item in ipairs(itemGroup) do
-				decoratedItemGroup[i] = setmetatable({
-					providerID = providerID,
-					category = provider.name,
-				}, { __index = item })
-			end
-			decoratedItemGroupCache[itemGroup] = decoratedItemGroup
+---@return AsyncJob
+function SearchProviderCollectionPrototype:GetProviderItemsAsync(providerID)
+	return ns.AsyncJob.Create(coroutine.create(function()
+		local provider = self.providers[providerID]
+		if not provider then
+			return {}
 		end
 
-		return decoratedItemGroup
-	end
-	return {}
+		local success, itemGroup = xpcall(provider.Get, geterrorhandler and geterrorhandler() or print, provider)
+		coroutine.yield()
+
+		if success then
+			local decoratedItemGroup = decoratedItemGroupCache[itemGroup]
+			if not decoratedItemGroup then
+				decoratedItemGroup = {}
+				for i, item in ipairs(itemGroup) do
+					decoratedItemGroup[i] = setmetatable({
+						providerID = providerID,
+						category = provider.name,
+					}, { __index = item })
+				end
+				decoratedItemGroupCache[itemGroup] = decoratedItemGroup
+			end
+
+			return decoratedItemGroup
+		end
+		return {}
+	end))
 end
 
 local export = { Create = CreateSearchProviderCollection }
