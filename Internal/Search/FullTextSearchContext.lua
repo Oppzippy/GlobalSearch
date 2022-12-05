@@ -8,9 +8,9 @@ local FullTextSearchContextPrototype = {}
 local export = {}
 
 ---@param items SearchItem[]
----@return AsyncJob
+---@return Task
 function export.CreateAsync(items)
-	return ns.AsyncJob.Create(coroutine.create(function()
+	return ns.Task.Create(coroutine.create(function()
 		local context = setmetatable({}, { __index = FullTextSearchContextPrototype })
 		local index = ns.FullTextWordIndex.Create()
 		for _, item in next, items do

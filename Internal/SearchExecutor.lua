@@ -13,9 +13,9 @@ local export = {}
 ---@param db AceDBObject-3.0
 ---@param searchProviderCollection SearchProviderCollection
 ---@param searchContextCache SearchContextCache
----@return AsyncJob
+---@return Task
 function export.CreateAsync(db, searchProviderCollection, searchContextCache)
-	return ns.AsyncJob.Create(coroutine.create(function(...)
+	return ns.Task.Create(coroutine.create(function(...)
 		local searchExecutor = setmetatable({
 			db = db,
 			searchProviderCollection = searchProviderCollection,

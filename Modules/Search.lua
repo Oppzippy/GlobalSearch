@@ -45,7 +45,7 @@ function module:OnEnable()
 
 	if self:GetDB().profile.options.preloadCache then
 		C_Timer.After(5, function()
-			local job = ns.AsyncJob.Create(coroutine.create(function()
+			local task = ns.Task.Create(coroutine.create(function()
 				print("task start")
 				-- Prefill caches
 				for _, provider in next, self.providerCollection:GetProviders() do
@@ -60,7 +60,7 @@ function module:OnEnable()
 				print("task done")
 			end))
 
-			self:SendMessage("GlobalSearch_QueueTask", job)
+			self:SendMessage("GlobalSearch_QueueTask", task)
 		end)
 	end
 end

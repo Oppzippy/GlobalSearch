@@ -26,9 +26,9 @@ function SearchProviderCollectionPrototype:GetProviders()
 end
 
 ---@param providerID string
----@return AsyncJob
+---@return Task
 function SearchProviderCollectionPrototype:GetProviderItemsAsync(providerID)
-	return ns.AsyncJob.Create(coroutine.create(function()
+	return ns.Task.Create(coroutine.create(function()
 		local provider = self.providers[providerID]
 		if not provider then
 			return {}

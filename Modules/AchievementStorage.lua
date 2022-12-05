@@ -40,7 +40,7 @@ function module:RebuildCache()
 	if self.rebuildInProgress then return end
 	self.rebuildInProgress = true
 	self:Print(L.building_achievement_cache)
-	local job = self:FetchAchievementsAsync():Then(ns.AsyncJob.Create(coroutine.create(function(achievements)
+	local task = self:FetchAchievementsAsync():Then(ns.Task.Create(coroutine.create(function(achievements)
 		local cache = self:GetDB().global.cache.achievements
 		local _, _, _, tocVersion = GetBuildInfo()
 		cache.tocVersion = tocVersion
@@ -62,12 +62,12 @@ function module:RebuildCache()
 		self.rebuildInProgress = false
 	end)))
 
-	self:SendMessage("GlobalSearch_QueueTask", job)
+	self:SendMessage("GlobalSearch_QueueTask", task)
 end
 
----@return AsyncJob
+---@return Task
 function module:FetchAchievementsAsync()
-	return ns.AsyncJob.Create(coroutine.create(function()
+	return ns.Task.Create(coroutine.create(function()
 		local achievements = {}
 		for achievement in self:IterateAchievements() do
 			achievements[#achievements + 1] = achievement

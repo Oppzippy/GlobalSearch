@@ -2,66 +2,66 @@
 local ns = select(2, ...)
 local luaunit = require("luaunit")
 
-TestAsyncJob = {}
+TestTask = {}
 
-function TestAsyncJob:TestPollToCompletion()
-	local job = ns.AsyncJob.Create(coroutine.create(function()
+function TestTask:TestPollToCompletion()
+	local task = ns.Task.Create(coroutine.create(function()
 		for i = 1, 4 do
 			coroutine.yield()
 		end
 		return 5
 	end))
 
-	luaunit.assertEquals(job:PollToCompletion(), 5)
+	luaunit.assertEquals(task:PollToCompletion(), 5)
 end
 
-function TestAsyncJob:TestChaining()
-	local job = ns.AsyncJob.Create(coroutine.create(function()
+function TestTask:TestChaining()
+	local task = ns.Task.Create(coroutine.create(function()
 		coroutine.yield()
 		return 1
-	end)):Then(ns.AsyncJob.Create(coroutine.create(function(num)
+	end)):Then(ns.Task.Create(coroutine.create(function(num)
 		return num + 1
 	end)))
 
-	job:PollToCompletion()
+	task:PollToCompletion()
 
-	luaunit.assertEquals(job:Results(), 2)
+	luaunit.assertEquals(task:Results(), 2)
 end
 
-function TestAsyncJob:TestPollToCompletionAsync()
-	local job = ns.AsyncJob.Create(coroutine.create(function()
+function TestTask:TestPollToCompletionAsync()
+	local task = ns.Task.Create(coroutine.create(function()
 		coroutine.yield()
-		local job = ns.AsyncJob.Create(coroutine.create(function()
+		local task = ns.Task.Create(coroutine.create(function()
 			return 1
 		end))
-		return job:PollToCompletionAsync()
-	end)):Then(ns.AsyncJob.Create(coroutine.create(function(num)
+		return task:PollToCompletionAsync()
+	end)):Then(ns.Task.Create(coroutine.create(function(num)
 		return num + 2
-	end))):Then(ns.AsyncJob.Create(coroutine.create(function(num)
+	end))):Then(ns.Task.Create(coroutine.create(function(num)
 		return num * 3
 	end)))
 
-	luaunit.assertEquals(job:PollToCompletion(), 9)
+	luaunit.assertEquals(task:PollToCompletion(), 9)
 end
 
-function TestAsyncJob:TestNumberOfPolls()
-	local job = ns.AsyncJob.Create(coroutine.create(function()
+function TestTask:TestNumberOfPolls()
+	local task = ns.Task.Create(coroutine.create(function()
 		for i = 1, 4 do
 			coroutine.yield()
 		end
 		return 1
-	end)):Then(ns.AsyncJob.Create(coroutine.create(function(num)
-		ns.AsyncJob.Create(coroutine.create(function()
+	end)):Then(ns.Task.Create(coroutine.create(function(num)
+		ns.Task.Create(coroutine.create(function()
 			for i = 5, 6 do
 				coroutine.yield()
 			end
 		end)):PollToCompletionAsync()
-	end))):Then(ns.AsyncJob.Create(coroutine.create(function(num)
+	end))):Then(ns.Task.Create(coroutine.create(function(num)
 		coroutine.yield() -- 7
 	end)))
 
 	local i = 0
-	while job:Poll() do
+	while task:Poll() do
 		i = i + 1
 	end
 

@@ -8,7 +8,7 @@ local GetTimePreciseSec = GetTimePreciseSec
 local addon = AceAddon:GetAddon("GlobalSearch")
 ---@class TaskQueueModule : AceModule, ModulePrototype, AceEvent-3.0
 local module = addon:NewModule("TaskQueue", "AceEvent-3.0")
----@type AsyncJob[]
+---@type Task[]
 module.taskQueue = {}
 module.timeLimitPerFrameInSeconds = 0.005
 
@@ -17,7 +17,7 @@ function module:OnInitialize()
 end
 
 ---@param _ any
----@param task AsyncJob
+---@param task Task
 function module:OnQueueTask(_, task)
 	self.taskQueue[#self.taskQueue + 1] = task
 	self:Trigger()

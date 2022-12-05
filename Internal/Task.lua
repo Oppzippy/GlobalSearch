@@ -1,34 +1,34 @@
 ---@class ns
 local ns = select(2, ...)
 
----@class AsyncJob
-local AsyncJobPrototype = {}
-local metatable = { __index = AsyncJobPrototype }
+---@class Task
+local TaskPrototype = {}
+local metatable = { __index = TaskPrototype }
 
 ---@param co thread
----@return AsyncJob
+---@return Task
 local function Create(co)
-	---@class AsyncJob
+	---@class Task
 	---@field results unknown[]?
-	local job = setmetatable({
+	local task = setmetatable({
 		coroutine = co,
 		isStarted = false,
 		args = {},
 	}, metatable)
-	return job
+	return task
 end
 
----@param job AsyncJob
-function AsyncJobPrototype:Then(job)
+---@param task Task
+function TaskPrototype:Then(task)
 	return Create(coroutine.create(function()
 		while self:Poll() do coroutine.yield() end
-		job:SetArgs(self.results)
-		while job:Poll() do coroutine.yield() end
-		return job:Results()
+		task:SetArgs(self.results)
+		while task:Poll() do coroutine.yield() end
+		return task:Results()
 	end))
 end
 
-function AsyncJobPrototype:Poll()
+function TaskPrototype:Poll()
 	if coroutine.status(self.coroutine) == "dead" then return false end
 
 	local returns
@@ -53,30 +53,30 @@ function AsyncJobPrototype:Poll()
 	return true
 end
 
-function AsyncJobPrototype:PollToCompletion()
+function TaskPrototype:PollToCompletion()
 	while self:Poll() do end
 	return self:Results()
 end
 
-function AsyncJobPrototype:PollToCompletionAsync()
+function TaskPrototype:PollToCompletionAsync()
 	while self:Poll() do coroutine.yield() end
 	return self:Results()
 end
 
 ---@return ...
-function AsyncJobPrototype:Results()
+function TaskPrototype:Results()
 	if self.results then
 		return unpack(self.results)
 	end
-	error("can't get results before job completion")
+	error("can't get results before task completion")
 end
 
 ---@param args any[]
-function AsyncJobPrototype:SetArgs(args)
+function TaskPrototype:SetArgs(args)
 	if self.isStarted then
-		error("can't set args after an AsyncJob is already started")
+		error("can't set args after a task is already started")
 	end
 	self.args = args
 end
 
-ns.AsyncJob = { Create = Create }
+ns.Task = { Create = Create }

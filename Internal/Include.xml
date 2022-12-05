@@ -8,5 +8,5 @@
 	<Script file="SearchProviderCollection.lua" />
 	<Script file="SearchProviderRegistry.lua" />
 	<Script file="Util.lua" />
-	<Script file="AsyncJob.lua" />
+	<Script file="Task.lua" />
 </Ui>
