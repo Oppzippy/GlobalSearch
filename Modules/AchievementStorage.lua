@@ -12,7 +12,6 @@ local L = AceLocale:GetLocale("GlobalSearch")
 -- Frequently used functions
 local GetAchievementInfo, GetCategoryNumAchievements = GetAchievementInfo, GetCategoryNumAchievements
 local GetNextAchievement, GetPreviousAchievement = GetNextAchievement, GetPreviousAchievement
-local GetTimePreciseSec = GetTimePreciseSec
 
 local addon = AceAddon:GetAddon("GlobalSearch")
 ---@class AchievementStorageModule : AceModule, AceConsole-3.0, AceEvent-3.0, ModulePrototype
