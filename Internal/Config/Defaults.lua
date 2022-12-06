@@ -10,6 +10,7 @@ ns.dbDefaults = {
 	profile = {
 		recentItemsV2 = {},
 		options = {
+			debugMode = false,
 			doesShowKeybindToggle = false,
 			showMouseoverTooltip = true,
 			showHelp = true,

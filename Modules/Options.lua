@@ -103,6 +103,12 @@ module.optionsTable = {
 						module:Print(L.x_items_removed:format(numItems))
 					end,
 				},
+				debugMode = {
+					name = "Debug mode",
+					type = "toggle",
+					width = 1.5,
+					order = 4,
+				}
 			},
 		},
 		appearance = {

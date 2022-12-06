@@ -46,7 +46,6 @@ function module:OnEnable()
 	if self:GetDB().profile.options.preloadCache then
 		C_Timer.After(5, function()
 			local task = ns.Task.Create(coroutine.create(function()
-				print("task start")
 				-- Prefill caches
 				for _, provider in next, self.providerCollection:GetProviders() do
 					if provider.RefreshCacheAsync then
@@ -57,10 +56,9 @@ function module:OnEnable()
 				for providerID in next, self.searchContextCache:GetProviders() do
 					self.searchContextCache:GetContextsForProviderAsync(providerID):PollToCompletionAsync()
 				end
-				print("task done")
 			end))
 
-			self:SendMessage("GlobalSearch_QueueTask", task)
+			self:SendMessage("GlobalSearch_QueueTask", task, "PreloadCache")
 		end)
 	end
 end

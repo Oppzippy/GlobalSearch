@@ -62,7 +62,7 @@ function module:RebuildCache()
 		self.rebuildInProgress = false
 	end)))
 
-	self:SendMessage("GlobalSearch_QueueTask", task)
+	self:SendMessage("GlobalSearch_QueueTask", task, "BuildAchievementCache")
 end
 
 ---@return Task

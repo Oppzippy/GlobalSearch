@@ -1,26 +1,42 @@
 ---@class ns
 local ns = select(2, ...)
 
----@class ModulePrototype
----@field GetDB fun(): table
----@field GetSearchProviderRegistry fun(): SearchProviderRegistry
-
-local ModulePrototype = {}
+local export = {}
 
 ---@param addon GlobalSearch
 ---@return table
-function ModulePrototype.Create(addon)
-	return {
-		GetDB = function()
-			return addon.db
-		end,
-		GetSearchProviderRegistry = function()
-			return addon.providerRegistry
-		end,
-	}
+function export.Create(addon)
+	---@class ModulePrototype
+	local ModulePrototype = {}
+
+	---@return AceDBObject-3.0
+	function ModulePrototype:GetDB()
+		return addon.db
+	end
+
+	---@return SearchProviderRegistry
+	function ModulePrototype:GetSearchProviderRegistry()
+		return addon.providerRegistry
+	end
+
+	---@return boolean
+	function ModulePrototype:IsDebugMode()
+		return addon.db.profile.options.debugMode
+	end
+
+	---@param self ModulePrototype|AceConsole-3.0
+	---@param message string
+	---@param ... unknown
+	function ModulePrototype.Debugf(self, message, ...)
+		if self:IsDebugMode() then
+			self:Printf(message, ...)
+		end
+	end
+
+	return ModulePrototype
 end
 
 if ns then
-	ns.ModulePrototype = ModulePrototype
+	ns.ModulePrototype = export
 end
-return ModulePrototype
+return export
