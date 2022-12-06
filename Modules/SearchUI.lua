@@ -11,6 +11,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 ---@field callbacks table
 ---@field keybindingRegistry KeybindingRegistry
 ---@field RegisterCallback function
+---@field frameStrata FrameStrata
 ---@field font Font
 ---@field tooltipFont Font
 ---@field helpTextFont Font
@@ -19,6 +20,7 @@ local SearchUIPrototype = {
 	barHeight = 40,
 }
 
+---@return SearchUI
 local function CreateSearchUI()
 	local searchUI = setmetatable({
 		widgets = { results = {} },
@@ -27,6 +29,7 @@ local function CreateSearchUI()
 		keybindingRegistry = ns.KeybindingRegistry.Create(CallbackHandler),
 	}, { __index = SearchUIPrototype })
 	searchUI.callbacks = CallbackHandler:New(searchUI)
+	searchUI.frameStrata = "DIALOG"
 	searchUI.font = CreateFont("GlobalSearch_SearchUIFont")
 	searchUI.helpTextFont = CreateFont("GlobalSearch_SearchUIHelpTextFont")
 	searchUI.tooltipFont = CreateFont("GlobalSearch_SearchUITooltipFont")
