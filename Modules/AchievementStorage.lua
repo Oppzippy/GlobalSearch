@@ -71,6 +71,7 @@ function module:FetchAchievementsAsync()
 		local achievements = {}
 		for achievement in self:IterateAchievements() do
 			achievements[#achievements + 1] = achievement
+			coroutine.yield()
 		end
 		return achievements
 	end))
