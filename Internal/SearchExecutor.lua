@@ -10,6 +10,15 @@ local SearchExecutorPrototype = {}
 
 local export = {}
 
+
+---@param db AceDBObject-3.0
+---@param searchProviderCollection SearchProviderCollection
+---@param searchContextCache SearchContextCache
+---@return SearchExecutor
+function export.Create(db, searchProviderCollection, searchContextCache)
+	return export.CreateAsync(db, searchProviderCollection, searchContextCache):PollToCompletion()
+end
+
 ---@param db AceDBObject-3.0
 ---@param searchProviderCollection SearchProviderCollection
 ---@param searchContextCache SearchContextCache

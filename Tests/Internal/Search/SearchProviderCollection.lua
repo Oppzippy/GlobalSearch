@@ -15,7 +15,7 @@ end
 
 function TestSearchProviderCollection:TestNoProviders()
 	local collection = ns.SearchProviderCollection.Create({})
-	luaunit.assertEquals(#collection:GetProviderItems("none"), 0)
+	luaunit.assertEquals(#collection:GetProviderItemsAsync("none"):PollToCompletion(), 0)
 end
 
 function TestSearchProviderCollection:TestNilID()
@@ -27,7 +27,7 @@ function TestSearchProviderCollection:TestNilID()
 			},
 		}),
 	})
-	luaunit.assertNil(collection:GetProviderItems("MockProvider")[1].id)
+	luaunit.assertNil(collection:GetProviderItemsAsync("MockProvider"):PollToCompletion()[1].id)
 end
 
 function TestSearchProviderCollection:TestFalsyID()
@@ -43,7 +43,7 @@ function TestSearchProviderCollection:TestFalsyID()
 			},
 		}),
 	})
-	local results = collection:GetProviderItems("MockProvider")
+	local results = collection:GetProviderItemsAsync("MockProvider"):PollToCompletion()
 	luaunit.assertNotEquals(results[1].id, results[2].id)
 	luaunit.assertNil(results[1].id)
 	luaunit.assertFalse(results[2].id)
@@ -57,7 +57,7 @@ function TestSearchProviderCollection:TestItemCategory()
 			},
 		}, "Mock Provider")
 	})
-	local results = collection:GetProviderItems("MockProvider")
+	local results = collection:GetProviderItemsAsync("MockProvider"):PollToCompletion()
 	luaunit.assertEquals(results[1].category, "Mock Provider")
 end
 
@@ -69,6 +69,6 @@ function TestSearchProviderCollection:TestSearchProviderID()
 			},
 		}, "Mock Provider")
 	})
-	local results = collection:GetProviderItems("MockProvider")
+	local results = collection:GetProviderItemsAsync("MockProvider"):PollToCompletion()
 	luaunit.assertEquals(results[1].providerID, "MockProvider")
 end
