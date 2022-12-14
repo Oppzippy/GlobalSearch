@@ -5,20 +5,27 @@ local ns = select(2, ...)
 ---@field index FullTextWordIndex
 local FullTextSearchContextPrototype = {}
 
+local export = {}
+
 ---@param items SearchItem[]
-local function CreateFullTextSearchContext(items)
-	local context = setmetatable({}, { __index = FullTextSearchContextPrototype })
-	local index = ns.FullTextWordIndex.Create()
-	for _, item in next, items do
-		index:AddString(item, item.name)
-		index:AddString(item, item.category)
-		if item.extraSearchText then
-			index:AddString(item, item.extraSearchText)
+---@return Task
+function export.CreateAsync(items)
+	return ns.Task.Create(coroutine.create(function()
+		local context = setmetatable({}, { __index = FullTextSearchContextPrototype })
+		local index = ns.FullTextWordIndex.Create()
+		for _, item in next, items do
+			index:AddString(item, item.name)
+			index:AddString(item, item.category)
+			if item.extraSearchText then
+				index:AddString(item, item.extraSearchText)
+			end
+			coroutine.yield()
 		end
-	end
-	index:Index()
-	context.index = index
-	return context
+		index:Index()
+		coroutine.yield()
+		context.index = index
+		return context
+	end))
 end
 
 ---@param query string
@@ -44,7 +51,6 @@ function FullTextSearchContextPrototype:ScoreWeightedResults(weightedResults)
 	return results
 end
 
-local export = { Create = CreateFullTextSearchContext }
 if ns then
 	ns.FullTextSearchContext = export
 end

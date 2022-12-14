@@ -1,8 +1,18 @@
 local AceAddon = LibStub("AceAddon-3.0")
----@class GlobalSearch
 local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
+---@cast GlobalSearch GlobalSearch
 
 GlobalSearchAPI = {}
+
+---@param category string
+---@param providerName string
+---@return SearchProvider
+function GlobalSearchAPI:CreateProvider(category, providerName)
+	assert(type(category) == "string", "category must be a string")
+	assert(type(providerName) == "string", "providerName must be a string")
+
+	return GlobalSearch:CreateProvider(category, providerName)
+end
 
 ---@param providerID string
 ---@param provider SearchProvider

@@ -5,20 +5,8 @@ local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class UIPanelsSearchProvider : SearchProvider
-local UIPanelsSearchProvider = {
-	name = L.ui_panels,
-	description = L.ui_panels_search_provider_desc,
-	category = L.global_search,
-}
-
----@return SearchItem[]
-function UIPanelsSearchProvider:Get()
-	if not self.cache then
-		self.cache = self:Fetch()
-	end
-
-	return self.cache
-end
+local UIPanelsSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.ui_panels)
+UIPanelsSearchProvider.description = L.ui_panels_search_provider_desc
 
 ---@param atlas string
 ---@return fun(texture: Texture)
@@ -158,16 +146,15 @@ local itemsByRequirement = {
 	},
 }
 
----@return SearchItem[]
+---@return fun(): SearchItem?
 function UIPanelsSearchProvider:Fetch()
-	---@type SearchItem[]
-	local items = {}
-	for requirement, item in next, itemsByRequirement do
-		if _G[requirement] then
-			items[#items + 1] = item
+	return coroutine.wrap(function()
+		for requirement, item in next, itemsByRequirement do
+			if _G[requirement] then
+				coroutine.yield(item)
+			end
 		end
-	end
-	return items
+	end)
 end
 
 GlobalSearchAPI:RegisterProvider("GlobalSearch_DefaultUIPanels", UIPanelsSearchProvider)

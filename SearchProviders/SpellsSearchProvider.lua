@@ -9,67 +9,50 @@ local L = AceLocale:GetLocale("GlobalSearch")
 local providerID = "GlobalSearch_Spells"
 
 ---@class SpellsSearchProvider : SearchProvider, AceEvent-3.0
-local SpellsSearchProvider = {
-	name = L.spells,
-	description = L.spells_search_provider_desc,
-	category = L.global_search,
-}
+local SpellsSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.spells)
+SpellsSearchProvider.description = L.spells_search_provider_desc
 AceEvent:Embed(SpellsSearchProvider)
 
----@return SearchItem[]
-function SpellsSearchProvider:Get()
-	if not self.cache then
-		self.cache = self:Fetch()
-	end
-	return self.cache
-end
-
-function SpellsSearchProvider:ClearCache()
-	self.cache = nil
-end
-
----@return SearchItem[]
+---@return fun(): SearchItem
 function SpellsSearchProvider:Fetch()
-	local items = {}
+	return coroutine.wrap(function(...)
+		for spellID in self:IterateKnownSpells() do
+			if not IsPassiveSpell(spellID) then
+				local name, _, icon = GetSpellInfo(spellID)
+				local subtext = GetSpellSubtext(spellID)
+				local displayName, castName = name, name
 
-	for spellID in self:IterateKnownSpells() do
-		if not IsPassiveSpell(spellID) then
-			local name, _, icon = GetSpellInfo(spellID)
-			local subtext = GetSpellSubtext(spellID)
-			local displayName, castName = name, name
+				if subtext and subtext ~= "" then
+					displayName = string.format("%s (%s)", name, subtext)
+					castName = string.format("%s(%s)", name, subtext)
+				end
 
-			if subtext and subtext ~= "" then
-				displayName = string.format("%s (%s)", name, subtext)
-				castName = string.format("%s(%s)", name, subtext)
+				---@type string?
+				local description = GetSpellDescription(spellID)
+				if description and description ~= "" then
+					description = ns.Util.StripEscapeSequences(description)
+				else
+					description = nil
+				end
+
+				coroutine.yield({
+					id = spellID,
+					name = displayName,
+					texture = icon,
+					extraSearchText = description,
+					---@param tooltip GameTooltip
+					tooltip = function(tooltip)
+						tooltip:SetSpellByID(spellID)
+					end,
+					macroText = "/cast " .. castName,
+					pickup = function()
+						PickupSpell(spellID)
+					end,
+					hyperlink = GetSpellLink(spellID),
+				})
 			end
-
-			---@type string?
-			local description = GetSpellDescription(spellID)
-			if description and description ~= "" then
-				description = ns.Util.StripEscapeSequences(description)
-			else
-				description = nil
-			end
-
-			items[#items + 1] = {
-				id = spellID,
-				name = displayName,
-				texture = icon,
-				extraSearchText = description,
-				---@param tooltip GameTooltip
-				tooltip = function(tooltip)
-					tooltip:SetSpellByID(spellID)
-				end,
-				macroText = "/cast " .. castName,
-				pickup = function()
-					PickupSpell(spellID)
-				end,
-				hyperlink = GetSpellLink(spellID),
-			}
 		end
-	end
-
-	return items
+	end)
 end
 
 ---@return fun(): spellID: number

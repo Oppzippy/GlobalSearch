@@ -6,37 +6,20 @@ local AceEvent = LibStub("AceEvent-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class MacrosSearchProvider : SearchProvider, AceEvent-3.0
-local MacrosSearchProvider = {
-	name = L.macros,
-	category = L.global_search,
-}
+local MacrosSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.macros)
 AceEvent:Embed(MacrosSearchProvider)
 
----@return SearchItem[]
-function MacrosSearchProvider:Get()
-	if not self.cache then
-		self.cache = self:Fetch()
-	end
-	return self.cache
-end
-
-function MacrosSearchProvider:ClearCache()
-	self.cache = nil
-end
-
----@return SearchItem[]
+---@return fun(): SearchItem?
 function MacrosSearchProvider:Fetch()
-	local items = {}
-
-	local numGlobalMacros, numCharacterMacros = GetNumMacros()
-	for i = 1, numGlobalMacros do
-		items[#items + 1] = self:GetItemByMacroIndex(i)
-	end
-	for i = MAX_ACCOUNT_MACROS + 1, MAX_ACCOUNT_MACROS + numCharacterMacros do
-		items[#items + 1] = self:GetItemByMacroIndex(i)
-	end
-
-	return items
+	return coroutine.wrap(function(...)
+		local numGlobalMacros, numCharacterMacros = GetNumMacros()
+		for i = 1, numGlobalMacros do
+			coroutine.yield(self:GetItemByMacroIndex(i))
+		end
+		for i = MAX_ACCOUNT_MACROS + 1, MAX_ACCOUNT_MACROS + numCharacterMacros do
+			coroutine.yield(self:GetItemByMacroIndex(i))
+		end
+	end)
 end
 
 ---@param index number

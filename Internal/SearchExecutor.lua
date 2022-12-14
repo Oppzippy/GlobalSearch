@@ -8,20 +8,34 @@ local ns = select(2, ...)
 ---@field combinedSearchContext CombinedSearchContext
 local SearchExecutorPrototype = {}
 
+local export = {}
+
+
 ---@param db AceDBObject-3.0
 ---@param searchProviderCollection SearchProviderCollection
 ---@param searchContextCache SearchContextCache
 ---@return SearchExecutor
-local function CreateSearchExecutor(db, searchProviderCollection, searchContextCache)
-	local searchExecutor = setmetatable({
-		db = db,
-		searchProviderCollection = searchProviderCollection,
-		searchContextCache = searchContextCache,
-	}, {
-		__index = SearchExecutorPrototype,
-	})
-	searchExecutor.combinedSearchContext = searchExecutor.searchContextCache:GetCombinedContext()
-	return searchExecutor
+function export.Create(db, searchProviderCollection, searchContextCache)
+	return export.CreateAsync(db, searchProviderCollection, searchContextCache):PollToCompletion()
+end
+
+---@param db AceDBObject-3.0
+---@param searchProviderCollection SearchProviderCollection
+---@param searchContextCache SearchContextCache
+---@return Task
+function export.CreateAsync(db, searchProviderCollection, searchContextCache)
+	return ns.Task.Create(coroutine.create(function(...)
+		local searchExecutor = setmetatable({
+			db = db,
+			searchProviderCollection = searchProviderCollection,
+			searchContextCache = searchContextCache,
+		}, {
+			__index = SearchExecutorPrototype,
+		})
+		searchExecutor.combinedSearchContext = searchExecutor.searchContextCache:GetCombinedContextAsync():
+			PollToCompletionAsync()
+		return searchExecutor
+	end))
 end
 
 ---@param query string
@@ -50,7 +64,7 @@ function SearchExecutorPrototype:Search(query)
 				end
 			end
 
-			local context = self.searchContextCache:GetCombinedContextForProviders(matchingProviderIDs)
+			local context = self.searchContextCache:GetCombinedContextForProvidersAsync(matchingProviderIDs):PollToCompletion()
 			results = context:Search(specificProviderQuery)
 		else
 			results = self.combinedSearchContext:Search(query)
@@ -77,7 +91,7 @@ function SearchExecutorPrototype:GetRecentItemResults()
 	---@type table<SearchContextItem, number>
 	local resultOrder = {}
 	for providerID in next, self.searchProviderCollection:GetProviders() do
-		for _, item in next, self.searchProviderCollection:GetProviderItems(providerID) do
+		for _, item in next, self.searchProviderCollection:GetProviderItemsAsync(providerID):PollToCompletion() do
 			local order = itemIDOrder[item.providerID] and itemIDOrder[item.providerID][item.id]
 			if order then
 				local result = { item = item }
@@ -93,7 +107,6 @@ function SearchExecutorPrototype:GetRecentItemResults()
 	return results
 end
 
-local export = { Create = CreateSearchExecutor }
 if ns then
 	ns.SearchExecutor = export
 end

@@ -4,60 +4,52 @@ if C_MountJournal == nil then return end
 ---@class ns
 local ns = select(2, ...)
 
+local AceAddon = LibStub("AceAddon-3.0")
 local AceLocale = LibStub("AceLocale-3.0")
 local AceEvent = LibStub("AceEvent-3.0")
+
 local L = AceLocale:GetLocale("GlobalSearch")
+local addon = AceAddon:GetAddon("GlobalSearch")
 
 ---@class MountsSearchProvider : SearchProvider, AceEvent-3.0
-local MountsSearchProvider = {
-	name = L.mounts,
-	description = L.mounts_search_provider_desc,
-	category = L.global_search,
-}
+local MountsSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.mounts)
+MountsSearchProvider.description = L.mounts_search_provider_desc
 AceEvent:Embed(MountsSearchProvider)
 
----@return SearchItem[]
-function MountsSearchProvider:Get()
-	if not self.cache then
-		self.cache = self:Fetch()
-	end
-	return self.cache
-end
-
-function MountsSearchProvider:ClearCache()
-	self.cache = nil
-end
-
----@return SearchItem[]
+---@return fun(): SearchItem?
 function MountsSearchProvider:Fetch()
-	local items = {}
-	local mountIDs = C_MountJournal.GetMountIDs()
-	for _, mountID in ipairs(mountIDs) do
-		local name, spellID, icon, _, isUsable = C_MountJournal.GetMountInfoByID(mountID)
-		local _, description, source = C_MountJournal.GetMountInfoExtraByID(mountID)
-		source = ns.Util.StripEscapeSequences(source)
+	return coroutine.wrap(function()
+		local mountIDs = C_MountJournal.GetMountIDs()
+		for _, mountID in ipairs(mountIDs) do
+			local tooltipStorage = addon:GetModule("TooltipStorage")
+			---@cast tooltipStorage TooltipStorageModule
+			local name, spellID, icon, _, isUsable = C_MountJournal.GetMountInfoByID(mountID)
+			local _, description, source = C_MountJournal.GetMountInfoExtraByID(mountID)
+			source = ns.Util.StripEscapeSequences(source)
 
-		if isUsable then
-			items[#items + 1] = {
-				id = mountID,
-				name = name,
-				extraSearchText = string.format("%s %s", description, source),
-				texture = icon,
-				---@param tooltip GameTooltip
-				tooltip = function(tooltip)
-					tooltip:SetMountBySpellID(spellID)
-				end,
-				action = function()
-					C_MountJournal.SummonByID(mountID)
-				end,
-				pickup = function()
-					PickupSpell(spellID)
-				end,
-				hyperlink = GetSpellLink(spellID),
-			}
+			local tooltipText = tooltipStorage:GetMountBySpellID(spellID)
+
+			if isUsable then
+				coroutine.yield({
+					id = mountID,
+					name = name,
+					extraSearchText = string.format("%s %s %s", description, source, tooltipText),
+					texture = icon,
+					---@param tooltip GameTooltip
+					tooltip = function(tooltip)
+						tooltip:SetMountBySpellID(spellID)
+					end,
+					action = function()
+						C_MountJournal.SummonByID(mountID)
+					end,
+					pickup = function()
+						PickupSpell(spellID)
+					end,
+					hyperlink = GetSpellLink(spellID),
+				})
+			end
 		end
-	end
-	return items
+	end)
 end
 
 do

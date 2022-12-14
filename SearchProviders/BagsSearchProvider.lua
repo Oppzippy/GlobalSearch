@@ -13,52 +13,38 @@ local GetContainerNumSlots = GetContainerNumSlots or C_Container.GetContainerNum
 local GetContainerItemID = GetContainerItemID or C_Container.GetContainerItemID
 
 ---@class BagsSearchProvider : SearchProvider, AceEvent-3.0
-local BagsSearchProvider = {
-	name = L.bags,
-	description = L.bags_search_provider_desc,
-	category = L.global_search,
-}
+local BagsSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.bags)
+BagsSearchProvider.description = L.bags_search_provider_desc
 AceEvent:Embed(BagsSearchProvider)
 
----@return SearchItem[]
-function BagsSearchProvider:Get()
-	if not self.cache then
-		self.cache = self:Fetch()
-	end
-	return self.cache
-end
-
-function BagsSearchProvider:ClearCache()
-	self.cache = nil
-end
-
----@return SearchItem[]
+---@return fun(): SearchItem?
 function BagsSearchProvider:Fetch()
 	local tooltipStorage = GlobalSearch:GetModule("TooltipStorage")
 	---@cast tooltipStorage TooltipStorageModule
-	local items = {}
-	for itemID in next, self:GetItemSet() do
-		local itemName, itemLink, _, _, _, _, _, _, _, icon = GetItemInfo(itemID)
-		local spellName = GetItemSpell(itemLink)
-		if itemName and spellName then
-			items[#items + 1] = {
-				id = itemID,
-				name = itemName,
-				extraSearchText = tooltipStorage:GetItemByID(itemID),
-				texture = icon,
-				macroText = "/use " .. itemName,
-				---@param tooltip GameTooltip
-				tooltip = function(tooltip)
-					tooltip:SetItemByID(itemID)
-				end,
-				pickup = function()
-					PickupItem(itemLink)
-				end,
-				hyperlink = itemLink,
-			}
+
+	return coroutine.wrap(function(...)
+		for itemID in next, self:GetItemSet() do
+			local itemName, itemLink, _, _, _, _, _, _, _, icon = GetItemInfo(itemID)
+			local spellName = GetItemSpell(itemLink)
+			if itemName and spellName then
+				coroutine.yield({
+					id = itemID,
+					name = itemName,
+					extraSearchText = tooltipStorage:GetItemByID(itemID),
+					texture = icon,
+					macroText = "/use " .. itemName,
+					---@param tooltip GameTooltip
+					tooltip = function(tooltip)
+						tooltip:SetItemByID(itemID)
+					end,
+					pickup = function()
+						PickupItem(itemLink)
+					end,
+					hyperlink = itemLink,
+				})
+			end
 		end
-	end
-	return items
+	end)
 end
 
 function BagsSearchProvider:GetItemSet()

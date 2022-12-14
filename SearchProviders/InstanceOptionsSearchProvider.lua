@@ -5,19 +5,8 @@ local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class InstanceOptionsSearchProvider : SearchProvider
-local InstanceOptionsSearchProvider = {
-	name = L.instance_options,
-	description = L.instance_options_search_provider_desc,
-	category = L.global_search,
-}
-
----@return SearchItem[]
-function InstanceOptionsSearchProvider:Get()
-	if not self.cache then
-		self.cache = self:Fetch()
-	end
-	return self.cache
-end
+local InstanceOptionsSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.instance_options)
+InstanceOptionsSearchProvider.description = L.instance_options_search_provider_desc
 
 local dungeonDifficulties = {
 	[1] = PLAYER_DIFFICULTY1, -- Normal

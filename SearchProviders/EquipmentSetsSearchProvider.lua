@@ -9,46 +9,29 @@ local AceEvent = LibStub("AceEvent-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class EquipmentSetsSearchProvider : SearchProvider, AceEvent-3.0
-local EquipmentSetsSearchProvider = {
-	name = L.equipment_sets,
-	category = L.global_search,
-}
+local EquipmentSetsSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.equipment_sets)
 AceEvent:Embed(EquipmentSetsSearchProvider)
 
----@return SearchItem[]
-function EquipmentSetsSearchProvider:Get()
-	if not self.cache then
-		self.cache = self:Fetch()
-	end
-
-	return self.cache
-end
-
-function EquipmentSetsSearchProvider:ClearCache()
-	self.cache = nil
-end
-
----@return SearchItem[]
+---@return fun(): SearchItem?
 function EquipmentSetsSearchProvider:Fetch()
-	local items = {}
 	local equipmentSetIDs = C_EquipmentSet.GetEquipmentSetIDs()
-	for _, setID in ipairs(equipmentSetIDs) do
-		local setName, icon = C_EquipmentSet.GetEquipmentSetInfo(setID)
-		items[#items + 1] = {
-			id = setName,
-			name = setName,
-			texture = icon,
-			---@param tooltip GameTooltip
-			tooltip = function(tooltip)
-				tooltip:SetEquipmentSet(setID)
-			end,
-			action = function()
-				C_EquipmentSet.UseEquipmentSet(setID)
-			end,
-		}
-	end
-
-	return items
+	return coroutine.wrap(function(...)
+		for _, setID in ipairs(equipmentSetIDs) do
+			local setName, icon = C_EquipmentSet.GetEquipmentSetInfo(setID)
+			coroutine.yield({
+				id = setName,
+				name = setName,
+				texture = icon,
+				---@param tooltip GameTooltip
+				tooltip = function(tooltip)
+					tooltip:SetEquipmentSet(setID)
+				end,
+				action = function()
+					C_EquipmentSet.UseEquipmentSet(setID)
+				end,
+			})
+		end
+	end)
 end
 
 EquipmentSetsSearchProvider:RegisterEvent("EQUIPMENT_SETS_CHANGED", "ClearCache")

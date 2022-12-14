@@ -42,6 +42,25 @@ end
 
 function module:OnEnable()
 	self:RegisterKeybindings()
+
+	if self:GetDB().profile.options.preloadCache then
+		C_Timer.After(5, function()
+			local task = ns.Task.Create(coroutine.create(function()
+				-- Prefill caches
+				for _, provider in next, self.providerCollection:GetProviders() do
+					if provider.RefreshCacheAsync then
+						provider:RefreshCacheAsync()
+					end
+				end
+				-- Prebuild indexes
+				for providerID in next, self.searchContextCache:GetProviders() do
+					self.searchContextCache:GetContextsForProviderAsync(providerID):PollToCompletionAsync()
+				end
+			end))
+
+			self:SendMessage("GlobalSearch_QueueTask", task, "PreloadCache")
+		end)
+	end
 end
 
 function module:UpdateProviderCollection()
@@ -56,7 +75,9 @@ function module:Show()
 	self.searchUI:SetShowMouseoverTooltip(options.showMouseoverTooltip)
 	self.searchUI:SetHelpText(options.showHelp and self:GetHelpText() or nil)
 
-	self.searchExecutor = ns.SearchExecutor.Create(self:GetDB(), self.providerCollection, self.searchContextCache)
+	self:SendMessage("GlobalSearch_RunTaskToCompletion", "PreloadCache")
+	self.searchExecutor = ns.SearchExecutor.CreateAsync(self:GetDB(), self.providerCollection, self.searchContextCache):
+		PollToCompletion()
 	self.searchUI:Show()
 	self:UpdateDisplaySettings()
 end

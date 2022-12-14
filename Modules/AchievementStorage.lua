@@ -12,7 +12,6 @@ local L = AceLocale:GetLocale("GlobalSearch")
 -- Frequently used functions
 local GetAchievementInfo, GetCategoryNumAchievements = GetAchievementInfo, GetCategoryNumAchievements
 local GetNextAchievement, GetPreviousAchievement = GetNextAchievement, GetPreviousAchievement
-local GetTimePreciseSec = GetTimePreciseSec
 
 local addon = AceAddon:GetAddon("GlobalSearch")
 ---@class AchievementStorageModule : AceModule, AceConsole-3.0, AceEvent-3.0, ModulePrototype
@@ -40,7 +39,7 @@ function module:RebuildCache()
 	if self.rebuildInProgress then return end
 	self.rebuildInProgress = true
 	self:Print(L.building_achievement_cache)
-	self:FetchAchievementsAsync(function(achievements)
+	local task = self:FetchAchievementsAsync():Then(ns.Task.Create(coroutine.create(function(achievements)
 		local cache = self:GetDB().global.cache.achievements
 		local _, _, _, tocVersion = GetBuildInfo()
 		cache.tocVersion = tocVersion
@@ -60,29 +59,21 @@ function module:RebuildCache()
 
 		self:Print(L.done)
 		self.rebuildInProgress = false
-	end)
+	end)))
+
+	self:SendMessage("GlobalSearch_QueueTask", task, "BuildAchievementCache")
 end
 
-function module:FetchAchievementsAsync(callback)
-	local achievements = {}
-	local iterator = self:IterateAchievements()
-	---@type Ticker
-	local ticker
-	local numAchievements = 1
-	ticker = C_Timer.NewTicker(0, function()
-		local time = GetTimePreciseSec()
-		repeat
-			local achievement = iterator()
-			if achievement then
-				achievements[numAchievements] = achievement
-				numAchievements = numAchievements + 1
-			else
-				ticker:Cancel()
-				callback(achievements)
-				break
-			end
-		until GetTimePreciseSec() - time > 0.01 -- Time limit per frame
-	end)
+---@return Task
+function module:FetchAchievementsAsync()
+	return ns.Task.Create(coroutine.create(function()
+		local achievements = {}
+		for achievement in self:IterateAchievements() do
+			achievements[#achievements + 1] = achievement
+			coroutine.yield()
+		end
+		return achievements
+	end))
 end
 
 function module:IterateAchievements()

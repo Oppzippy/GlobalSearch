@@ -9,11 +9,8 @@ local AceEvent = LibStub("AceEvent-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class PetsSearchProvider : SearchProvider, AceEvent-3.0
-local PetsSearchProvider = {
-	name = L.pets,
-	description = L.pets_search_provider_desc,
-	category = L.global_search,
-}
+local PetsSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.pets)
+PetsSearchProvider.description = L.pets_search_provider_desc
 AceEvent:Embed(PetsSearchProvider)
 
 local petJournalSettings

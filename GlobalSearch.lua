@@ -31,6 +31,13 @@ function GlobalSearch:OnEnable()
 	self.queuedMessages = nil
 end
 
+---@param category string
+---@param providerName string
+---@return SearchProvider
+function GlobalSearch:CreateProvider(category, providerName)
+	return ns.SearchProvider.Create(category, providerName)
+end
+
 ---@param providerID string
 ---@param provider SearchProvider
 function GlobalSearch:RegisterSearchProvider(providerID, provider)

@@ -5,19 +5,7 @@ local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class EmotesSearchProvider : SearchProvider
-local EmotesSearchProvider = {
-	name = L.emotes,
-	category = L.global_search,
-}
-
----@return SearchItem[]
-function EmotesSearchProvider:Get()
-	if not self.cache then
-		self.cache = self:Fetch()
-	end
-
-	return self.cache
-end
+local EmotesSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.emotes)
 
 ---@return SearchItem[]
 function EmotesSearchProvider:Fetch()

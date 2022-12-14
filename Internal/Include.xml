@@ -1,11 +1,12 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
 	<Script file="Config\Defaults.lua" />
 	<Include file="Search\Include.xml" />
 	<Script file="KeybindingRegistry.lua" />
 	<Script file="SearchContextCache.lua" />
 	<Script file="SearchExecutor.lua" />
+	<Script file="SearchProvider.lua" />
 	<Script file="SearchProviderCollection.lua" />
 	<Script file="SearchProviderRegistry.lua" />
 	<Script file="Util.lua" />
+	<Script file="Task.lua" />
 </Ui>

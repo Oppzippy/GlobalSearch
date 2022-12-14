@@ -61,6 +61,25 @@ module.optionsTable = {
 					width = 1.5,
 					order = 3.05,
 				},
+				preloadCache = {
+					type = "toggle",
+					name = L.preload_cache,
+					desc = L.preload_cache_desc,
+					width = 1.5,
+					order = 3.01,
+				},
+				taskQueueTimeAllocationInMilliseconds = {
+					type = "range",
+					name = L.task_queue_time_allocation_ms,
+					desc = L.task_queue_time_allocation_ms_desc,
+					softMin = 1,
+					softMax = 20,
+					min = 0,
+					max = 50,
+					step = 1,
+					width = 1.5,
+					order = 3.09,
+				},
 				maxRecentItems = {
 					type = "range",
 					name = L.number_of_recent_items,
@@ -84,6 +103,12 @@ module.optionsTable = {
 						module:Print(L.x_items_removed:format(numItems))
 					end,
 				},
+				debugMode = {
+					name = "Debug mode",
+					type = "toggle",
+					width = 1.5,
+					order = 4,
+				}
 			},
 		},
 		appearance = {

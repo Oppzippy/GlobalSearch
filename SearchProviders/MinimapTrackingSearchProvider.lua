@@ -5,18 +5,7 @@ local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class MinimapTrackingSearchProvider : SearchProvider
-local MinimapTrackingSearchProvider = {
-	name = L.minimap_tracking,
-	category = L.global_search,
-}
-
----@return SearchItem[]
-function MinimapTrackingSearchProvider:Get()
-	if not self.cache then
-		self.cache = self:Fetch()
-	end
-	return self.cache
-end
+local MinimapTrackingSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.minimap_tracking)
 
 local SetTracking = SetTracking or C_Minimap.SetTracking
 local GetTrackingInfo = GetTrackingInfo or C_Minimap.GetTrackingInfo

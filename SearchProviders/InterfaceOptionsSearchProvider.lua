@@ -13,20 +13,8 @@ local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
 ---@cast GlobalSearch GlobalSearch
 
 ---@class InterfaceOptionsSearchProvider : SearchProvider
-local InterfaceOptionsSearchProvider = {
-	name = L.interface_options,
-	description = L.interface_options_search_provider_desc,
-	category = L.global_search,
-}
-
----@return SearchItem[]
-function InterfaceOptionsSearchProvider:Get()
-	if not self.cache then
-		self.cache = self:Fetch()
-	end
-
-	return self.cache
-end
+local InterfaceOptionsSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.interface_options)
+InterfaceOptionsSearchProvider.description = L.interface_options_search_provider_desc
 
 ---@return SearchItem[]
 function InterfaceOptionsSearchProvider:Fetch()

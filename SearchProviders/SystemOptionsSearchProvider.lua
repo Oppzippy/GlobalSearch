@@ -9,31 +9,19 @@ local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class SystemOptionsSearchProvider : SearchProvider
-local SystemOptionsSearchProvider = {
-	name = L.system_options,
-	description = L.system_options_search_provider_desc,
-	category = L.global_search,
-}
+local SystemOptionsSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.system_options)
+SystemOptionsSearchProvider.description = L.system_options_search_provider_desc
 
----@return SearchItem[]
-function SystemOptionsSearchProvider:Get()
-	if not self.cache then
-		self.cache = self:Fetch()
-	end
-
-	return self.cache
-end
-
----@return SearchItem[]
+---@return fun(): SearchItem?
 function SystemOptionsSearchProvider:Fetch()
-	local items = {}
-	for item in self:GetVideoOptions() do
-		items[#items + 1] = item
-	end
-	for item in self:GetOtherOptions() do
-		items[#items + 1] = item
-	end
-	return items
+	return coroutine.wrap(function()
+		for item in self:GetVideoOptions() do
+			coroutine.yield(item)
+		end
+		for item in self:GetOtherOptions() do
+			coroutine.yield(item)
+		end
+	end)
 end
 
 do
