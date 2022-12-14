@@ -7,10 +7,7 @@ local methods = {
 		self.frame:ClearLines()
 		self.frame:Show()
 		self.frame:SetFrameStrata("MEDIUM")
-		self.frame.TextLeft1:SetFontObject(GameTooltipHeaderText)
-		self.frame.TextRight1:SetFontObject(GameTooltipHeaderText)
-		self.frame.TextLeft2:SetFontObject(GameTooltipText)
-		self.frame.TextRight2:SetFontObject(GameTooltipText)
+		self:SetFontObject(GameTooltipText)
 	end,
 	SetFrameStrata = function(self, strata)
 		self.frame:SetFrameStrata(strata)
@@ -20,10 +17,14 @@ local methods = {
 	end,
 	---@param font Font
 	SetFontObject = function(self, font)
-		self.frame.TextLeft1:SetFontObject(font)
-		self.frame.TextRight1:SetFontObject(font)
-		self.frame.TextLeft2:SetFontObject(font)
-		self.frame.TextRight2:SetFontObject(font)
+		---@type Region[]
+		local regions = { self.frame:GetRegions() }
+		for _, region in ipairs(regions) do
+			if region:GetObjectType() == "FontString" then
+				---@cast region FontString
+				region:SetFontObject(font)
+			end
+		end
 	end,
 }
 
