@@ -75,6 +75,7 @@ function module:Show()
 	self.searchUI:SetShowMouseoverTooltip(options.showMouseoverTooltip)
 	self.searchUI:SetHelpText(options.showHelp and self:GetHelpText() or nil)
 
+	self:SendMessage("GlobalSearch_RunTaskToCompletion", "PreloadCache")
 	self.searchExecutor = ns.SearchExecutor.CreateAsync(self:GetDB(), self.providerCollection, self.searchContextCache):
 		PollToCompletion()
 	self.searchUI:Show()

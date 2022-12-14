@@ -24,6 +24,22 @@ module.timeLimitPerFrameInSeconds = 0.005
 
 function module:OnInitialize()
 	self:RegisterMessage("GlobalSearch_QueueTask", "OnQueueTask")
+	self:RegisterMessage("GlobalSearch_RunTaskToCompletion", "OnRunTaskToCompletion")
+end
+
+---@param _ any
+---@param taskName string
+function module:OnRunTaskToCompletion(_, taskName)
+	local newTaskQueue = {}
+	for _, task in ipairs(self.taskQueue) do
+		if task.name == taskName then
+			task.task:PollToCompletion()
+			self:Debugf("RunTaskToCompletion called for %s", taskName)
+		else
+			newTaskQueue[#newTaskQueue + 1] = task
+		end
+	end
+	self.taskQueue = newTaskQueue
 end
 
 ---@param _ any
@@ -51,6 +67,12 @@ function module:Run()
 	local timeAfterPoll = startTime
 	repeat
 		local currentTask = self.taskQueue[1]
+		if not currentTask then
+			self:Debugf("The queue is empty. Stopping ticker.")
+			self.ticker:Cancel()
+			self.ticker = nil
+			break
+		end
 		local timeBeforePoll = GetTimePreciseSec()
 
 		if not currentTask.startedAt then
@@ -83,11 +105,6 @@ function module:Run()
 				currentTask.longestPoll
 			)
 			table.remove(self.taskQueue, 1)
-			if #self.taskQueue == 0 then
-				self:Debugf("The queue is empty. Stopping ticker.")
-				self.ticker:Cancel()
-				self.ticker = nil
-			end
 		end
 	until self.ticker == nil or (timeAfterPoll - startTime) > timeLimit -- Time limit per frame
 end
