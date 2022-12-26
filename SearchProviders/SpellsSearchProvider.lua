@@ -58,20 +58,33 @@ end
 ---@return fun(): spellID: number
 function SpellsSearchProvider:IterateKnownSpells()
 	return coroutine.wrap(function()
-		for _, offset, numEntries in self:IterateSpellTabs() do
-			for i = 1, numEntries do
-				local index = offset + i
-				local spellType, id = GetSpellBookItemInfo(index, BOOKTYPE_SPELL)
-				if spellType == "FLYOUT" then
-					for spellID in self:IterateFlyoutSpells(id) do
-						coroutine.yield(spellID)
-					end
-				else
-					local _, _, spellID = GetSpellBookItemName(index, BOOKTYPE_SPELL)
-					if spellID and IsSpellKnownOrOverridesKnown(spellID) then
-						coroutine.yield(spellID)
-					end
+		local function yieldIndex(index)
+			local spellType, id = GetSpellBookItemInfo(index, BOOKTYPE_SPELL)
+			if spellType == "FLYOUT" then
+				for spellID in self:IterateFlyoutSpells(id) do
+					coroutine.yield(spellID)
 				end
+			else
+				local _, _, spellID = GetSpellBookItemName(index, BOOKTYPE_SPELL)
+				if spellID and IsSpellKnownOrOverridesKnown(spellID) then
+					coroutine.yield(spellID)
+				end
+			end
+		end
+
+		-- Spells
+		for _, offset, numEntries in self:IterateSpellTabs() do
+			for index = offset + 1, offset + numEntries do
+				yieldIndex(index)
+			end
+		end
+
+		-- Professions
+		local professionTabIndexes = { GetProfessions() }
+		for _, tabIndex in next, professionTabIndexes do
+			local _, _, offset, numSlots = GetSpellTabInfo(tabIndex)
+			for index = offset + 1, offset + numSlots do
+				yieldIndex(index)
 			end
 		end
 	end)
