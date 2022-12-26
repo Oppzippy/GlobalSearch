@@ -79,12 +79,15 @@ function SpellsSearchProvider:IterateKnownSpells()
 			end
 		end
 
-		-- Professions
-		local professionTabIndexes = { GetProfessions() }
-		for _, tabIndex in next, professionTabIndexes do
-			local _, _, offset, numSlots = GetSpellTabInfo(tabIndex)
-			for index = offset + 1, offset + numSlots do
-				yieldIndex(index)
+		-- Professions (retail)
+		-- Classic professions are in the general tab
+		if GetProfessions then
+			local professionTabIndexes = { GetProfessions() }
+			for _, tabIndex in next, professionTabIndexes do
+				local _, _, offset, numSlots = GetSpellTabInfo(tabIndex)
+				for index = offset + 1, offset + numSlots do
+					yieldIndex(index)
+				end
 			end
 		end
 	end)
