@@ -23,8 +23,34 @@ module.taskQueue = {}
 module.timeLimitPerFrameInSeconds = 0.005
 
 function module:OnInitialize()
+	self:RegisterEvent("PLAYER_REGEN_DISABLED")
+	self:RegisterEvent("PLAYER_REGEN_ENABLED")
+
 	self:RegisterMessage("GlobalSearch_QueueTask", "OnQueueTask")
 	self:RegisterMessage("GlobalSearch_RunTaskToCompletion", "OnRunTaskToCompletion")
+end
+
+function module:PLAYER_REGEN_DISABLED()
+	self:Debugf("Entering combat, pausing.")
+	self:Pause()
+end
+
+function module:PLAYER_REGEN_ENABLED()
+	self:Debugf("Exiting combat, resuming.")
+	self:Resume()
+end
+
+function module:Pause()
+	self.isPaused = true
+	if self.ticker then
+		self.ticker:Cancel()
+		self.ticker = nil
+	end
+end
+
+function module:Resume()
+	self.isPaused = false
+	self:StartTickerIfNotRunning()
 end
 
 ---@param _ any
@@ -54,7 +80,8 @@ function module:OnQueueTask(_, task, name)
 end
 
 function module:StartTickerIfNotRunning()
-	if not self.ticker then
+	if not self.ticker and not self.isPaused and #self.taskQueue >= 1 then
+		self:Debugf("Ticker is not running, starting it.")
 		self.ticker = C_Timer.NewTicker(0, function()
 			self:Run()
 		end)
