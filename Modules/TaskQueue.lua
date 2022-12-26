@@ -21,26 +21,49 @@ local module = addon:NewModule("TaskQueue", "AceEvent-3.0", "AceConsole-3.0")
 ---@type QueuedTask[]
 module.taskQueue = {}
 module.timeLimitPerFrameInSeconds = 0.005
+module.blockers = {}
 
 function module:OnInitialize()
 	self:RegisterEvent("PLAYER_REGEN_DISABLED")
 	self:RegisterEvent("PLAYER_REGEN_ENABLED")
+	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 	self:RegisterMessage("GlobalSearch_QueueTask", "OnQueueTask")
 	self:RegisterMessage("GlobalSearch_RunTaskToCompletion", "OnRunTaskToCompletion")
 end
 
 function module:PLAYER_REGEN_DISABLED()
-	self:Debugf("Entering combat, pausing.")
-	self:Pause()
+	self.blockers.combat = true
+	self:CheckBlockers()
 end
 
 function module:PLAYER_REGEN_ENABLED()
-	self:Debugf("Exiting combat, resuming.")
-	self:Resume()
+	self.blockers.combat = nil
+	self:CheckBlockers()
+end
+
+function module:PLAYER_ENTERING_WORLD()
+	self.blockers.instance = IsInInstance() and true or nil
+	self:CheckBlockers()
+end
+
+function module:CheckBlockers()
+	if self:IsDebugMode() then
+		local blockerNames = {}
+		for blocker in pairs(self.blockers) do
+			blockerNames[#blockerNames + 1] = blocker
+		end
+		self:Debugf("Blockers: %s", table.concat(blockerNames, ", "))
+	end
+	if next(self.blockers) then
+		self:Pause()
+	else
+		self:Resume()
+	end
 end
 
 function module:Pause()
+	self:Debugf("Paused.")
 	self.isPaused = true
 	if self.ticker then
 		self.ticker:Cancel()
