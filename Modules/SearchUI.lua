@@ -289,6 +289,13 @@ function SearchUIPrototype:SetShowMouseoverTooltip(enabled)
 	self.showMouseoverTooltip = enabled
 end
 
+do
+	local menuFrame = CreateFrame("Frame", "GlobalSearchResultMenuFrame", UIParent, "UIDropDownMenuTemplate")
+	function SearchUIPrototype:ShowContextMenu(menu)
+		EasyMenu(menu, menuFrame, "cursor", 0, 0, "MENU")
+	end
+end
+
 function SearchUIPrototype:Render()
 	self.widgets.resultsContainer:ReleaseChildren()
 
@@ -305,6 +312,9 @@ function SearchUIPrototype:Render()
 			resultWidget:SetText(item.name)
 		end
 		resultWidget:SetCategory(item.category)
+		resultWidget:SetCallback("OnRightClick", function()
+			self.callbacks:Fire("OnRightClick", item)
+		end)
 		if type(item.texture) == "function" then
 			item.texture(resultWidget:GetTexture())
 		else

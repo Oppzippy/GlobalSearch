@@ -92,6 +92,10 @@ do
 		frame.obj:Fire("OnHyperlink")
 	end
 
+	local function onRightClick(frame)
+		frame.obj:Fire("OnRightClick")
+	end
+
 	local function constructor()
 		local frame = CreateFrame("Button", nil, UIParent, "InsecureActionButtonTemplate,BackdropTemplate")
 		frame:Hide()
@@ -104,11 +108,21 @@ do
 		frame:EnableMouse(true)
 		frame:RegisterForDrag("LeftButton")
 		frame:SetScript("OnDragStart", onDragStart)
-		frame:RegisterForClicks("LeftButtonDown", "LeftButtonUp")
-		frame:SetAttribute("type1", "macro") -- Unmodified left click
-		frame:SetAttribute("shift-type1", "hyperlink") -- Shift left click
+		frame:RegisterForClicks("LeftButtonDown", "LeftButtonUp", "RightButtonDown", "RightButtonUp")
+
+		-- Unmodified left click
+		frame:SetAttribute("type1", "macro")
+
+		-- Unmodified right click
+		frame:SetAttribute("type2", "rightclick")
+		frame:SetAttribute("rightclick", "_rightclick")
+		frame:SetAttribute("_rightclick", onRightClick)
+
+		-- Shift left click
+		frame:SetAttribute("shift-type1", "hyperlink")
 		frame:SetAttribute("hyperlink", "_hyperlink")
 		frame:SetAttribute("_hyperlink", onHyperlink)
+
 		frame:SetScript("OnEnter", onEnter)
 		frame:SetScript("OnLeave", onLeave)
 

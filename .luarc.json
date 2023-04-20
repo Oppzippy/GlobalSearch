@@ -108,6 +108,7 @@
         "WorldMapFrame",
         "MaximizeUIPanel",
         "GameTooltipHeaderText",
-        "GameTooltipText"
+        "GameTooltipText",
+        "EasyMenu"
     ]
 }

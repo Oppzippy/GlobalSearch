@@ -9,13 +9,13 @@ local L = AceLocale:GetLocale("GlobalSearch")
 local addon = AceAddon:GetAddon("GlobalSearch")
 ---@class SearchModule : AceModule, AceConsole-3.0, AceEvent-3.0, ModulePrototype
 ---@field RegisterEvent function
+---@field searchExecutor? SearchExecutor
 local module = addon:NewModule("Search", "AceEvent-3.0", "AceConsole-3.0")
 local searchExecute = CreateFrame("Button", "GlobalSearchExecuteButton", nil, "InsecureActionButtonTemplate")
 searchExecute:RegisterForClicks("AnyDown", "AnyUp")
 
 function module:OnInitialize()
 	self.searchQuery = ""
-	self.selectedIndex = 1
 
 	self:UpdateProviderCollection()
 
@@ -25,6 +25,7 @@ function module:OnInitialize()
 	self.searchUI.RegisterCallback(self, "OnSelectionChanged")
 	self.searchUI.RegisterCallback(self, "OnRender")
 	self.searchUI.RegisterCallback(self, "OnHyperlink")
+	self.searchUI.RegisterCallback(self, "OnRightClick")
 
 	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnClose", "Hide")
 	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnSelectNextItem")
@@ -76,8 +77,11 @@ function module:Show()
 	self.searchUI:SetHelpText(options.showHelp and self:GetHelpText() or nil)
 
 	self:SendMessage("GlobalSearch_RunTaskToCompletion", "PreloadCache")
-	self.searchExecutor = ns.SearchExecutor.CreateAsync(self:GetDB(), self.providerCollection, self.searchContextCache):
-		PollToCompletion()
+	self.searchExecutor = ns.SearchExecutor.CreateAsync(
+		self:GetDB(),
+		self.providerCollection,
+		self.searchContextCache
+	):PollToCompletion()
 	self.searchUI:Show()
 	self:UpdateDisplaySettings()
 end
@@ -200,7 +204,7 @@ end
 
 function module:OnMacroItemSelected(resultIndex)
 	self:Hide()
-	local db = self.GetDB().profile
+	local db = self:GetDB().profile
 	local item = self.results[resultIndex].item
 
 	if db.options.maxRecentItems == 0 then
@@ -247,11 +251,13 @@ end
 ---@return string
 function module:GetMacroText(item, resultIndex)
 	local macroText = {
-		[[/run LibStub("AceAddon-3.0"):GetAddon("GlobalSearch"):GetModule("Search"):OnMacroItemSelected(]] .. resultIndex ..
-			")",
+		[[/run LibStub("AceAddon-3.0"):GetAddon("GlobalSearch"):GetModule("Search"):OnMacroItemSelected(]] ..
+		resultIndex ..
+		")",
 	}
 	if item.action then
-		macroText[#macroText + 1] = [[/run LibStub("AceAddon-3.0"):GetAddon("GlobalSearch"):GetModule("Search"):ExecuteAction(]]
+		macroText[#macroText + 1] =
+			[[/run LibStub("AceAddon-3.0"):GetAddon("GlobalSearch"):GetModule("Search"):ExecuteAction(]]
 			.. resultIndex .. ")"
 	elseif item.macroText then
 		macroText[#macroText + 1] = item.macroText
@@ -263,6 +269,7 @@ end
 
 ---@param query string
 function module:Search(query)
+	self.searchQuery = query
 	self.results = self.searchExecutor:Search(query)
 	self.searchUI:SetResults(self.results)
 end
@@ -280,6 +287,63 @@ function module:Hyperlink(item)
 		self:Hide()
 		ChatEdit_ActivateChat(ChatFrame1EditBox)
 		ChatFrame1EditBox:Insert(item.hyperlink or item.name)
+	end
+end
+
+---@param item SearchItem
+function module:OnRightClick(_, item)
+	local menu = {
+		{
+			text = item.name,
+			isTitle = true,
+			notCheckable = true,
+		},
+		{
+			text = L.hyperlink,
+			notCheckable = true,
+			func = function()
+				self:Hyperlink(item)
+			end,
+		},
+	}
+	if self:IsItemInRecentItems(item) then
+		menu[#menu + 1] = {
+			text = L.remove_from_recent_items,
+			notCheckable = true,
+			func = function()
+				self:RemoveItemFromRecentItems(item)
+				-- Refresh results so the removed item is no longer displayed
+				self:Search(self.searchQuery)
+			end,
+		}
+	end
+	self.searchUI:ShowContextMenu(menu)
+end
+
+---@param item SearchItem
+---@return boolean
+function module:IsItemInRecentItems(item)
+	local recentItems = self:GetDB().profile.recentItemsV2
+	for _, recentItem in next, recentItems do
+		if recentItem.providerID == item.providerID and recentItem.id == item.id then
+			return true
+		end
+	end
+	return false
+end
+
+---@param item SearchItem
+function module:RemoveItemFromRecentItems(item)
+	local recentItems = self:GetDB().profile.recentItemsV2
+	local i = 1
+	local recentItem = recentItems[i]
+	while recentItem do
+		if recentItem.providerID == item.providerID and recentItem.id == item.id then
+			table.remove(recentItems, i)
+			i = i - 1
+		end
+		i = i + 1
+		recentItem = recentItems[i]
 	end
 end
 
