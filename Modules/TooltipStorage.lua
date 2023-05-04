@@ -53,9 +53,20 @@ function module:GetTooltipRetail(functionName, ...)
 
 	local lines = {}
 	for _, line in ipairs(tooltipData.lines) do
-		for _, arg in ipairs(line.args) do
-			if (arg.field == "leftText" or arg.field == "rightText") and arg.stringVal then
-				lines[#lines + 1] = arg.stringVal
+		if not line.args then
+			-- Retail
+			if line.leftText then
+				lines[#lines + 1] = line.leftText
+			end
+			if line.rightText then
+				lines[#lines + 1] = line.rightText
+			end
+		else
+			-- Classic
+			for _, arg in ipairs(line.args) do
+				if (arg.field == "leftText" or arg.field == "rightText") and arg.stringVal then
+					lines[#lines + 1] = arg.stringVal
+				end
 			end
 		end
 	end
