@@ -21,7 +21,7 @@ function export.Create(addon)
 
 	---@return boolean
 	function ModulePrototype:IsDebugMode()
-		return addon.db.profile.options.debugMode
+		return addon:IsDebugMode()
 	end
 
 	---@param self ModulePrototype|AceConsole-3.0

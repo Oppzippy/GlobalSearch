@@ -4,6 +4,8 @@ local ns = select(2, ...)
 local AceAddon = LibStub("AceAddon-3.0")
 
 local addon = AceAddon:GetAddon("GlobalSearch")
+---@cast addon GlobalSearch
+
 ---@class TooltipStorageModule : AceModule, AceConsole-3.0, AceEvent-3.0, ModulePrototype
 ---@field RegisterEvent function
 local module = addon:NewModule("TooltipStorage", "AceEvent-3.0", "AceConsole-3.0")
@@ -50,6 +52,10 @@ end
 function module:GetTooltipRetail(functionName, ...)
 	local tooltipData = C_TooltipInfo[functionName](...)
 	---@cast tooltipData TooltipData
+	if not tooltipData then
+		addon:Debugf("C_TooltipInfo.%s returned nil with args: " .. ..., functionName)
+		return ""
+	end
 
 	local lines = {}
 	for _, line in ipairs(tooltipData.lines) do

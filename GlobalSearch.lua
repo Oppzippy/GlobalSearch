@@ -70,3 +70,16 @@ function GlobalSearch:GetProviderOptionsDB(providerID)
 	end
 	return providerOptions[providerID]
 end
+
+---@param message string
+---@param ... unknown
+function GlobalSearch:Debugf(message, ...)
+	if self:IsDebugMode() then
+		self:Printf(message, ...)
+	end
+end
+
+---@return boolean
+function GlobalSearch:IsDebugMode()
+	return self.db.profile.options.debugMode
+end
