@@ -1,0 +1,24 @@
+name: Update TOC Interface version(s)
+
+on:
+  schedule:
+    - cron: 0 12 * * *
+
+jobs:
+  update-interface-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Update TOC Interface version
+        uses: oppzippy/update-toc-action@v1
+        with:
+          toc-path: GlobalSearch.toc
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          title: Update Interface version
+          commit-message: Update Interface version
+          branch: interface-version
+          delete-branch: true
