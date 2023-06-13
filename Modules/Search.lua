@@ -26,6 +26,8 @@ function module:OnInitialize()
 	self.searchUI.RegisterCallback(self, "OnRender")
 	self.searchUI.RegisterCallback(self, "OnHyperlink")
 	self.searchUI.RegisterCallback(self, "OnRightClick")
+	self.searchUI.RegisterCallback(self, "OnSelectNextPage")
+	self.searchUI.RegisterCallback(self, "OnSelectPreviousPage")
 
 	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnClose", "Hide")
 	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnSelectNextItem")

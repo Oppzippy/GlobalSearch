@@ -62,11 +62,17 @@ function SearchUIPrototype:Show()
 	searchBar:SetHeight(self.barHeight)
 	searchBar:SetFontObject(self.font)
 
-	local resultsContainer = AceGUI:Create("SimpleGroup")
+	local resultsContainer = AceGUI:Create("GlobalSearch-ResultsContainer")
 	---@cast resultsContainer AceGUISimpleGroup
 	resultsContainer:SetLayout("List")
 	resultsContainer:SetFullWidth(true)
 	resultsContainer:SetAutoAdjustHeight(true)
+	resultsContainer:SetCallback("OnSelectNextPage", function()
+		self.callbacks:Fire("OnSelectNextPage")
+	end)
+	resultsContainer:SetCallback("OnSelectPreviousPage", function()
+		self.callbacks:Fire("OnSelectPreviousPage")
+	end)
 
 	container:AddChild(searchBar)
 	container:AddChild(resultsContainer)
