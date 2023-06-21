@@ -23,7 +23,7 @@ local function Create(category, name)
 	---@field name string
 	---@field category string
 	---@field description? string
-	---@field optionsTable? AceConfigOptionsTable
+	---@field optionsTable? AceConfig.OptionsTable
 	local SearchProvider = {
 		category = category,
 		name = name,

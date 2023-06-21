@@ -15,7 +15,7 @@ local providerID = "GlobalSearch_EncounterJournal"
 ---@class EncounterJournalSearchProvider : SearchProvider
 local EncounterJournalSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.encounter_journal)
 EncounterJournalSearchProvider.description = L.encounter_journal_search_provider_desc
----@type AceConfigOptionsTable
+---@type AceConfig.OptionsTable
 EncounterJournalSearchProvider.optionsTable = {
 	type = "group",
 	get = function(info)
@@ -119,7 +119,8 @@ function EncounterJournalSearchProvider:Fetch()
 									texture:SetTexture(instanceInfo.buttonImage2)
 								end
 							end,
-							action = createDisplayInstanceEncounterAction(encounterInfo.journalInstanceID, encounterInfo.journalEncounterID),
+							action = createDisplayInstanceEncounterAction(encounterInfo.journalInstanceID,
+								encounterInfo.journalEncounterID),
 						})
 					end
 				end

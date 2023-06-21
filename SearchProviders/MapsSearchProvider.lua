@@ -11,7 +11,7 @@ local providerID = "GlobalSearch_Maps"
 
 ---@class MapsSearchProvider : SearchProvider
 local MapsSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.maps)
----@type AceConfigOptionsTable
+---@type AceConfig.OptionsTable
 MapsSearchProvider.optionsTable = {
 	type = "group",
 	get = function(info)
@@ -64,7 +64,8 @@ function MapsSearchProvider:Fetch()
 		for _, mapTypeID in next, Enum.UIMapType do
 			if not db.disabledMapTypes[mapTypeID] then
 				-- Cosmic if available, otherwise Azeroth
-				local uiMapDetails = C_Map.GetMapChildrenInfo(946, mapTypeID, true) or C_Map.GetMapChildrenInfo(947, mapTypeID, true)
+				local uiMapDetails = C_Map.GetMapChildrenInfo(946, mapTypeID, true) or
+				C_Map.GetMapChildrenInfo(947, mapTypeID, true)
 				for _, details in next, uiMapDetails do
 					local groupID = C_Map.GetMapGroupID(details.mapID)
 					-- Separate individual maps from groups of maps (dungeons, raids, anything with floors)
@@ -83,7 +84,8 @@ function MapsSearchProvider:Fetch()
 			if db.listFloorsSeparately then
 				for _, memberInfo in next, mapGroupMemberInfo do
 					local mapInfo = C_Map.GetMapInfo(memberInfo.mapID)
-					coroutine.yield(self:CreateItem(L.map_with_floor:format(mapInfo.name, memberInfo.name), memberInfo.mapID))
+					coroutine.yield(self:CreateItem(L.map_with_floor:format(mapInfo.name, memberInfo.name),
+						memberInfo.mapID))
 				end
 			elseif #mapGroupMemberInfo >= 1 then
 				local memberInfo = mapGroupMemberInfo[1]
