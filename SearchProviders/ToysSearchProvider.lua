@@ -15,6 +15,8 @@ local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
 ---@class ToysSearchProvider : SearchProvider, AceEvent-3.0
 local ToysSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.toys)
 ToysSearchProvider.description = L.toys_search_provider_desc
+ToysSearchProvider.items = {}
+ToysSearchProvider.toysUpdatedCount = nil
 AceEvent:Embed(ToysSearchProvider)
 
 local toyBoxSettings
@@ -67,33 +69,56 @@ end
 
 ---@return SearchItem[]
 function ToysSearchProvider:Fetch()
-	local tooltipStorage = GlobalSearch:GetModule("TooltipStorage")
-	---@cast tooltipStorage TooltipStorageModule
-	local items = {}
-	local prevSettings = GetToyBoxSettings()
-	SetToyBoxSettings(toyBoxSettings)
-	for i = 1, C_ToyBox.GetNumFilteredToys() do
-		local itemID = C_ToyBox.GetToyFromIndex(i)
-		local _, name, icon = C_ToyBox.GetToyInfo(itemID)
-		items[#items + 1] = {
-			id = itemID,
-			name = name,
-			extraSearchText = tooltipStorage:GetToyByItemID(itemID),
-			texture = icon,
-			---@param tooltip GameTooltip
-			tooltip = function(tooltip)
-				tooltip:SetToyByItemID(itemID)
-			end,
-			macroText = "/use " .. name,
-			pickup = function()
-				C_ToyBox.PickupToyBoxItem(itemID)
-			end,
-			hyperlink = C_ToyBox.GetToyLink(itemID),
-		}
+	self.numConsecutiveToysUpdatedCalls = 0
+
+	self.prevSettings = GetToyBoxSettings()
+	if not self.toysUpdatedCount then
+		SetToyBoxSettings(toyBoxSettings)
+		self.toysUpdatedCount = 0
 	end
-	SetToyBoxSettings(prevSettings)
-	return items
+
+	return self.items
+end
+
+function ToysSearchProvider:TOYS_UPDATED()
+	-- Sometimes TOYS_UPDATED fires twice, and toys are only available for the second one.
+	-- To work around this, we clear the cache for every event fired shortly after the first.
+	if self.toysUpdatedCount then
+		self.toysUpdatedCount = self.toysUpdatedCount + 1
+		if self.toysUpdatedCount == 1 then
+			C_Timer.After(0.5, function()
+				self.toysUpdatedCount = nil
+				SetToyBoxSettings(self.prevSettings)
+			end)
+		end
+		local tooltipStorage = GlobalSearch:GetModule("TooltipStorage")
+		---@cast tooltipStorage TooltipStorageModule
+		local items = {}
+		for i = 1, C_ToyBox.GetNumFilteredToys() do
+			local itemID = C_ToyBox.GetToyFromIndex(i)
+			local _, name, icon = C_ToyBox.GetToyInfo(itemID)
+			items[#items + 1] = {
+				id = itemID,
+				name = name,
+				extraSearchText = tooltipStorage:GetToyByItemID(itemID),
+				texture = icon,
+				---@param tooltip GameTooltip
+				tooltip = function(tooltip)
+					tooltip:SetToyByItemID(itemID)
+				end,
+				macroText = "/use " .. name,
+				pickup = function()
+					C_ToyBox.PickupToyBoxItem(itemID)
+				end,
+				hyperlink = C_ToyBox.GetToyLink(itemID),
+			}
+		end
+		self.items = items
+		self:ClearCache()
+		self:SendMessage("GlobalSearch_ProviderItemsUpdated", "GlobalSearch_Toys")
+	end
 end
 
 ToysSearchProvider:RegisterEvent("NEW_TOY_ADDED", "ClearCache")
+ToysSearchProvider:RegisterEvent("TOYS_UPDATED")
 GlobalSearchAPI:RegisterProvider("GlobalSearch_Toys", ToysSearchProvider)

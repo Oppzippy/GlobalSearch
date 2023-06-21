@@ -41,6 +41,7 @@ function module:OnInitialize()
 	self:RegisterMessage("GlobalSearch_OnKeybindingModified", "RegisterKeybindings")
 	self:RegisterMessage("GlobalSearch_OnProviderStatusChanged", "UpdateProviderCollection")
 	self:RegisterMessage("GlobalSearch_OnDisplaySettingsChanged", "UpdateDisplaySettings")
+	self:RegisterMessage("GlobalSearch_ProviderItemsUpdated", "RefreshItems")
 end
 
 function module:OnEnable()
@@ -86,6 +87,21 @@ function module:Show()
 	):PollToCompletion()
 	self.searchUI:Show()
 	self:UpdateDisplaySettings()
+end
+
+function module:RefreshItems(_, providerId)
+	if self:IsVisible() then
+		self:Debugf("Search provider %s fired refresh items", providerId)
+		---@type SearchExecutor
+		local newSearchExecutor = ns.SearchExecutor.CreateAsync(
+			self:GetDB(),
+			self.providerCollection,
+			self.searchContextCache
+		):PollToCompletion()
+		self.results = newSearchExecutor:Search(self.searchExecutor.searchQuery)
+		self.searchExecutor = newSearchExecutor
+		self.searchUI:SetResults(self.results)
+	end
 end
 
 do
