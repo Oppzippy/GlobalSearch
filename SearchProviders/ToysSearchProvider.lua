@@ -74,10 +74,28 @@ function ToysSearchProvider:Fetch()
 	self.prevSettings = GetToyBoxSettings()
 	if not self.toysUpdatedCount then
 		SetToyBoxSettings(toyBoxSettings)
+		-- Start with the currently available toys, update later if it's wrong
+		self.items = self:GetToyItems()
 		self.toysUpdatedCount = 0
 	end
 
 	return self.items
+end
+
+---@param left SearchItem[]
+---@param right SearchItem[]
+---@return boolean
+local function areItemListsEqual(left, right)
+	if #left ~= #right then return false end
+	-- We shouldn't have to worry about the order since the game doesn't have sorting options for toys,
+	-- so the default sorting will be applied to both lists of toys.
+	for i, leftItem in ipairs(left) do
+		local rightItem = right[i]
+		if leftItem.id ~= rightItem.id then
+			return false
+		end
+	end
+	return true
 end
 
 function ToysSearchProvider:TOYS_UPDATED()
@@ -91,32 +109,42 @@ function ToysSearchProvider:TOYS_UPDATED()
 				SetToyBoxSettings(self.prevSettings)
 			end)
 		end
-		local tooltipStorage = GlobalSearch:GetModule("TooltipStorage")
-		---@cast tooltipStorage TooltipStorageModule
-		local items = {}
-		for i = 1, C_ToyBox.GetNumFilteredToys() do
-			local itemID = C_ToyBox.GetToyFromIndex(i)
-			local _, name, icon = C_ToyBox.GetToyInfo(itemID)
-			items[#items + 1] = {
-				id = itemID,
-				name = name,
-				extraSearchText = tooltipStorage:GetToyByItemID(itemID),
-				texture = icon,
-				---@param tooltip GameTooltip
-				tooltip = function(tooltip)
-					tooltip:SetToyByItemID(itemID)
-				end,
-				macroText = "/use " .. name,
-				pickup = function()
-					C_ToyBox.PickupToyBoxItem(itemID)
-				end,
-				hyperlink = C_ToyBox.GetToyLink(itemID),
-			}
+
+		local newItems = self:GetToyItems()
+		-- Save time if the lists are the same by not having to reindex everything
+		if not areItemListsEqual(self.items, newItems) then
+			self.items = newItems
+			self:ClearCache()
+			self:SendMessage("GlobalSearch_ProviderItemsUpdated", "GlobalSearch_Toys")
 		end
-		self.items = items
-		self:ClearCache()
-		self:SendMessage("GlobalSearch_ProviderItemsUpdated", "GlobalSearch_Toys")
 	end
+end
+
+---@return SearchItem[]
+function ToysSearchProvider:GetToyItems()
+	local tooltipStorage = GlobalSearch:GetModule("TooltipStorage")
+	---@cast tooltipStorage TooltipStorageModule
+	local items = {}
+	for i = 1, C_ToyBox.GetNumFilteredToys() do
+		local itemID = C_ToyBox.GetToyFromIndex(i)
+		local _, name, icon = C_ToyBox.GetToyInfo(itemID)
+		items[#items + 1] = {
+			id = itemID,
+			name = name,
+			extraSearchText = tooltipStorage:GetToyByItemID(itemID),
+			texture = icon,
+			---@param tooltip GameTooltip
+			tooltip = function(tooltip)
+				tooltip:SetToyByItemID(itemID)
+			end,
+			macroText = "/use " .. name,
+			pickup = function()
+				C_ToyBox.PickupToyBoxItem(itemID)
+			end,
+			hyperlink = C_ToyBox.GetToyLink(itemID),
+		}
+	end
+	return items
 end
 
 ToysSearchProvider:RegisterEvent("NEW_TOY_ADDED", "ClearCache")
