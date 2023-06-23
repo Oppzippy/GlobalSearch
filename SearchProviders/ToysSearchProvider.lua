@@ -69,8 +69,6 @@ end
 
 ---@return SearchItem[]
 function ToysSearchProvider:Fetch()
-	self.numConsecutiveToysUpdatedCalls = 0
-
 	self.prevSettings = GetToyBoxSettings()
 	if not self.toysUpdatedCount then
 		SetToyBoxSettings(toyBoxSettings)
