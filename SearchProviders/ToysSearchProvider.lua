@@ -67,6 +67,19 @@ local function SetToyBoxSettings(settings)
 	end
 end
 
+---@return SearchItem[]
+function ToysSearchProvider:Fetch()
+	self.prevSettings = GetToyBoxSettings()
+	if not self.toysUpdatedCount then
+		SetToyBoxSettings(toyBoxSettings)
+		-- Start with the currently available toys, update later if it's wrong
+		self.items = self:GetToyItems()
+		self.toysUpdatedCount = 0
+	end
+
+	return self.items
+end
+
 ---@param left SearchItem[]
 ---@param right SearchItem[]
 ---@return boolean
@@ -83,77 +96,55 @@ local function areItemListsEqual(left, right)
 	return true
 end
 
----@return SearchItem[]
-function ToysSearchProvider:Fetch()
-	-- Addons that call too many transmog functions too frequently cause C_ToyBox.GetItemInfo to return nil
-	-- Waiting for TOYS_UPDATED works in some situations but not always. For now, the best solution I could
-	-- find is repeatedly polling until both of the following are true:
-	-- - All toys have a non-nil name
-	-- - The toys now are the same as the toys a second ago
-	-- The second condition is because C_Toys.GetNumFilteredToys can return smaller than expected numbers due
-	-- to the transmog function spam, so we want to make sure we have the right of toysnumber before being done.
+function ToysSearchProvider:TOYS_UPDATED()
+	-- Sometimes TOYS_UPDATED fires twice, and toys are only available for the second one.
+	-- To work around this, we clear the cache for every event fired shortly after the first.
+	if self.toysUpdatedCount then
+		self.toysUpdatedCount = self.toysUpdatedCount + 1
+		if self.toysUpdatedCount == 1 then
+			C_Timer.After(0.5, function()
+				self.toysUpdatedCount = nil
+				SetToyBoxSettings(self.prevSettings)
+			end)
+		end
 
-	if not self.ticker then
-		local prevSettings = GetToyBoxSettings()
-		SetToyBoxSettings(toyBoxSettings)
-		self.items = self:GetToyItems() or {}
-
-		self.ticker = C_Timer.NewTicker(1, function()
-			local newItems = self:GetToyItems()
-			if newItems then
-				if areItemListsEqual(self.items, newItems) then
-					GlobalSearch:Debugf("ToysSearchProvider: Toy list matches previous tick, aborting")
-					SetToyBoxSettings(prevSettings)
-					self.ticker:Cancel()
-					self.ticker = nil
-				else
-					self.items = newItems
-					self:ClearCache()
-					self:SendMessage("GlobalSearch_ProviderItemsUpdated", "GlobalSearch_Toys")
-				end
-			end
-		end)
+		local newItems = self:GetToyItems()
+		-- Save time if the lists are the same by not having to reindex everything
+		if not areItemListsEqual(self.items, newItems) then
+			self.items = newItems
+			self:ClearCache()
+			self:SendMessage("GlobalSearch_ProviderItemsUpdated", "GlobalSearch_Toys")
+		end
 	end
-
-	return self.items
 end
 
----@return SearchItem[]?
+---@return SearchItem[]
 function ToysSearchProvider:GetToyItems()
 	local tooltipStorage = GlobalSearch:GetModule("TooltipStorage")
-	local abort = false
 	---@cast tooltipStorage TooltipStorageModule
 	local items = {}
 	for i = 1, C_ToyBox.GetNumFilteredToys() do
 		local itemID = C_ToyBox.GetToyFromIndex(i)
 		local _, name, icon = C_ToyBox.GetToyInfo(itemID)
-		if name == nil and not abort then
-			-- If we return here instead of continuing through the loop, only the toys that
-			-- we requested up until this point will be not nil next time. We need to request
-			-- info on all of the toys this time to ensure that next time they're all available.
-			abort = true
-			GlobalSearch:Debugf("ToysSearchProvider: Toy at index %d has nil name", i)
-		end
-		if not abort then
-			items[#items + 1] = {
-				id = itemID,
-				name = name,
-				extraSearchText = tooltipStorage:GetToyByItemID(itemID),
-				texture = icon,
-				---@param tooltip GameTooltip
-				tooltip = function(tooltip)
-					tooltip:SetToyByItemID(itemID)
-				end,
-				macroText = "/use " .. name,
-				pickup = function()
-					C_ToyBox.PickupToyBoxItem(itemID)
-				end,
-				hyperlink = C_ToyBox.GetToyLink(itemID),
-			}
-		end
+		items[#items + 1] = {
+			id = itemID,
+			name = name,
+			extraSearchText = tooltipStorage:GetToyByItemID(itemID),
+			texture = icon,
+			---@param tooltip GameTooltip
+			tooltip = function(tooltip)
+				tooltip:SetToyByItemID(itemID)
+			end,
+			macroText = "/use " .. name,
+			pickup = function()
+				C_ToyBox.PickupToyBoxItem(itemID)
+			end,
+			hyperlink = C_ToyBox.GetToyLink(itemID),
+		}
 	end
-	return not abort and items or nil
+	return items
 end
 
 ToysSearchProvider:RegisterEvent("NEW_TOY_ADDED", "ClearCache")
+ToysSearchProvider:RegisterEvent("TOYS_UPDATED")
 GlobalSearchAPI:RegisterProvider("GlobalSearch_Toys", ToysSearchProvider)
