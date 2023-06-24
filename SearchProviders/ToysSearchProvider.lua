@@ -16,7 +16,7 @@ local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
 local ToysSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.toys)
 ToysSearchProvider.description = L.toys_search_provider_desc
 ToysSearchProvider.items = {}
-ToysSearchProvider.toysUpdatedCount = nil
+ToysSearchProvider.waitingForToysUpdated = false
 AceEvent:Embed(ToysSearchProvider)
 
 local toyBoxSettings
@@ -69,12 +69,13 @@ end
 
 ---@return SearchItem[]
 function ToysSearchProvider:Fetch()
-	self.prevSettings = GetToyBoxSettings()
-	if not self.toysUpdatedCount then
+	if not self.waitingForToysUpdated then
+		self.prevSettings = GetToyBoxSettings()
 		SetToyBoxSettings(toyBoxSettings)
 		-- Start with the currently available toys, update later if it's wrong
 		self.items = self:GetToyItems()
-		self.toysUpdatedCount = 0
+		GlobalSearch:Debugf("ToysSearchProvider: Found %d toys initially", #self.items)
+		self.waitingForToysUpdated = true
 	end
 
 	return self.items
@@ -97,24 +98,25 @@ local function areItemListsEqual(left, right)
 end
 
 function ToysSearchProvider:TOYS_UPDATED()
-	-- Sometimes TOYS_UPDATED fires twice, and toys are only available for the second one.
-	-- To work around this, we clear the cache for every event fired shortly after the first.
-	if self.toysUpdatedCount then
-		self.toysUpdatedCount = self.toysUpdatedCount + 1
-		if self.toysUpdatedCount == 1 then
-			C_Timer.After(0.5, function()
-				self.toysUpdatedCount = nil
-				SetToyBoxSettings(self.prevSettings)
-			end)
+	-- TOYS_UPDATED will continue to fire in quick succession until all toys are loaded in.
+	if self.waitingForToysUpdated then
+		-- Debounce
+		if self.updateToysTimer then
+			self.updateToysTimer:Cancel()
 		end
-
-		local newItems = self:GetToyItems()
-		-- Save time if the lists are the same by not having to reindex everything
-		if not areItemListsEqual(self.items, newItems) then
-			self.items = newItems
-			self:ClearCache()
-			self:SendMessage("GlobalSearch_ProviderItemsUpdated", "GlobalSearch_Toys")
-		end
+		self.updateToysTimer = C_Timer.NewTimer(1, function()
+			self.updateToysTimer = nil
+			local newItems = self:GetToyItems()
+			GlobalSearch:Debugf("ToysSearchProvider: TOYS_UPDATED stopped firing. Found %d toys.", #newItems)
+			-- Save time if the lists are the same by not having to reindex
+			if not areItemListsEqual(self.items, newItems) then
+				self.items = newItems
+				self:ClearCache()
+				self:SendMessage("GlobalSearch_ProviderItemsUpdated", "GlobalSearch_Toys")
+			end
+			SetToyBoxSettings(self.prevSettings)
+			self.waitingForToysUpdated = false
+		end)
 	end
 end
 
@@ -126,6 +128,12 @@ function ToysSearchProvider:GetToyItems()
 	for i = 1, C_ToyBox.GetNumFilteredToys() do
 		local itemID = C_ToyBox.GetToyFromIndex(i)
 		local _, name, icon = C_ToyBox.GetToyInfo(itemID)
+		-- If toys aren't fully loaded in, name can be nil. In that case, return what we have.
+		-- The full list of toys will be retrieved later.
+		if name == nil then
+			GlobalSearch:Debugf("ToysSearchProvider: Toy at index %d has nil name, returning early", i)
+			return items
+		end
 		items[#items + 1] = {
 			id = itemID,
 			name = name,
