@@ -100,23 +100,39 @@ end
 function ToysSearchProvider:TOYS_UPDATED()
 	-- TOYS_UPDATED will continue to fire in quick succession until all toys are loaded in.
 	if self.waitingForToysUpdated then
-		-- Debounce
-		if self.updateToysTimer then
-			self.updateToysTimer:Cancel()
+		-- We need to collect the items now rather than after the debounce, since we know the names are not nil now,
+		-- that won't necessarily be the case in a second from now.
+		self.newItems = self:GetToyItems()
+
+		-- We need the number of frames passed condition as well rather than just C_Timer.NewTimer for if the frame
+		-- rate drops below 1. If it does, a NewTimer would fire too soon before it could be canceled on the next frame.
+		self.framesSinceLastToysUpdated = 0
+		self.lastToysUpdatedTime = GetTime()
+
+		if not self.updateToysTimer then
+			self.updateToysTimer = C_Timer.NewTicker(0, function(ticker)
+				self.framesSinceLastToysUpdated = self.framesSinceLastToysUpdated + 1
+				if GetTime() - self.lastToysUpdatedTime > 1 and self.framesSinceLastToysUpdated > 5 then
+					ticker:Cancel()
+					self.updateToysTimer = nil
+
+					local newItems = self.newItems
+					self.newItems = nil
+					GlobalSearch:Debugf("ToysSearchProvider: TOYS_UPDATED stopped firing. Found %d toys.", #newItems)
+
+					-- Save time if the lists are the same by not having to reindex
+					if not areItemListsEqual(self.items, newItems) then
+						self.items = newItems
+						self:ClearCache()
+						self:SendMessage("GlobalSearch_ProviderItemsUpdated", "GlobalSearch_Toys")
+					end
+					SetToyBoxSettings(self.prevSettings)
+					-- waitingForToysUpdated must be set to false AFTER GlobalSearch_ProviderItemsUpdated to ensure we
+					-- don't trigger a loop of fetching toys.
+					self.waitingForToysUpdated = false
+				end
+			end)
 		end
-		self.updateToysTimer = C_Timer.NewTimer(1, function()
-			self.updateToysTimer = nil
-			local newItems = self:GetToyItems()
-			GlobalSearch:Debugf("ToysSearchProvider: TOYS_UPDATED stopped firing. Found %d toys.", #newItems)
-			-- Save time if the lists are the same by not having to reindex
-			if not areItemListsEqual(self.items, newItems) then
-				self.items = newItems
-				self:ClearCache()
-				self:SendMessage("GlobalSearch_ProviderItemsUpdated", "GlobalSearch_Toys")
-			end
-			SetToyBoxSettings(self.prevSettings)
-			self.waitingForToysUpdated = false
-		end)
 	end
 end
 
@@ -130,25 +146,26 @@ function ToysSearchProvider:GetToyItems()
 		local _, name, icon = C_ToyBox.GetToyInfo(itemID)
 		-- If toys aren't fully loaded in, name can be nil. In that case, return what we have.
 		-- The full list of toys will be retrieved later.
-		if name == nil then
-			GlobalSearch:Debugf("ToysSearchProvider: Toy at index %d has nil name, returning early", i)
-			return items
+		-- By continuing to iterate through despite having at least one missing toy name,
+		-- the game receives our requests for toy names, allowing us to get all of the results
+		-- in one TOYS_UPDATED rather than needing a TOYS_UPDATED per toy name.
+		if name then
+			items[#items + 1] = {
+				id = itemID,
+				name = name,
+				extraSearchText = tooltipStorage:GetToyByItemID(itemID),
+				texture = icon,
+				---@param tooltip GameTooltip
+				tooltip = function(tooltip)
+					tooltip:SetToyByItemID(itemID)
+				end,
+				macroText = "/use " .. name,
+				pickup = function()
+					C_ToyBox.PickupToyBoxItem(itemID)
+				end,
+				hyperlink = C_ToyBox.GetToyLink(itemID),
+			}
 		end
-		items[#items + 1] = {
-			id = itemID,
-			name = name,
-			extraSearchText = tooltipStorage:GetToyByItemID(itemID),
-			texture = icon,
-			---@param tooltip GameTooltip
-			tooltip = function(tooltip)
-				tooltip:SetToyByItemID(itemID)
-			end,
-			macroText = "/use " .. name,
-			pickup = function()
-				C_ToyBox.PickupToyBoxItem(itemID)
-			end,
-			hyperlink = C_ToyBox.GetToyLink(itemID),
-		}
 	end
 	return items
 end
