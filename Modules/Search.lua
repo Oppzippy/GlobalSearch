@@ -47,8 +47,10 @@ end
 function module:OnEnable()
 	self:RegisterKeybindings()
 
-	if self:GetDB().profile.options.preloadCache then
-		C_Timer.After(5, function()
+	local options = self:GetDB().profile.options
+	if options.preloadCache then
+		self.preloadCacheTimer = C_Timer.NewTimer(options.preloadCacheDelayInSeconds, function()
+			self.preloadCacheTimer = nil
 			local task = ns.Task.Create(coroutine.create(function()
 				-- Prefill caches
 				for _, provider in next, self.providerCollection:GetProviders() do
@@ -80,6 +82,13 @@ function module:Show()
 	self.searchUI:SetHelpText(options.showHelp and self:GetHelpText() or nil)
 
 	self:SendMessage("GlobalSearch_RunTaskToCompletion", "PreloadCache")
+	-- If we haven't started preloading yet, GlobalSearch_RunTaskToCompletion will not finish the not yet started
+	-- task. Since are about to fill all of the caches now, we don't need the task anymore.
+	if self.preloadCacheTimer then
+		self.preloadCacheTimer:Cancel()
+		self.preloadCacheTimer = nil
+	end
+
 	self.searchExecutor = ns.SearchExecutor.CreateAsync(
 		self:GetDB(),
 		self.providerCollection,

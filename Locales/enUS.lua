@@ -81,6 +81,8 @@ L.task_queue_time_allocation_ms_desc =
 "Maximum amount of time per frame in milliseconds that can be spent on background tasks, such as building caches."
 L.remove_from_recent_items = "Remove from Recent Items"
 L.hyperlink = "Hyperlink"
+L.preload_cache_delay_sec = "Preload Cache Delay (sec)"
+L.preload_cache_delay_sec_desc = "Delay after login in seconds before preloading the cache."
 
 L.achievements_search_provider_desc =
 "Provides all achievements. Includes earned, unearned, and achievements further in chains that aren't visible in the UI yet."

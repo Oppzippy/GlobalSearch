@@ -18,6 +18,7 @@ ns.dbDefaults = {
 			frameStrata = "DIALOG",
 			resultsPerPage = 10,
 			preloadCache = false,
+			preloadCacheDelayInSeconds = 30,
 			taskQueueTimeAllocationInMilliseconds = 1,
 			position = {
 				xOffset = 0,

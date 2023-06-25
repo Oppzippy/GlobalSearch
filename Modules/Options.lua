@@ -59,14 +59,28 @@ module.optionsTable = {
 					max = 50,
 					step = 1,
 					width = 1.5,
-					order = 3.05,
+					order = 4,
 				},
 				preloadCache = {
 					type = "toggle",
 					name = L.preload_cache,
 					desc = L.preload_cache_desc,
 					width = 1.5,
-					order = 3.01,
+					order = 5,
+				},
+				preloadCacheDelayInSeconds = {
+					type = "range",
+					name = L.preload_cache_delay_sec,
+					desc = L.preload_cache_delay_sec_desc,
+					disabled = function()
+						return not module:GetDB().profile.options.preloadCache
+					end,
+					min = 0,
+					max = 3600, -- 1 hour
+					softMin = 0,
+					softMax = 300, -- 5 min
+					width = 1.5,
+					order = 6,
 				},
 				taskQueueTimeAllocationInMilliseconds = {
 					type = "range",
@@ -78,7 +92,7 @@ module.optionsTable = {
 					max = 50,
 					step = 1,
 					width = 1.5,
-					order = 3.09,
+					order = 7,
 				},
 				maxRecentItems = {
 					type = "range",
@@ -89,13 +103,13 @@ module.optionsTable = {
 					max = 1000,
 					step = 1,
 					width = 1.5,
-					order = 3.1,
+					order = 8,
 				},
 				clearRecentItems = {
 					name = L.clear_recent_items,
 					type = "execute",
 					width = 1.5,
-					order = 3.2,
+					order = 9,
 					func = function()
 						local profile = module:GetDB().profile
 						local numItems = #profile.recentItemsV2
@@ -107,7 +121,7 @@ module.optionsTable = {
 					name = "Debug mode",
 					type = "toggle",
 					width = 1.5,
-					order = 4,
+					order = 10,
 				}
 			},
 		},
