@@ -14,6 +14,7 @@ local addon = AceAddon:GetAddon("GlobalSearch")
 ---@class MountsSearchProvider : SearchProvider, AceEvent-3.0
 local MountsSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.mounts)
 MountsSearchProvider.description = L.mounts_search_provider_desc
+MountsSearchProvider.extraSearchTextCache = {}
 AceEvent:Embed(MountsSearchProvider)
 
 ---@return fun(): SearchItem?
@@ -24,16 +25,25 @@ function MountsSearchProvider:Fetch()
 			local tooltipStorage = addon:GetModule("TooltipStorage")
 			---@cast tooltipStorage TooltipStorageModule
 			local name, spellID, icon, _, isUsable = C_MountJournal.GetMountInfoByID(mountID)
-			local _, description, source = C_MountJournal.GetMountInfoExtraByID(mountID)
-			source = ns.Util.StripEscapeSequences(source)
-
-			local tooltipText = tooltipStorage:GetMountBySpellID(spellID)
 
 			if isUsable then
+				-- It's okay to never clear this cache since there is a fixed number of mounts in the game,
+				-- so this will not grow endlessly or anything.
+				-- I don't think the mount tooltip, source, or description would ever change either.
+				local extraSearchText = self.extraSearchTextCache[mountID]
+				if not extraSearchText then
+					local tooltipText = tooltipStorage:GetMountBySpellID(spellID)
+					local _, description, source = C_MountJournal.GetMountInfoExtraByID(mountID)
+					source = ns.Util.StripEscapeSequences(source)
+
+					extraSearchText = string.format("%s %s %s", description, source, tooltipText)
+					self.extraSearchTextCache[mountID] = extraSearchText
+				end
+
 				coroutine.yield({
 					id = mountID,
 					name = name,
-					extraSearchText = string.format("%s %s %s", description, source, tooltipText),
+					extraSearchText = extraSearchText,
 					texture = icon,
 					---@param tooltip GameTooltip
 					tooltip = function(tooltip)
