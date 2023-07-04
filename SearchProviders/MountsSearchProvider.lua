@@ -20,10 +20,11 @@ AceEvent:Embed(MountsSearchProvider)
 ---@return fun(): SearchItem?
 function MountsSearchProvider:Fetch()
 	return coroutine.wrap(function()
+		local tooltipStorage = addon:GetModule("TooltipStorage")
+		---@cast tooltipStorage TooltipStorageModule
+
 		local mountIDs = C_MountJournal.GetMountIDs()
 		for _, mountID in ipairs(mountIDs) do
-			local tooltipStorage = addon:GetModule("TooltipStorage")
-			---@cast tooltipStorage TooltipStorageModule
 			local name, spellID, icon, _, isUsable = C_MountJournal.GetMountInfoByID(mountID)
 
 			if isUsable then
