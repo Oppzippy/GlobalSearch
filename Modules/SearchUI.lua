@@ -329,11 +329,9 @@ function SearchUIPrototype:Render()
 		if item.pickup then
 			resultWidget:SetCallback("OnPickup", item.pickup)
 		end
-		if item.hyperlink then
-			resultWidget:SetCallback("OnHyperlink", function()
-				self.callbacks:Fire("OnHyperlink", item)
-			end)
-		end
+		resultWidget:SetCallback("OnHyperlink", function()
+			self.callbacks:Fire("OnHyperlink", item)
+		end)
 		resultWidget:SetFullWidth(true)
 		resultWidget:SetHeight(self.barHeight)
 		resultWidget:SetFontObject(self.font)
