@@ -59,25 +59,14 @@ local function SetPetJournalBoxSettings(settings)
 end
 
 ---@return SearchItem[]
-function PetsSearchProvider:Get()
-	if not self.cache then
-		self.cache = self:Fetch()
-	end
-	return self.cache
-end
-
-function PetsSearchProvider:ClearCache()
-	self.cache = nil
-end
-
----@return SearchItem[]
 function PetsSearchProvider:Fetch()
 	local items = {}
 	local prevSettings = GetPetJournalSettings()
 	SetPetJournalBoxSettings(petJournalSettings)
 	local numPets = C_PetJournal.GetNumPets()
 	for i = 1, numPets do
-		local petID, _, isOwned, customName, _, _, _, speciesName, icon, _, _, source, description = C_PetJournal.GetPetInfoByIndex(i)
+		local petID, _, isOwned, customName, _, _, _, speciesName, icon, _, _, source, description = C_PetJournal
+		.GetPetInfoByIndex(i)
 
 		if isOwned then
 			source = ns.Util.StripEscapeSequences(source)
