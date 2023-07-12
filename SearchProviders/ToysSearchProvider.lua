@@ -136,10 +136,19 @@ function ToysSearchProvider:TOYS_UPDATED()
 	end
 end
 
+-- Toys never get unlearned, so never clearing the cache is okay
+local tooltipCache = setmetatable({}, {
+	__index = function(t, itemID)
+		local tooltipStorage = GlobalSearch:GetModule("TooltipStorage")
+		---@cast tooltipStorage TooltipStorageModule
+		local tooltip = tooltipStorage:GetToyByItemID(itemID)
+		t[itemID] = tooltip
+		return tooltip
+	end
+})
+
 ---@return SearchItem[]
 function ToysSearchProvider:GetToyItems()
-	local tooltipStorage = GlobalSearch:GetModule("TooltipStorage")
-	---@cast tooltipStorage TooltipStorageModule
 	local items = {}
 	for i = 1, C_ToyBox.GetNumFilteredToys() do
 		local itemID = C_ToyBox.GetToyFromIndex(i)
@@ -153,7 +162,7 @@ function ToysSearchProvider:GetToyItems()
 			items[#items + 1] = {
 				id = itemID,
 				name = name,
-				extraSearchText = tooltipStorage:GetToyByItemID(itemID),
+				extraSearchText = tooltipCache[itemID],
 				texture = icon,
 				---@param tooltip GameTooltip
 				tooltip = function(tooltip)
