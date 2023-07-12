@@ -35,7 +35,6 @@ function AchievementsSearchProvider:Fetch()
 		if not achievements then return end
 
 		for _, achievement in next, achievements do
-			local hyperlink = GetAchievementLink(achievement.id)
 			coroutine.yield({
 				id = achievement.id,
 				name = achievement.name,
@@ -49,9 +48,12 @@ function AchievementsSearchProvider:Fetch()
 				---@param tooltip GameTooltip
 				tooltip = function(tooltip)
 					-- We can't use SetAchievementByID because it doesn't exist on wotlk classic
+					local hyperlink = GetAchievementLink(achievement.id)
 					tooltip:SetHyperlink(hyperlink)
 				end,
-				hyperlink = hyperlink,
+				hyperlink = function()
+					return GetAchievementLink(achievement.id)
+				end,
 			})
 		end
 	end)

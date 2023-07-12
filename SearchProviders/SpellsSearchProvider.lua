@@ -48,7 +48,9 @@ function SpellsSearchProvider:Fetch()
 					pickup = function()
 						PickupSpell(spellID)
 					end,
-					hyperlink = GetSpellLink(spellID),
+					hyperlink = function()
+						return GetSpellLink(spellID)
+					end,
 				})
 			end
 		end

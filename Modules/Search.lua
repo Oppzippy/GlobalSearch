@@ -301,6 +301,7 @@ function module:Search(query)
 	self.searchUI:SetResults(self.results)
 end
 
+---@param item SearchItem
 function module:OnHyperlink(_, item)
 	self:Hyperlink(item)
 end
@@ -309,11 +310,21 @@ function module:OnCreateHyperlink()
 	self:Hyperlink(self.searchUI:GetSelectedItem())
 end
 
+---@param item SearchItem
 function module:Hyperlink(item)
 	if item then
+		local text
+		local hyperlinkType = type(item.hyperlink)
+		if hyperlinkType == "string" then
+			text = item.hyperlink
+		elseif hyperlinkType == "function" then
+			text = item.hyperlink()
+		else
+			text = item.name
+		end
 		self:Hide()
 		ChatEdit_ActivateChat(ChatFrame1EditBox)
-		ChatFrame1EditBox:Insert(item.hyperlink or item.name)
+		ChatFrame1EditBox:Insert(text)
 	end
 end
 

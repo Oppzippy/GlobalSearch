@@ -172,7 +172,9 @@ function ToysSearchProvider:GetToyItems()
 				pickup = function()
 					C_ToyBox.PickupToyBoxItem(itemID)
 				end,
-				hyperlink = C_ToyBox.GetToyLink(itemID),
+				hyperlink = function()
+					return C_ToyBox.GetToyLink(itemID)
+				end,
 			}
 		end
 	end

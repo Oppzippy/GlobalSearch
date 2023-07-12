@@ -9,4 +9,4 @@
 ---@field macroText? string
 ---@field pickup? function
 ---@field tooltip? fun(limitedTooltip: GameTooltip) | string
----@field hyperlink? string
+---@field hyperlink? string|fun(): string

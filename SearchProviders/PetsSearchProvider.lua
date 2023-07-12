@@ -66,7 +66,7 @@ function PetsSearchProvider:Fetch()
 	local numPets = C_PetJournal.GetNumPets()
 	for i = 1, numPets do
 		local petID, _, isOwned, customName, _, _, _, speciesName, icon, _, _, source, description = C_PetJournal
-		.GetPetInfoByIndex(i)
+			.GetPetInfoByIndex(i)
 
 		if isOwned then
 			source = ns.Util.StripEscapeSequences(source)
@@ -90,7 +90,9 @@ function PetsSearchProvider:Fetch()
 				pickup = function()
 					C_PetJournal.PickupPet(petID)
 				end,
-				hyperlink = C_PetJournal.GetBattlePetLink(petID),
+				hyperlink = function()
+					return C_PetJournal.GetBattlePetLink(petID)
+				end,
 			}
 		end
 	end
