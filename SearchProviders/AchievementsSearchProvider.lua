@@ -28,33 +28,33 @@ AchievementsSearchProvider.optionsTable = {
 	},
 }
 
----@return SearchItem[]?
+---@return fun(): SearchItem?
 function AchievementsSearchProvider:Fetch()
-	local achievements = AchievementStorage:GetAchievements()
-	if not achievements then return end
+	return coroutine.wrap(function()
+		local achievements = AchievementStorage:GetAchievements()
+		if not achievements then return end
 
-	local items = {}
-	for _, achievement in next, achievements do
-		local hyperlink = GetAchievementLink(achievement.id)
-		items[#items + 1] = {
-			id = achievement.id,
-			name = achievement.name,
-			texture = achievement.icon,
-			extraSearchText = achievement.description,
-			action = function()
-				AchievementFrame_LoadUI()
-				ShowUIPanel(AchievementFrame)
-				AchievementFrame_SelectAchievement(achievement.id)
-			end,
-			---@param tooltip GameTooltip
-			tooltip = function(tooltip)
-				-- We can't use SetAchievementByID because it doesn't exist on wotlk classic
-				tooltip:SetHyperlink(hyperlink)
-			end,
-			hyperlink = hyperlink,
-		}
-	end
-	return items
+		for _, achievement in next, achievements do
+			local hyperlink = GetAchievementLink(achievement.id)
+			coroutine.yield({
+				id = achievement.id,
+				name = achievement.name,
+				texture = achievement.icon,
+				extraSearchText = achievement.description,
+				action = function()
+					AchievementFrame_LoadUI()
+					ShowUIPanel(AchievementFrame)
+					AchievementFrame_SelectAchievement(achievement.id)
+				end,
+				---@param tooltip GameTooltip
+				tooltip = function(tooltip)
+					-- We can't use SetAchievementByID because it doesn't exist on wotlk classic
+					tooltip:SetHyperlink(hyperlink)
+				end,
+				hyperlink = hyperlink,
+			})
+		end
+	end)
 end
 
 GlobalSearchAPI:RegisterProvider("GlobalSearch_Achievements", AchievementsSearchProvider)
