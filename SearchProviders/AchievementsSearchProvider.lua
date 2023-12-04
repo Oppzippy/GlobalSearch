@@ -8,6 +8,8 @@ local L = AceLocale:GetLocale("GlobalSearch")
 local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
 ---@cast GlobalSearch GlobalSearch
 local AchievementStorage = GlobalSearch:GetModule("AchievementStorage", true)
+
+-- Disable if client does not support achievements (classic)
 if not AchievementStorage then return end
 ---@cast AchievementStorage AchievementStorageModule
 

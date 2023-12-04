@@ -1,5 +1,5 @@
 -- Disable on classic
-if not GetAchievementInfo then return end
+if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then return end
 
 ---@class ns
 local ns = select(2, ...)
