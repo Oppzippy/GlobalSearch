@@ -37,6 +37,7 @@ ns.SecureSlashCommandLists[2] = {
 	"MAINASSISTON",
 	"MAINASSISTOFF",
 	"DUEL",
+	"DUEL_TO_THE_DEATH",
 	"DUEL_CANCEL",
 	"PET_ATTACK",
 	"PET_FOLLOW",
@@ -167,6 +168,7 @@ ns.SecureSlashCommandLists[0] = {
 	"MAINASSISTON",
 	"MAINASSISTOFF",
 	"DUEL",
+	"DUEL_TO_THE_DEATH",
 	"DUEL_CANCEL",
 	"PET_ATTACK",
 	"PET_FOLLOW",
@@ -265,4 +267,5 @@ ns.SecureSlashCommandLists["default"] = {
 	"GUILD_LEADER",
 	"GUILD_LEAVE",
 	"GUILD_DISBAND",
+	"PING",
 }
