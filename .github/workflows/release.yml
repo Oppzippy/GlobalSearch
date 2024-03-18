@@ -9,13 +9,13 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Install luarocks
-        run: sudo apt-get install luarocks
+      - name: Install dependencies from apt
+        run: sudo apt-get install luarocks lua-bitop
       - name: Install luaunit
         run: sudo luarocks install luaunit
       - name: Run tests
