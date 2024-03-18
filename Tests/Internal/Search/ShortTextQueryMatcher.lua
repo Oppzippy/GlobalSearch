@@ -61,3 +61,16 @@ function TestShortTextQueryMatcher:TestFullMatch()
 		}
 	)
 end
+
+function TestShortTextQueryMatcher:TestChineseCharacters()
+	local isMatch, ranges = ns.ShortTextQueryMatcher.MatchesQuery("你好世", "你好，世界！")
+	luaunit.assertTrue(isMatch)
+	luaunit.assertEquals(ranges, {
+		{
+			from = 1, to = 6,
+		},
+		{
+			from = 10, to = 12,
+		}
+	})
+end

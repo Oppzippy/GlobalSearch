@@ -11,6 +11,8 @@ function DoWoWFile(path)
 	func("GlobalSearch", namespace)
 end
 
+_G.bit = require("bit") -- requires BitOp library
+
 --- Internal
 DoWoWFile("Internal/Search/CombinedSearchContext.lua")
 DoWoWFile("Internal/Search/FullTextSearchContext.lua")
@@ -28,3 +30,4 @@ DoWoWFile("Internal/SearchProviderCollection.lua")
 DoWoWFile("Internal/SearchProviderRegistry.lua")
 DoWoWFile("Internal/Util.lua")
 DoWoWFile("Internal/Task.lua")
+DoWoWFile("Internal/Unicode/UTF8.lua")

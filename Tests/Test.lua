@@ -10,5 +10,6 @@ DoWoWFile("Tests/Internal/SearchExecutor.lua")
 DoWoWFile("Tests/Internal/SearchProvider.lua")
 DoWoWFile("Tests/Internal/Util.lua")
 DoWoWFile("Tests/Internal/Task.lua")
+DoWoWFile("Tests/Internal/Unicode/UTF8.lua")
 
 os.exit(luaunit.LuaUnit.run())
