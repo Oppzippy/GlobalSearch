@@ -6,7 +6,7 @@ jobs:
   update-secure-slash-commands:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Update secure slash commands
         run: ./Scripts/update-secure-slash-commands.sh > Generated/SecureSlashCommands.lua
 
@@ -22,7 +22,7 @@ jobs:
   update-interface-options:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Update interface options
         run: ./Scripts/update-interface-options.py > Generated/InterfaceOptions.lua
 
