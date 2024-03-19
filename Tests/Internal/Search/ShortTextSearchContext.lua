@@ -25,7 +25,9 @@ function TestShortTextSearchContext:TestResultCaching()
 			name = "abcd",
 		},
 	}
-	local context = ns.ShortTextSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items)
+	local context = ns.Task.Create(coroutine.create(function()
+		return ns.ShortTextSearchContext.CreateAsync(ns.ShortTextQueryMatcher.MatchesQuery, items)
+	end)):PollToCompletion()
 	local firstResults = context:Search("abc")
 	local secondResults = context:Search("abcd")
 	local thirdResults = context:Search("abc")
@@ -44,7 +46,9 @@ function TestShortTextSearchContext:TestDoesNotIncludeExtraText()
 			name = "abcdef",
 		},
 	}
-	local context = ns.ShortTextSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items)
+	local context = ns.Task.Create(coroutine.create(function()
+		return ns.ShortTextSearchContext.CreateAsync(ns.ShortTextQueryMatcher.MatchesQuery, items)
+	end)):PollToCompletion()
 	local results = context:Search("abcdef")
 	luaunit.assertEquals(#results, 1)
 end
@@ -58,7 +62,9 @@ function TestShortTextSearchContext:TestSortingByNumMatches()
 			name = "ac",
 		},
 	}
-	local context = ns.ShortTextSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items)
+	local context = ns.Task.Create(coroutine.create(function()
+		return ns.ShortTextSearchContext.CreateAsync(ns.ShortTextQueryMatcher.MatchesQuery, items)
+	end)):PollToCompletion()
 	local results = context:Search("ac")
 	luaunit.assertTrue(getResultByItemName(results, "abc").score < getResultByItemName(results, "ac").score)
 end
@@ -73,7 +79,9 @@ function TestShortTextSearchContext:TestSortingByEarliestMatch()
 			name = "abcde",
 		},
 	}
-	local context = ns.ShortTextSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items)
+	local context = ns.Task.Create(coroutine.create(function()
+		return ns.ShortTextSearchContext.CreateAsync(ns.ShortTextQueryMatcher.MatchesQuery, items)
+	end)):PollToCompletion()
 	local results = context:Search("abcde")
 	luaunit.assertTrue(getResultByItemName(results, "_____abcde").score < getResultByItemName(results, "abcde").score)
 end
@@ -87,7 +95,9 @@ function TestShortTextSearchContext:TestSortingByLongestFirstMatch()
 			name = "abc",
 		},
 	}
-	local context = ns.ShortTextSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items)
+	local context = ns.Task.Create(coroutine.create(function()
+		return ns.ShortTextSearchContext.CreateAsync(ns.ShortTextQueryMatcher.MatchesQuery, items)
+	end)):PollToCompletion()
 	local results = context:Search("abc")
 	luaunit.assertTrue(getResultByItemName(results, "a_bc").score < getResultByItemName(results, "abc").score)
 end
@@ -101,7 +111,9 @@ function TestShortTextSearchContext:TestSortingByStringLength()
 			name = "abcd",
 		},
 	}
-	local context = ns.ShortTextSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items)
+	local context = ns.Task.Create(coroutine.create(function()
+		return ns.ShortTextSearchContext.CreateAsync(ns.ShortTextQueryMatcher.MatchesQuery, items)
+	end)):PollToCompletion()
 	local results = context:Search("ab")
 	luaunit.assertTrue(getResultByItemName(results, "abcdefg").score < getResultByItemName(results, "abcd").score)
 end
@@ -116,8 +128,20 @@ function TestShortTextSearchContext:TestSortingBySmallestRange()
 			name = "abc_de________",
 		},
 	}
-	local context = ns.ShortTextSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items)
+	local context = ns.Task.Create(coroutine.create(function()
+		return ns.ShortTextSearchContext.CreateAsync(ns.ShortTextQueryMatcher.MatchesQuery, items)
+	end)):PollToCompletion()
 	local results = context:Search("abcde")
 	luaunit.assertTrue(getResultByItemName(results, "abc_____de").score <
 		getResultByItemName(results, "abc_de________").score)
+end
+
+function TestShortTextSearchContext:TestCaseInsensitivity()
+	---@diagnostic disable-next-line: missing-fields
+	local items = { { name = "AbC" } }
+	local context = ns.Task.Create(coroutine.create(function()
+		return ns.ShortTextSearchContext.CreateAsync(ns.ShortTextQueryMatcher.MatchesQuery, items)
+	end)):PollToCompletion()
+	local results = context:Search("aBc")
+	luaunit.assertEquals(#results, 1)
 end

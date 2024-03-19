@@ -4,8 +4,17 @@ local luaunit = require("luaunit")
 
 TestShortTextQueryMatcher = {}
 
+---@param query string
+---@param text string
+local function matchesQuery(query, text)
+	return ns.ShortTextQueryMatcher.MatchesQuery(
+		ns.utf8ToCodePoints(query),
+		ns.utf8ToCodePoints(text)
+	)
+end
+
 function TestShortTextQueryMatcher:TestSkippedCharacters()
-	local isMatch, ranges = ns.ShortTextQueryMatcher.MatchesQuery("bcf", "abcdefg")
+	local isMatch, ranges = matchesQuery("bcf", "abcdefg")
 	luaunit.assertTrue(isMatch)
 	luaunit.assertEquals(ranges,
 		{
@@ -22,22 +31,22 @@ function TestShortTextQueryMatcher:TestSkippedCharacters()
 end
 
 function TestShortTextQueryMatcher:TestPartialMatchAtStart()
-	local isMatch = ns.ShortTextQueryMatcher.MatchesQuery("abc", "abdefg")
+	local isMatch = matchesQuery("abc", "abdefg")
 	luaunit.assertFalse(isMatch)
 end
 
 function TestShortTextQueryMatcher:TestPartialMatchAtEnd()
-	local isMatch = ns.ShortTextQueryMatcher.MatchesQuery("def", "abcef")
+	local isMatch = matchesQuery("def", "abcef")
 	luaunit.assertFalse(isMatch)
 end
 
 function TestShortTextQueryMatcher:TestLongerQueryThanText()
-	local isMatch = ns.ShortTextQueryMatcher.MatchesQuery("abcdef", "abc")
+	local isMatch = matchesQuery("abcdef", "abc")
 	luaunit.assertFalse(isMatch)
 end
 
 function TestShortTextQueryMatcher:TestShorterQueryThanText()
-	local isMatch, ranges = ns.ShortTextQueryMatcher.MatchesQuery("abc", "abcdef")
+	local isMatch, ranges = matchesQuery("abc", "abcdef")
 	luaunit.assertTrue(isMatch)
 	luaunit.assertEquals(ranges,
 		{
@@ -50,7 +59,7 @@ function TestShortTextQueryMatcher:TestShorterQueryThanText()
 end
 
 function TestShortTextQueryMatcher:TestFullMatch()
-	local isMatch, ranges = ns.ShortTextQueryMatcher.MatchesQuery("abc", "abc")
+	local isMatch, ranges = matchesQuery("abc", "abc")
 	luaunit.assertTrue(isMatch)
 	luaunit.assertEquals(ranges,
 		{
@@ -63,7 +72,7 @@ function TestShortTextQueryMatcher:TestFullMatch()
 end
 
 function TestShortTextQueryMatcher:TestChineseCharacters()
-	local isMatch, ranges = ns.ShortTextQueryMatcher.MatchesQuery("你好世", "你好，世界！")
+	local isMatch, ranges = matchesQuery("你好世", "你好，世界！")
 	luaunit.assertTrue(isMatch)
 	luaunit.assertEquals(ranges, {
 		{

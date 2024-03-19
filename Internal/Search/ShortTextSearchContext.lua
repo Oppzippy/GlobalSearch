@@ -2,18 +2,29 @@
 local ns = select(2, ...)
 
 ---@class ShortTextSearchContext
----@field prevQuery string
+---@field prevQueryCodePoints integer[]
 ---@field items SearchItem[]
----@field queryMatcher QueryMatcher
+---@field itemNameCodePoints table<SearchItem, integer[]>
+---@field queryMatcher ShortTextQueryMatcher
 ---@field prevResults SearchContextItem[]
 local ShortTextSearchContextPrototype = {}
 
 ---@param queryMatcher QueryMatcher
 ---@param items SearchItem[]
-local function CreateSearchContext(queryMatcher, items)
+local function CreateSearchContextAsync(queryMatcher, items)
+	local itemNameCodePoints = {}
+	for i = 1, #items do
+		local item = items[i]
+		itemNameCodePoints[item] = ns.utf8ToLower(ns.utf8ToCodePoints(item.name))
+		if i % 16 == 0 then
+			coroutine.yield()
+		end
+	end
+
 	local searchContext = setmetatable({
 		queryMatcher = queryMatcher,
 		items = items,
+		itemNameCodePoints = itemNameCodePoints,
 	}, { __index = ShortTextSearchContextPrototype })
 	return searchContext
 end
@@ -22,8 +33,9 @@ end
 ---@return SearchContextItem[]
 function ShortTextSearchContextPrototype:Search(query)
 	local items
+	local queryCodePoints = ns.utf8ToLower(ns.utf8ToCodePoints(query))
 	-- If the old query matches the new query, the new query must be a subset, so we can reuse the results and filter them.
-	if self.prevResults and self.prevQuery and self.prevQuery ~= "" and self.queryMatcher(self.prevQuery, query) then
+	if self.prevResults and self.prevQueryCodePoints and #self.prevQueryCodePoints > 0 and self.queryMatcher(self.prevQueryCodePoints, queryCodePoints) then
 		items = {}
 		for i, result in ipairs(self.prevResults) do
 			items[i] = result.item
@@ -31,27 +43,26 @@ function ShortTextSearchContextPrototype:Search(query)
 	else
 		items = self.items
 	end
-	self.prevQuery = query
+	self.prevQueryCodePoints = queryCodePoints
 
 
-	local results = self:SearchItems(query, items)
+	local results = self:SearchItems(queryCodePoints, items)
 	self.prevResults = results
 
 	return results
 end
 
----@param query string
+---@param queryCodePoints integer[] Should already be converted to lowercase
 ---@param items SearchItem[]
 ---@return SearchContextItem[]
-function ShortTextSearchContextPrototype:SearchItems(query, items)
-	if query == "" then return {} end
-	query = query:lower()
+function ShortTextSearchContextPrototype:SearchItems(queryCodePoints, items)
+	if #queryCodePoints == 0 then return {} end
 	---@type SearchContextItem[]
 	local matches = {}
 	local numItems = #items
 	for i = 1, numItems do
 		local item = items[i]
-		local isMatch, matchRanges = self.queryMatcher(query, item.name:lower())
+		local isMatch, matchRanges = self.queryMatcher(queryCodePoints, self.itemNameCodePoints[item])
 		if isMatch then
 			local match = {
 				item = item,
@@ -86,7 +97,7 @@ function ShortTextSearchContextPrototype:GetMatchScore(item, matchRanges)
 	return score
 end
 
-local export = { Create = CreateSearchContext }
+local export = { CreateAsync = CreateSearchContextAsync }
 if ns then
 	ns.ShortTextSearchContext = export
 end

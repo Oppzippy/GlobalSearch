@@ -63,3 +63,60 @@ function ns.codePointsToUtf8(codepoints)
 
 	return table.concat(utf8_chars)
 end
+
+-- TODO see if I can find an existing table for case conversions. I only need to cover the languages WoW uses.
+---@param codePoints integer[]
+---@return integer[]
+function ns.utf8ToLower(codePoints)
+	local newCodePoints = {}
+	for i = 1, #codePoints do
+		local codePoint = codePoints[i]
+		local isEven = codePoint % 2 == 0
+		if (codePoint >= 0x41 and codePoint <= 0x5A) or
+			(codePoint >= 0xC0 and codePoint <= 0xDE and codePoint ~= 0xD7) then
+			-- A-Z, À-Þ except for ×
+			codePoint = codePoint + 0x20
+		elseif (codePoint >= 0x100 and codePoint <= 0x12F) or
+			(codePoint >= 0x132 and codePoint <= 0x137) or
+			(codePoint >= 0x14A and codePoint <= 0x177) then
+			-- Ā-į, Ĳ-ň, Ŋ-ž
+			-- Uppercase letters are even, lower case are the following odd number
+			if isEven then
+				codePoint = codePoint + 1
+			end
+		elseif codePoint >= 0x139 and codePoint <= 0x148 then
+			if not isEven then
+				codePoint = codePoint + 1
+			end
+		elseif codePoint == 0x178 then
+			-- Ÿ
+			codePoint = 0xFF
+		elseif codePoint >= 0x179 and codePoint <= 0x17E then
+			if not isEven then
+				codePoint = codePoint + 1
+			end
+		elseif codePoint >= 0x400 and codePoint <= 0x40F then
+			-- Ѐ-Џ
+			codePoint = codePoint + 0x50
+		elseif codePoint >= 0x410 and codePoint <= 0x42F then
+			-- А-Я
+			codePoint = codePoint + 0x20
+		elseif (codePoint >= 0x460 and codePoint <= 0x481) or
+			(codePoint >= 0x48A and codePoint <= 0x4BF) or
+			(codePoint >= 0x4D0 and codePoint <= 0x4FF) then
+			-- Ѡ-ҁ, Ҋ-ҿ, Ӑ-ӿ
+			-- Uppercase letters are even, lower case are the following odd number
+			if isEven then
+				codePoint = codePoint + 1
+			end
+		elseif codePoint >= 0x4C1 and codePoint <= 0x4CE then
+			-- Ӂ-ӎ
+			-- Uppercase letters are odd, lower case are the following even number
+			if not isEven then
+				codePoint = codePoint + 1
+			end
+		end
+		newCodePoints[i] = codePoint
+	end
+	return newCodePoints
+end

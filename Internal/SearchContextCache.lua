@@ -76,7 +76,8 @@ function SearchContextCachePrototype:GetContextsForProviderAsync(providerID)
 		if items then
 			if self.items[providerID] ~= items then
 				local contextGroup = {}
-				contextGroup[#contextGroup + 1] = ns.ShortTextSearchContext.Create(ns.ShortTextQueryMatcher.MatchesQuery, items)
+				contextGroup[#contextGroup + 1] = ns.ShortTextSearchContext.CreateAsync(
+				ns.ShortTextQueryMatcher.MatchesQuery, items)
 				-- Expensive to build index
 				contextGroup[#contextGroup + 1] = ns.FullTextSearchContext.CreateAsync(items):PollToCompletionAsync()
 

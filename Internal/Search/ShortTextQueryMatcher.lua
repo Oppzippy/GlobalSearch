@@ -82,23 +82,13 @@ local function ShiftMatchRangesForUTF8(textCodePoints, matchRanges)
 	return newMatchRanges
 end
 
--- TODO move caching to a higher level, and only cache text, not the query.
--- The query can be anything, text is a known finite set of values.
-local utf8ToCodePoints = setmetatable({}, {
-	__index = function(t, k)
-		local codePoints = ns.utf8ToCodePoints(k)
-		rawset(t, k, codePoints)
-		return codePoints
-	end
-})
+---@alias ShortTextQueryMatcher fun(queryCodePoints: integer[], textCodePoints: integer[]): boolean, MatchRange[]?
 
----@param query string
----@param text string
+local export = {}
+---@param queryCodePoints integer[]
+---@param textCodePoints integer[]
 ---@return boolean, MatchRange[]?
-local function MatchesQuery(query, text)
-	local queryCodePoints = utf8ToCodePoints[query]
-	local textCodePoints = utf8ToCodePoints[text]
-
+function export.MatchesQuery(queryCodePoints, textCodePoints)
 	---@type MatchRange[]
 	local matchRanges = {}
 	---@type MatchRange
@@ -137,7 +127,6 @@ local function MatchesQuery(query, text)
 	return true, matchRanges
 end
 
-local export = { MatchesQuery = MatchesQuery }
 if ns then
 	ns.ShortTextQueryMatcher = export
 end
