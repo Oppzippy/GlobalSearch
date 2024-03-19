@@ -94,10 +94,15 @@ function export.MatchesQuery(queryCodePoints, textCodePoints)
 	---@type MatchRange
 	local range
 	local prevIndex = 0
+
+	local hasMultibyteCharacters = false
 	for i = 1, #queryCodePoints do
 		local char = queryCodePoints[i]
 		local index
 		for j = prevIndex + 1, #textCodePoints do
+			if textCodePoints[j] >= 0x80 then
+				hasMultibyteCharacters = true
+			end
 			if textCodePoints[j] == char then
 				index = j
 				break
@@ -120,9 +125,9 @@ function export.MatchesQuery(queryCodePoints, textCodePoints)
 	if #matchRanges > 1 then
 		matchRanges = CondenseMatchRanges(textCodePoints, matchRanges)
 	end
-	-- TODO while iterating over the code points, check if there are any multi-byte characters.
-	-- If not, no need to shift ranges.
-	matchRanges = ShiftMatchRangesForUTF8(textCodePoints, matchRanges)
+	if hasMultibyteCharacters then
+		matchRanges = ShiftMatchRangesForUTF8(textCodePoints, matchRanges)
+	end
 
 	return true, matchRanges
 end
