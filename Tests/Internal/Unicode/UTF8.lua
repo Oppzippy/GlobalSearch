@@ -2,6 +2,7 @@
 local ns = select(2, ...)
 local luaunit = require("luaunit")
 local UTF8 = ns.UTF8
+local Unicode = ns.Unicode
 
 TestUTF8 = {}
 
@@ -30,28 +31,28 @@ end
 function TestUTF8:TestCyrillicToLowerCase()
 	local input = UTF8.ToCodePoints("АБВГЁ")
 	local expected_output = UTF8.ToCodePoints("абвгё")
-	local output = UTF8.ToLower(input)
+	local output = Unicode.ToLower(input)
 	luaunit.assertItemsEquals(expected_output, output)
 end
 
 function TestUTF8:testSpanishCharactersToLower()
 	local input = UTF8.ToCodePoints("ÁÉÍÓÚÑ")
 	local expected = UTF8.ToCodePoints("áéíóúñ")
-	local result = UTF8.ToLower(input)
+	local result = Unicode.ToLower(input)
 	luaunit.assertEquals(result, expected)
 end
 
 function TestUTF8:testFrenchCharactersToLower()
 	local input = UTF8.ToCodePoints("ÀÂÆÇÉÈÊËÎÏÔŒÙÛÜŸ")
 	local expected = UTF8.ToCodePoints("àâæçéèêëîïôœùûüÿ")
-	local result = UTF8.ToLower(input)
+	local result = Unicode.ToLower(input)
 	luaunit.assertEquals(result, expected)
 end
 
 function TestUTF8:testGermanCharactersToLower()
 	local input = UTF8.ToCodePoints("ÄÖÜß")
 	local expected = UTF8.ToCodePoints("äöüß")
-	local result = UTF8.ToLower(input)
+	local result = Unicode.ToLower(input)
 	luaunit.assertEquals(result, expected)
 end
 
@@ -73,7 +74,7 @@ function TestUTF8:TestToLower()
 	for _, testCase in ipairs(testCases) do
 		local input = UTF8.ToCodePoints(testCase.input)
 		local expected = UTF8.ToCodePoints(testCase.expected)
-		local actual = UTF8.ToLower(input)
+		local actual = Unicode.ToLower(input)
 		luaunit.assertEquals(actual, expected, testCase.name)
 	end
 end

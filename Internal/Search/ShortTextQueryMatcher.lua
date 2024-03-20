@@ -61,16 +61,7 @@ local function ShiftMatchRangesForUTF8(textCodePoints, matchRanges)
 		if matchRanges[matchIndex].from == i then
 			newMatchRanges[matchIndex] = { from = matchRanges[matchIndex].from + offset }
 		end
-		local codePoint = textCodePoints[i]
-		if codePoint < 0x80 then
-			-- one byte character
-		elseif codePoint < 0x800 then
-			offset = offset + 1
-		elseif codePoint < 0x10000 then
-			offset = offset + 2
-		elseif codePoint < 0x200000 then
-			offset = offset + 3
-		end
+		offset = offset + ns.UTF8.CodePointNumBytes(textCodePoints[i]) - 1
 		if matchRanges[matchIndex].to == i then
 			newMatchRanges[matchIndex].to = matchRanges[matchIndex].to + offset
 			matchIndex = matchIndex + 1
@@ -100,7 +91,7 @@ function export.MatchesQuery(queryCodePoints, textCodePoints)
 		local char = queryCodePoints[i]
 		local index
 		for j = prevIndex + 1, #textCodePoints do
-			if textCodePoints[j] >= 0x80 then
+			if ns.UTF8.CodePointNumBytes(textCodePoints[j]) > 1 then
 				hasMultibyteCharacters = true
 			end
 			if textCodePoints[j] == char then

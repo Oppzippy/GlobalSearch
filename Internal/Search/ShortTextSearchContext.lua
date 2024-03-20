@@ -15,7 +15,7 @@ local function CreateSearchContextAsync(queryMatcher, items)
 	local itemNameCodePoints = {}
 	for i = 1, #items do
 		local item = items[i]
-		itemNameCodePoints[item] = ns.UTF8.ToLower(ns.UTF8.ToCodePoints(item.name))
+		itemNameCodePoints[item] = ns.Unicode.ToLower(ns.UTF8.ToCodePoints(item.name))
 		if i % 16 == 0 then
 			coroutine.yield()
 		end
@@ -33,7 +33,7 @@ end
 ---@return SearchContextItem[]
 function ShortTextSearchContextPrototype:Search(query)
 	local items
-	local queryCodePoints = ns.UTF8.ToLower(ns.UTF8.ToCodePoints(query))
+	local queryCodePoints = ns.Unicode.ToLower(ns.UTF8.ToCodePoints(query))
 	-- If the old query matches the new query, the new query must be a subset, so we can reuse the results and filter them.
 	if self.prevResults and self.prevQueryCodePoints and #self.prevQueryCodePoints > 0 and self.queryMatcher(self.prevQueryCodePoints, queryCodePoints) then
 		items = {}
