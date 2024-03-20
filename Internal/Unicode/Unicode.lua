@@ -51,7 +51,7 @@ do
 		{ from = 0x4D0, to = 0x4FF, evenOddFilter = "evensOnly", map = add1 },
 		-- Ӂ-ӎ
 		{ from = 0x4C1, to = 0x4CE, evenOddFilter = "oddsOnly",  map = add1 },
-	})
+	}, "table")
 
 	---@param codePoints integer[]
 	---@return integer[]
