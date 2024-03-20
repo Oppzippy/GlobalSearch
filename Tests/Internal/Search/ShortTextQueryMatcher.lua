@@ -8,8 +8,8 @@ TestShortTextQueryMatcher = {}
 ---@param text string
 local function matchesQuery(query, text)
 	return ns.ShortTextQueryMatcher.MatchesQuery(
-		ns.utf8ToCodePoints(query),
-		ns.utf8ToCodePoints(text)
+		ns.UTF8.ToCodePoints(query),
+		ns.UTF8.ToCodePoints(text)
 	)
 end
 

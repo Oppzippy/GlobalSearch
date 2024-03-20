@@ -1,10 +1,14 @@
 ---@class ns
 local ns = select(2, ...)
 
+---@class UTF8
+local UTF8 = {}
+ns.UTF8 = UTF8
+
 -- Function to convert UTF-8 string to a table of code points
 ---@param utf8String string
 ---@return integer[]
-function ns.utf8ToCodePoints(utf8String)
+function UTF8.ToCodePoints(utf8String)
 	local codepoints = {}
 	local i = 1
 
@@ -38,7 +42,7 @@ end
 
 ---@param codepoints integer[]
 ---@return string
-function ns.codePointsToUtf8(codepoints)
+function UTF8.FromCodePoints(codepoints)
 	local utf8_chars = {}
 
 	for _, code_point in ipairs(codepoints) do
@@ -67,7 +71,7 @@ end
 -- TODO see if I can find an existing table for case conversions. I only need to cover the languages WoW uses.
 ---@param codePoints integer[]
 ---@return integer[]
-function ns.utf8ToLower(codePoints)
+function UTF8.ToLower(codePoints)
 	local newCodePoints = {}
 	for i = 1, #codePoints do
 		local codePoint = codePoints[i]
