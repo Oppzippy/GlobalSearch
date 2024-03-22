@@ -12,10 +12,13 @@ function EmotesSearchProvider:Fetch()
 	ChatFrame_ImportAllListsToHash()
 	local items = {}
 	for cmd, emote in next, hash_EmoteTokenList do
-		local readableName = cmd:sub(2, 2) .. cmd:sub(3):lower()
+		local codePoints = ns.UTF8.ToCodePoints(cmd)
+		table.remove(codePoints, 1) -- strip preceeding slash
+		codePoints[1] = ns.Unicode.CharToUpper(codePoints[1])
+		local name = ns.UTF8.FromCodePoints(codePoints)
 		items[#items + 1] = {
 			id = emote,
-			name = readableName,
+			name = name,
 			texture = 1019848, -- Interface/GossipFrame/ChatBubbleGossipIcon
 			action = function()
 				DoEmote(emote)

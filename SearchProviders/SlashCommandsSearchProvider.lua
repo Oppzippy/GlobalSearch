@@ -29,9 +29,10 @@ function SlashCommandsSearchProvider:Fetch()
 
 	local items = {}
 	for command in next, commands do
+		local lowercaseCommand = ns.UTF8.FromCodePoints(ns.Unicode.ToLower(ns.UTF8.ToCodePoints(command)))
 		items[#items + 1] = {
 			id = command,
-			name = command:lower(),
+			name = lowercaseCommand,
 			texture = 136243, -- Interface/Icons/Trade_Engineering
 			macroText = command,
 		}

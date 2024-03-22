@@ -56,25 +56,35 @@ function TestUTF8:TestGermanCharactersToLower()
 	luaunit.assertEquals(result, expected)
 end
 
-function TestUTF8:TestToLower()
-	local testCases = {
-		{
-			name = "Latin-1 Supplement",
-			input = "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞß",
-			expected = "àáâãäåæçèéêëìíîïðñòóôõö×øùúûüýþß"
-		},
-		{
-			name = "Latin Extended A",
-			input =
-			"ĀĂĄĆĈĊČĎĐĒĔĖĘĚĜĞĠĢĤĦĨĪĬĮİĲĴĶĹĻĽĿŁŃŅŇŊŌŎŐŒŔŖŘŚŜŞŠŢŤŦŨŪŬŮŰŲŴŶŸŹŻŽ",
-			expected =
-			"āăąćĉċčďđēĕėęěĝğġģĥħĩīĭįİĳĵķĺļľŀłńņňŋōŏőœŕŗřśŝşšţťŧũūŭůűųŵŷÿźżž",
-		}
+local caseConversionTestCases = {
+	{
+		name = "Latin-1 Supplement",
+		uppercase = "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞß",
+		lowercase = "àáâãäåæçèéêëìíîïðñòóôõö×øùúûüýþß"
+	},
+	{
+		name = "Latin Extended A",
+		uppercase =
+		"ĀĂĄĆĈĊČĎĐĒĔĖĘĚĜĞĠĢĤĦĨĪĬĮİĲĴĶĹĻĽĿŁŃŅŇŊŌŎŐŒŔŖŘŚŜŞŠŢŤŦŨŪŬŮŰŲŴŶŸŹŻŽ",
+		lowercase =
+		"āăąćĉċčďđēĕėęěĝğġģĥħĩīĭįİĳĵķĺļľŀłńņňŋōŏőœŕŗřśŝşšţťŧũūŭůűųŵŷÿźżž",
 	}
-	for _, testCase in ipairs(testCases) do
-		local input = UTF8.ToCodePoints(testCase.input)
-		local expected = UTF8.ToCodePoints(testCase.expected)
+}
+
+function TestUTF8:TestToLower()
+	for _, testCase in ipairs(caseConversionTestCases) do
+		local input = UTF8.ToCodePoints(testCase.uppercase)
+		local expected = UTF8.ToCodePoints(testCase.lowercase)
 		local actual = Unicode.ToLower(input)
+		luaunit.assertEquals(actual, expected, testCase.name)
+	end
+end
+
+function TestUTF8:TestToUpper()
+	for _, testCase in ipairs(caseConversionTestCases) do
+		local input = UTF8.ToCodePoints(testCase.lowercase)
+		local expected = UTF8.ToCodePoints(testCase.uppercase)
+		local actual = Unicode.ToUpper(input)
 		luaunit.assertEquals(actual, expected, testCase.name)
 	end
 end

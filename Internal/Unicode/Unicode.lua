@@ -22,7 +22,7 @@ do
 	local add32 = add(32)
 
 	-- TODO see if I can find an existing table for case conversions. I only need to cover the languages WoW uses.
-	local mapToLowercase = ns.Unicode.CreateMatcher({
+	local mapToLowercase, mapToUppercase = ns.Unicode.CreateBidirectionalMatcherTable({
 		-- A-Z
 		{ from = 0x41,  to = 0x5A,  map = add32 },
 		-- À-Þ except for ×
@@ -51,7 +51,7 @@ do
 		{ from = 0x4D0, to = 0x4FF, evenOddFilter = "evensOnly", map = add1 },
 		-- Ӂ-ӎ
 		{ from = 0x4C1, to = 0x4CE, evenOddFilter = "oddsOnly",  map = add1 },
-	}, "table")
+	})
 
 	---@param codePoints integer[]
 	---@return integer[]
@@ -62,5 +62,23 @@ do
 			newCodePoints[i] = mapToLowercase(codePoint) or codePoint
 		end
 		return newCodePoints
+	end
+
+	--
+	---@param codePoints integer[]
+	---@return integer[]
+	function Unicode.ToUpper(codePoints)
+		local newCodePoints = {}
+		for i = 1, #codePoints do
+			local codePoint = codePoints[i]
+			newCodePoints[i] = mapToUppercase(codePoint) or codePoint
+		end
+		return newCodePoints
+	end
+
+	---@param codePoint integer
+	---@return integer
+	function Unicode.CharToUpper(codePoint)
+		return mapToUppercase(codePoint)
 	end
 end
