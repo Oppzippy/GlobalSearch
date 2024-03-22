@@ -153,14 +153,14 @@ end
 
 --- Good when the total number of selectable characters isn't too big
 ---@param ranges UnicodeRange[]
----@return fun(codePoint: integer): any
-local function CreateMatcherTable(ranges)
+---@return (fun(codePoint: integer): any), table<integer, any>
+function Unicode.CreateMatcherTable(ranges)
 	local compiledRanges = compileRanges(ranges)
 	local t = rangesToTable(compiledRanges)
 
 	return function(codePoint)
 		return t[codePoint]
-	end
+	end, t
 end
 
 ---@param ranges UnicodeRange[]
@@ -171,13 +171,14 @@ function Unicode.CreateMatcher(ranges, impl)
 	elseif impl == "codeGeneration" then
 		return CreateMatcherCodeGeneration(ranges)
 	elseif impl == "table" then
-		return CreateMatcherTable(ranges)
+		local matcher = Unicode.CreateMatcherTable(ranges)
+		return matcher
 	end
 	error("invalid impl " .. impl)
 end
 
 ---@param ranges UnicodeRange[]
----@return (fun(codePoint: integer): any), (fun(value: any): integer)
+---@return (fun(codePoint: integer): any), (fun(value: any): integer), table<integer, any>, table<any, integer>
 function Unicode.CreateBidirectionalMatcherTable(ranges)
 	local compiledRanges = compileRanges(ranges)
 	local forwards = rangesToTable(compiledRanges)
@@ -190,5 +191,5 @@ function Unicode.CreateBidirectionalMatcherTable(ranges)
 		return forwards[codePoint]
 	end, function(value)
 		return backwards[value]
-	end
+	end, forwards, backwards
 end

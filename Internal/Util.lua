@@ -90,6 +90,38 @@ function Util.ReverseTable(t)
 	return reversed
 end
 
+---@param left unknown[]
+---@param right unknown[]
+---@return boolean
+function Util.CompareTables(left, right)
+	local minLength = math.min(#left, #right)
+	for i = 1, minLength do
+		local leftValue = left[i]
+		local rightValue = right[i]
+		if leftValue < rightValue then
+			return true
+		end
+		if leftValue > rightValue then
+			return false
+		end
+	end
+	return #left < #right
+end
+
+---@param haystack unknown[]
+---@param needle unknown[]
+---@return boolean
+function Util.TableStartsWith(haystack, needle)
+	if #needle > #haystack then return false end
+
+	for i = 1, #needle do
+		if needle[i] ~= haystack[i] then
+			return false
+		end
+	end
+	return true
+end
+
 if ns then
 	ns.Util = Util
 end

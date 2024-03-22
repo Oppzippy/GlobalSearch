@@ -5,39 +5,42 @@ local ns = select(2, ...)
 local UTF8 = {}
 ns.UTF8 = UTF8
 
+local stringByte = string.byte
+local band, rshift, lshift, bor = bit.band, bit.rshift, bit.lshift, bit.bor
 -- Function to convert UTF-8 string to a table of code points
 ---@param utf8String string
 ---@return integer[]
 function UTF8.ToCodePoints(utf8String)
-	local codepoints = {}
+	local codePoints = {}
 	local i = 1
+	local stringLength = #utf8String
 
-	while i <= #utf8String do
-		local byte = string.byte(utf8String, i)
+	while i <= stringLength do
+		local byte = stringByte(utf8String, i)
 
 		-- Check for multi-byte characters
 		local numBytes = 1
 		if byte >= 0xC0 and byte <= 0xFD then
 			local mask = 0x40
 			local count = 1
-			while bit.band(byte, mask) ~= 0 do
-				mask = bit.rshift(mask, 1)
+			while band(byte, mask) ~= 0 do
+				mask = rshift(mask, 1)
 				count = count + 1
 			end
 			numBytes = count
 		end
 
 		-- Extract code point from multi-byte character
-		local codePoint = bit.band(byte, bit.rshift(0xFF, numBytes))
+		local codePoint = band(byte, rshift(0xFF, numBytes))
 		for j = 2, numBytes do
-			codePoint = bit.bor(bit.lshift(codePoint, 6), bit.band(string.byte(utf8String, i + j - 1), 0x3F))
+			codePoint = bor(codePoint * 64, stringByte(utf8String, i + j - 1) - 0x80)
 		end
 
-		table.insert(codepoints, codePoint)
+		codePoints[#codePoints + 1] = codePoint
 		i = i + numBytes
 	end
 
-	return codepoints
+	return codePoints
 end
 
 ---@param codePoints integer[]
