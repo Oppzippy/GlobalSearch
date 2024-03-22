@@ -79,6 +79,6 @@ do
 	---@param codePoint integer
 	---@return integer
 	function Unicode.CharToUpper(codePoint)
-		return mapToUppercase(codePoint)
+		return mapToUppercase(codePoint) or codePoint
 	end
 end
