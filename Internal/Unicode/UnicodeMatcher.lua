@@ -136,21 +136,24 @@ local function CreateMatcherTable(ranges)
 			if range.evenOddFilter then
 				local targetRemainder = range.evenOddFilter == "evensOnly" and 0 or 1
 				if i % 2 == targetRemainder then
-					t[i] = range.map or true
+					if range.map then
+						t[i] = range.map(i)
+					else
+						t[i] = true
+					end
 				end
 			else
-				t[i] = range.map or true
+				if range.map then
+					t[i] = range.map(i)
+				else
+					t[i] = true
+				end
 			end
 		end
 	end
 
 	return function(codePoint)
-		local result = t[codePoint]
-		if result == true then
-			return codePoint
-		elseif result then
-			return result(codePoint)
-		end
+		return t[codePoint]
 	end
 end
 
