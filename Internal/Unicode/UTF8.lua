@@ -16,7 +16,7 @@ function UTF8.ToCodePoints(utf8String)
 		local byte = string.byte(utf8String, i)
 
 		-- Check for multi-byte characters
-		local num_bytes = 1
+		local numBytes = 1
 		if byte >= 0xC0 and byte <= 0xFD then
 			local mask = 0x40
 			local count = 1
@@ -24,48 +24,48 @@ function UTF8.ToCodePoints(utf8String)
 				mask = bit.rshift(mask, 1)
 				count = count + 1
 			end
-			num_bytes = count
+			numBytes = count
 		end
 
 		-- Extract code point from multi-byte character
-		local code_point = bit.band(byte, bit.rshift(0xFF, num_bytes))
-		for j = 2, num_bytes do
-			code_point = bit.bor(bit.lshift(code_point, 6), bit.band(string.byte(utf8String, i + j - 1), 0x3F))
+		local codePoint = bit.band(byte, bit.rshift(0xFF, numBytes))
+		for j = 2, numBytes do
+			codePoint = bit.bor(bit.lshift(codePoint, 6), bit.band(string.byte(utf8String, i + j - 1), 0x3F))
 		end
 
-		table.insert(codepoints, code_point)
-		i = i + num_bytes
+		table.insert(codepoints, codePoint)
+		i = i + numBytes
 	end
 
 	return codepoints
 end
 
----@param codepoints integer[]
+---@param codePoints integer[]
 ---@return string
-function UTF8.FromCodePoints(codepoints)
-	local utf8_chars = {}
+function UTF8.FromCodePoints(codePoints)
+	local utf8Chars = {}
 
-	for _, code_point in ipairs(codepoints) do
-		if code_point < 0x80 then
-			table.insert(utf8_chars, string.char(code_point))
-		elseif code_point < 0x800 then
-			table.insert(utf8_chars, string.char(0xC0 + bit.rshift(code_point, 6)))
-			table.insert(utf8_chars, string.char(0x80 + bit.band(code_point, 0x3F)))
-		elseif code_point < 0x10000 then
-			table.insert(utf8_chars, string.char(0xE0 + bit.rshift(code_point, 12)))
-			table.insert(utf8_chars, string.char(0x80 + bit.band(bit.rshift(code_point, 6), 0x3F)))
-			table.insert(utf8_chars, string.char(0x80 + bit.band(code_point, 0x3F)))
-		elseif code_point < 0x200000 then
-			table.insert(utf8_chars, string.char(0xF0 + bit.rshift(code_point, 18)))
-			table.insert(utf8_chars, string.char(0x80 + bit.band(bit.rshift(code_point, 12), 0x3F)))
-			table.insert(utf8_chars, string.char(0x80 + bit.band(bit.rshift(code_point, 6), 0x3F)))
-			table.insert(utf8_chars, string.char(0x80 + bit.band(code_point, 0x3F)))
+	for _, codePoint in ipairs(codePoints) do
+		if codePoint < 0x80 then
+			table.insert(utf8Chars, string.char(codePoint))
+		elseif codePoint < 0x800 then
+			table.insert(utf8Chars, string.char(0xC0 + bit.rshift(codePoint, 6)))
+			table.insert(utf8Chars, string.char(0x80 + bit.band(codePoint, 0x3F)))
+		elseif codePoint < 0x10000 then
+			table.insert(utf8Chars, string.char(0xE0 + bit.rshift(codePoint, 12)))
+			table.insert(utf8Chars, string.char(0x80 + bit.band(bit.rshift(codePoint, 6), 0x3F)))
+			table.insert(utf8Chars, string.char(0x80 + bit.band(codePoint, 0x3F)))
+		elseif codePoint < 0x200000 then
+			table.insert(utf8Chars, string.char(0xF0 + bit.rshift(codePoint, 18)))
+			table.insert(utf8Chars, string.char(0x80 + bit.band(bit.rshift(codePoint, 12), 0x3F)))
+			table.insert(utf8Chars, string.char(0x80 + bit.band(bit.rshift(codePoint, 6), 0x3F)))
+			table.insert(utf8Chars, string.char(0x80 + bit.band(codePoint, 0x3F)))
 		else
 			-- Invalid Unicode code point, skip it
 		end
 	end
 
-	return table.concat(utf8_chars)
+	return table.concat(utf8Chars)
 end
 
 ---@param codePoint integer

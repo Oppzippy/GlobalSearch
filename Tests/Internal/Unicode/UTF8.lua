@@ -35,21 +35,21 @@ function TestUTF8:TestCyrillicToLowerCase()
 	luaunit.assertItemsEquals(expected_output, output)
 end
 
-function TestUTF8:testSpanishCharactersToLower()
+function TestUTF8:TestSpanishCharactersToLower()
 	local input = UTF8.ToCodePoints("ÁÉÍÓÚÑ")
 	local expected = UTF8.ToCodePoints("áéíóúñ")
 	local result = Unicode.ToLower(input)
 	luaunit.assertEquals(result, expected)
 end
 
-function TestUTF8:testFrenchCharactersToLower()
+function TestUTF8:TestFrenchCharactersToLower()
 	local input = UTF8.ToCodePoints("ÀÂÆÇÉÈÊËÎÏÔŒÙÛÜŸ")
 	local expected = UTF8.ToCodePoints("àâæçéèêëîïôœùûüÿ")
 	local result = Unicode.ToLower(input)
 	luaunit.assertEquals(result, expected)
 end
 
-function TestUTF8:testGermanCharactersToLower()
+function TestUTF8:TestGermanCharactersToLower()
 	local input = UTF8.ToCodePoints("ÄÖÜß")
 	local expected = UTF8.ToCodePoints("äöüß")
 	local result = Unicode.ToLower(input)
