@@ -89,7 +89,6 @@ end
 
 --- This function is a hot spot, so it must be very optimized. For this reason, it calls no other functions
 --- (they were all inlined), and data is precomputed when practical.
----@private
 ---@param value unknown
 ---@param text string
 function FullTextWordIndexPrototype:AddString(value, text)
