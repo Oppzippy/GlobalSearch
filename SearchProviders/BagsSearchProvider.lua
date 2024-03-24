@@ -25,23 +25,25 @@ function BagsSearchProvider:Fetch()
 	return coroutine.wrap(function(...)
 		for itemID in next, self:GetItemSet() do
 			local itemName, itemLink, _, _, _, _, _, _, _, icon = GetItemInfo(itemID)
-			local spellName = GetItemSpell(itemLink)
-			if itemName and spellName then
-				coroutine.yield({
-					id = itemID,
-					name = itemName,
-					extraSearchText = tooltipStorage:GetItemByID(itemID),
-					texture = icon,
-					macroText = "/use " .. itemName,
-					---@param tooltip GameTooltip
-					tooltip = function(tooltip)
-						tooltip:SetItemByID(itemID)
-					end,
-					pickup = function()
-						PickupItem(itemLink)
-					end,
-					hyperlink = itemLink,
-				})
+			if itemName then
+				local spellName = GetItemSpell(itemLink)
+				if spellName then
+					coroutine.yield({
+						id = itemID,
+						name = itemName,
+						extraSearchText = tooltipStorage:GetItemByID(itemID),
+						texture = icon,
+						macroText = "/use " .. itemName,
+						---@param tooltip GameTooltip
+						tooltip = function(tooltip)
+							tooltip:SetItemByID(itemID)
+						end,
+						pickup = function()
+							PickupItem(itemLink)
+						end,
+						hyperlink = itemLink,
+					})
+				end
 			end
 		end
 	end)
