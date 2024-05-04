@@ -58,7 +58,7 @@ do
 		frame:ApplyBackdrop()
 
 		frame:SetJustifyH("CENTER")
-		frame:SetJustifyV("CENTER")
+		frame:SetJustifyV("MIDDLE")
 
 		frame:SetScript("OnEscapePressed", onEscapePressed)
 		frame:SetScript("OnArrowPressed", onArrowPressed)
