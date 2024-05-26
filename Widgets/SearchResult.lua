@@ -108,7 +108,7 @@ do
 		frame:EnableMouse(true)
 		frame:RegisterForDrag("LeftButton")
 		frame:SetScript("OnDragStart", onDragStart)
-		frame:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+		frame:RegisterForClicks("LeftButtonDown", "LeftButtonUp", "RightButtonDown", "RightButtonUp")
 
 		-- Unmodified left click
 		frame:SetAttribute("type1", "macro")
