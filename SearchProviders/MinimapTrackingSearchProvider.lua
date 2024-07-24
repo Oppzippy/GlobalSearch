@@ -7,15 +7,16 @@ local L = AceLocale:GetLocale("GlobalSearch")
 ---@class MinimapTrackingSearchProvider : SearchProvider
 local MinimapTrackingSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.minimap_tracking)
 
-local SetTracking = SetTracking or C_Minimap.SetTracking
-local GetTrackingInfo = GetTrackingInfo or C_Minimap.GetTrackingInfo
-local GetNumTrackingTypes = GetNumTrackingTypes or C_Minimap.GetNumTrackingTypes
+local GetTrackingInfo = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and C_Minimap.GetTrackingInfo or function(index)
+	local info = C_Minimap.GetTrackingInfo(index)
+	return info.name, info.texture, info.active, info.type, info.subType, info.spellID
+end
 
 ---@return SearchItem[]
 function MinimapTrackingSearchProvider:Fetch()
 	---@type SearchItem[]
 	local items = {}
-	for i = 1, GetNumTrackingTypes() do
+	for i = 1, C_Minimap.GetNumTrackingTypes() do
 		local name, texture = GetTrackingInfo(i)
 		items[i] = {
 			id = name,
@@ -23,7 +24,7 @@ function MinimapTrackingSearchProvider:Fetch()
 			texture = texture,
 			action = function()
 				local _, _, active = GetTrackingInfo(i)
-				SetTracking(i, not active)
+				C_Minimap.SetTracking(i, not active)
 			end,
 			-- The items are cached so tooltip needs to be a function in order to be updated when
 			-- toggling tracking.

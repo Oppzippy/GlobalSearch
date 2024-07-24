@@ -9,9 +9,6 @@ local L = AceLocale:GetLocale("GlobalSearch")
 local GlobalSearch = AceAddon:GetAddon("GlobalSearch")
 ---@cast GlobalSearch GlobalSearch
 
-local GetContainerNumSlots = GetContainerNumSlots or C_Container.GetContainerNumSlots
-local GetContainerItemID = GetContainerItemID or C_Container.GetContainerItemID
-
 ---@class BagsSearchProvider : SearchProvider, AceEvent-3.0
 local BagsSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.bags)
 BagsSearchProvider.description = L.bags_search_provider_desc
@@ -24,9 +21,9 @@ function BagsSearchProvider:Fetch()
 
 	return coroutine.wrap(function(...)
 		for itemID in next, self:GetItemSet() do
-			local itemName, itemLink, _, _, _, _, _, _, _, icon = GetItemInfo(itemID)
+			local itemName, itemLink, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(itemID)
 			if itemName then
-				local spellName = GetItemSpell(itemLink)
+				local spellName = C_Item.GetItemSpell(itemLink)
 				if spellName then
 					coroutine.yield({
 						id = itemID,
@@ -39,7 +36,7 @@ function BagsSearchProvider:Fetch()
 							tooltip:SetItemByID(itemID)
 						end,
 						pickup = function()
-							PickupItem(itemLink)
+							C_Item.PickupItem(itemLink)
 						end,
 						hyperlink = itemLink,
 					})
@@ -61,8 +58,8 @@ end
 function BagsSearchProvider:IterateBagItems()
 	return coroutine.wrap(function()
 		for bagID = 0, NUM_BAG_SLOTS do
-			for slot = 1, GetContainerNumSlots(bagID) do
-				local itemID = GetContainerItemID(bagID, slot)
+			for slot = 1, C_Container.GetContainerNumSlots(bagID) do
+				local itemID = C_Container.GetContainerItemID(bagID, slot)
 				if itemID then
 					coroutine.yield(itemID)
 				end

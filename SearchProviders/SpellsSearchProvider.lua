@@ -8,6 +8,50 @@ local L = AceLocale:GetLocale("GlobalSearch")
 
 local providerID = "GlobalSearch_Spells"
 
+-- The War Within compatibility
+-- C_Spell
+local IsPassiveSpell = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and IsPassiveSpell or C_Spell.IsSpellPassive
+local GetSpellInfo = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and GetSpellInfo or function(spellID)
+	local spellInfo = C_Spell.GetSpellInfo(spellID)
+	return spellInfo.name, nil, spellInfo.iconID, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID,
+		spellInfo.originalIconID
+end
+local GetSpellSubtext = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and GetSpellSubtext or C_Spell.GetSpellSubtext
+local GetSpellDescription = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and GetSpellDescription or C_Spell
+	.GetSpellDescription
+local PickupSpell = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and PickupSpell or C_Spell.PickupSpell
+local GetSpellLink = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and GetSpellLink or C_Spell.GetSpellLink
+-- C_SpellBook
+local GetSpellBookItemInfo = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and GetSpellBookItemInfo or function(index, bookType)
+	if bookType == BOOKTYPE_SPELL then
+		bookType = 0
+	else
+		bookType = 1
+	end
+	local itemInfo = C_SpellBook.GetSpellBookItemInfo(index, bookType)
+	local itemType
+	if itemInfo.itemType == 1 then
+		itemType = "SPELL"
+	elseif itemInfo.itemType == 2 then
+		itemType = "FUTURESPELL"
+	elseif itemInfo.itemType == 3 then
+		itemType = "PETACTION"
+	elseif itemInfo.itemType == 4 then
+		itemType = "FLYOUT"
+	end
+	return itemType, itemInfo.actionID
+end
+local GetSpellBookItemName = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and GetSpellBookItemName or function(index, bookType)
+	if bookType == BOOKTYPE_SPELL then
+		bookType = 0
+	else
+		bookType = 1
+	end
+	local name, subName = C_SpellBook.GetSpellBookItemName(index, bookType)
+	local itemInfo = C_SpellBook.GetSpellBookItemInfo(index, bookType)
+	return name, subName, itemInfo.spellID
+end
+
 ---@class SpellsSearchProvider : SearchProvider, AceEvent-3.0
 local SpellsSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.spells)
 SpellsSearchProvider.description = L.spells_search_provider_desc
@@ -101,7 +145,7 @@ function SpellsSearchProvider:IterateSpellTabs()
 		local numTabs = GetNumSpellTabs()
 		for i = 1, numTabs do
 			local _, _, offset, numEntries, _, offspecID = GetSpellTabInfo(i)
-			if offspecID == 0 then
+			if not offspecID or offspecID == 0 then
 				coroutine.yield(i, offset, numEntries)
 			end
 		end
