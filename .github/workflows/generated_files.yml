@@ -18,19 +18,3 @@ jobs:
           commit-message: Update secure slash commands
           labels: chore
           delete-branch: true
-
-  update-interface-options:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Update interface options
-        run: ./Scripts/update-interface-options.py > Generated/InterfaceOptions.lua
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
-        with:
-          branch: actions/update-interface-options
-          title: Update interface options
-          commit-message: Update interface options
-          labels: chore
-          delete-branch: true

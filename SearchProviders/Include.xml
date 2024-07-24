@@ -6,7 +6,6 @@
 	<Script file="EncounterJournalSearchProvider.lua" />
 	<Script file="EquipmentSetsSearchProvider.lua" />
 	<Script file="InstanceOptionsSearchProvider.lua" />
-	<Script file="InterfaceOptionsSearchProvider.lua" />
 	<Script file="MacrosSearchProvider.lua" />
 	<Script file="MapsSearchProvider.lua" />
 	<Script file="MinimapTrackingSearchProvider.lua" />
