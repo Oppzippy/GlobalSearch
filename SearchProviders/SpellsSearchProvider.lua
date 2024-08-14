@@ -1,3 +1,5 @@
+if WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE then return end
+
 ---@class ns
 local ns = select(2, ...)
 
@@ -8,50 +10,6 @@ local L = AceLocale:GetLocale("GlobalSearch")
 
 local providerID = "GlobalSearch_Spells"
 
--- The War Within compatibility
--- C_Spell
-local IsPassiveSpell = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and IsPassiveSpell or C_Spell.IsSpellPassive
-local GetSpellInfo = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and GetSpellInfo or function(spellID)
-	local spellInfo = C_Spell.GetSpellInfo(spellID)
-	return spellInfo.name, nil, spellInfo.iconID, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID,
-		spellInfo.originalIconID
-end
-local GetSpellSubtext = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and GetSpellSubtext or C_Spell.GetSpellSubtext
-local GetSpellDescription = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and GetSpellDescription or C_Spell
-	.GetSpellDescription
-local PickupSpell = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and PickupSpell or C_Spell.PickupSpell
-local GetSpellLink = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and GetSpellLink or C_Spell.GetSpellLink
--- C_SpellBook
-local GetSpellBookItemInfo = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and GetSpellBookItemInfo or function(index, bookType)
-	if bookType == BOOKTYPE_SPELL then
-		bookType = 0
-	else
-		bookType = 1
-	end
-	local itemInfo = C_SpellBook.GetSpellBookItemInfo(index, bookType)
-	local itemType
-	if itemInfo.itemType == 1 then
-		itemType = "SPELL"
-	elseif itemInfo.itemType == 2 then
-		itemType = "FUTURESPELL"
-	elseif itemInfo.itemType == 3 then
-		itemType = "PETACTION"
-	elseif itemInfo.itemType == 4 then
-		itemType = "FLYOUT"
-	end
-	return itemType, itemInfo.actionID
-end
-local GetSpellBookItemName = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and GetSpellBookItemName or function(index, bookType)
-	if bookType == BOOKTYPE_SPELL then
-		bookType = 0
-	else
-		bookType = 1
-	end
-	local name, subName = C_SpellBook.GetSpellBookItemName(index, bookType)
-	local itemInfo = C_SpellBook.GetSpellBookItemInfo(index, bookType)
-	return name, subName, itemInfo.spellID
-end
-
 ---@class SpellsSearchProvider : SearchProvider, AceEvent-3.0
 local SpellsSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.spells)
 SpellsSearchProvider.description = L.spells_search_provider_desc
@@ -61,18 +19,18 @@ AceEvent:Embed(SpellsSearchProvider)
 function SpellsSearchProvider:Fetch()
 	return coroutine.wrap(function(...)
 		for spellID in self:IterateKnownSpells() do
-			if not IsPassiveSpell(spellID) then
-				local name, _, icon = GetSpellInfo(spellID)
-				local subtext = GetSpellSubtext(spellID)
-				local displayName, castName = name, name
+			if not C_Spell.IsSpellPassive(spellID) then
+				local spellInfo = C_Spell.GetSpellInfo(spellID)
+				local subtext = C_Spell.GetSpellSubtext(spellID)
+				local displayName, castName = spellInfo.name, spellInfo.name
 
 				if subtext and subtext ~= "" then
-					displayName = string.format("%s (%s)", name, subtext)
-					castName = string.format("%s(%s)", name, subtext)
+					displayName = string.format("%s (%s)", spellInfo.name, subtext)
+					castName = string.format("%s(%s)", spellInfo.name, subtext)
 				end
 
 				---@type string?
-				local description = GetSpellDescription(spellID)
+				local description = C_Spell.GetSpellDescription(spellID)
 				if description and description ~= "" then
 					description = ns.Util.StripEscapeSequences(description)
 				else
@@ -82,7 +40,7 @@ function SpellsSearchProvider:Fetch()
 				coroutine.yield({
 					id = spellID,
 					name = displayName,
-					texture = icon,
+					texture = spellInfo.iconID,
 					extraSearchText = description,
 					---@param tooltip GameTooltip
 					tooltip = function(tooltip)
@@ -90,10 +48,10 @@ function SpellsSearchProvider:Fetch()
 					end,
 					macroText = "/cast " .. castName,
 					pickup = function()
-						PickupSpell(spellID)
+						C_Spell.PickupSpell(spellID)
 					end,
 					hyperlink = function()
-						return GetSpellLink(spellID)
+						return C_Spell.GetSpellLink(spellID)
 					end,
 				})
 			end
@@ -105,21 +63,20 @@ end
 function SpellsSearchProvider:IterateKnownSpells()
 	return coroutine.wrap(function()
 		local function yieldIndex(index)
-			local spellType, id = GetSpellBookItemInfo(index, BOOKTYPE_SPELL)
-			if spellType == "FLYOUT" then
-				for spellID in self:IterateFlyoutSpells(id) do
+			local info = C_SpellBook.GetSpellBookItemInfo(index, Enum.SpellBookSpellBank.Player)
+			if info.itemType == Enum.SpellBookItemType.Flyout then
+				for spellID in self:IterateFlyoutSpells(info.actionID) do
 					coroutine.yield(spellID)
 				end
 			else
-				local _, _, spellID = GetSpellBookItemName(index, BOOKTYPE_SPELL)
-				if spellID and IsSpellKnownOrOverridesKnown(spellID) then
-					coroutine.yield(spellID)
+				if info.spellID and IsSpellKnownOrOverridesKnown(info.spellID) then
+					coroutine.yield(info.spellID)
 				end
 			end
 		end
 
 		-- Spells
-		for _, offset, numEntries in self:IterateSpellTabs() do
+		for _, offset, numEntries in self:IterateSkillLines() do
 			for index = offset + 1, offset + numEntries do
 				yieldIndex(index)
 			end
@@ -128,10 +85,10 @@ function SpellsSearchProvider:IterateKnownSpells()
 		-- Professions (retail)
 		-- Classic professions are in the general tab
 		if GetProfessions then
-			local professionTabIndexes = { GetProfessions() }
-			for _, tabIndex in next, professionTabIndexes do
-				local _, _, offset, numSlots = GetSpellTabInfo(tabIndex)
-				for index = offset + 1, offset + numSlots do
+			local professionSkillLines = { GetProfessions() }
+			for _, skillLineIndex in next, professionSkillLines do
+				local info = C_SpellBook.GetSpellBookSkillLineInfo(skillLineIndex)
+				for index = info.itemIndexOffset + 1, info.itemIndexOffset + info.numSpellBookItems do
 					yieldIndex(index)
 				end
 			end
@@ -139,14 +96,14 @@ function SpellsSearchProvider:IterateKnownSpells()
 	end)
 end
 
----@return fun(): tabIndex: number, tabStartOffset: number, numEntries: number
-function SpellsSearchProvider:IterateSpellTabs()
+---@return fun(): skillLineIndex: number, skillLineStartOffset: number, numEntries: number
+function SpellsSearchProvider:IterateSkillLines()
 	return coroutine.wrap(function()
-		local numTabs = GetNumSpellTabs()
-		for i = 1, numTabs do
-			local _, _, offset, numEntries, _, offspecID = GetSpellTabInfo(i)
-			if not offspecID or offspecID == 0 then
-				coroutine.yield(i, offset, numEntries)
+		local numSkillLines = C_SpellBook.GetNumSpellBookSkillLines()
+		for i = 1, numSkillLines do
+			local info = C_SpellBook.GetSpellBookSkillLineInfo(i)
+			if not info.offSpecID then
+				coroutine.yield(i, info.itemIndexOffset, info.numSpellBookItems)
 			end
 		end
 	end)
