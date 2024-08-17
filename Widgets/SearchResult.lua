@@ -108,18 +108,26 @@ do
 		frame:EnableMouse(true)
 		frame:RegisterForDrag("LeftButton")
 		frame:SetScript("OnDragStart", onDragStart)
-		frame:RegisterForClicks("LeftButtonDown", "LeftButtonUp", "RightButtonDown", "RightButtonUp")
+		frame:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+		-- Clicks should trigger on mouse up to allow for dragging.
+		-- Retail and classic behave differently with regards to triggering on key up when ActionButtonUseKeyDown is true
+		-- On retail, the button will not trigger in that condition. On classic, it will. Classic's behavior is what we
+		-- want, so retail requires a workaround.
+		-- https://github.com/BigWigsMods/WoWUI/blob/86aa39f0d7aa7b8a572b644d12581de3582707d0/AddOns/Blizzard_FrameXML/Mainline/SecureTemplates.lua#L643
+		frame:SetAttribute("pressAndHoldAction", "1")
+		-- classic should use the normal type attribute, retail should use the pressAndHold release one
+		local typeSuffix = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and "release" or ""
 
 		-- Unmodified left click
-		frame:SetAttribute("type1", "macro")
+		frame:SetAttribute("type" .. typeSuffix .. "1", "macro")
 
 		-- Unmodified right click
-		frame:SetAttribute("type2", "rightclick")
+		frame:SetAttribute("type" .. typeSuffix .. "2", "rightclick")
 		frame:SetAttribute("rightclick", "_rightclick")
 		frame:SetAttribute("_rightclick", onRightClick)
 
 		-- Shift left click
-		frame:SetAttribute("shift-type1", "hyperlink")
+		frame:SetAttribute("shift-type" .. typeSuffix .. "1", "hyperlink")
 		frame:SetAttribute("hyperlink", "_hyperlink")
 		frame:SetAttribute("_hyperlink", onHyperlink)
 
