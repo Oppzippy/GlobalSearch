@@ -295,7 +295,23 @@ function SearchUIPrototype:SetShowMouseoverTooltip(enabled)
 	self.showMouseoverTooltip = enabled
 end
 
-do
+-- TODO fully convert over to new menu API once classic supports it
+-- consider usage of DropdownButton
+if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+	function SearchUIPrototype:ShowContextMenu(menu)
+		local function generator(owner, rootDescription)
+			for _, item in ipairs(menu) do
+				if item.isTitle then
+					rootDescription:CreateTitle(item.text)
+				else
+					rootDescription:CreateButton(item.text, item.func)
+				end
+			end
+		end
+		-- TODO set parent so that menu hides if search results hide
+		MenuUtil.CreateContextMenu(UIParent, generator)
+	end
+else
 	local menuFrame = CreateFrame("Frame", "GlobalSearchResultMenuFrame", UIParent, "UIDropDownMenuTemplate")
 	function SearchUIPrototype:ShowContextMenu(menu)
 		EasyMenu(menu, menuFrame, "cursor", 0, 0, "MENU")
