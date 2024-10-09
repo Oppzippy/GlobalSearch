@@ -13,6 +13,9 @@ local addon = AceAddon:GetAddon("GlobalSearch")
 local module = addon:NewModule("Search", "AceEvent-3.0", "AceConsole-3.0")
 local searchExecute = CreateFrame("Button", "GlobalSearchExecuteButton", nil, "InsecureActionButtonTemplate")
 searchExecute:RegisterForClicks("AnyDown", "AnyUp")
+searchExecute:HookScript("OnClick", function()
+	module:OnClick(nil, module.searchUI:GetSelectedItem())
+end)
 
 function module:OnInitialize()
 	self.searchQuery = ""
@@ -28,6 +31,7 @@ function module:OnInitialize()
 	self.searchUI.RegisterCallback(self, "OnRightClick")
 	self.searchUI.RegisterCallback(self, "OnSelectNextPage")
 	self.searchUI.RegisterCallback(self, "OnSelectPreviousPage")
+	self.searchUI.RegisterCallback(self, "OnClick")
 
 	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnClose", "Hide")
 	self.searchUI.keybindingRegistry.RegisterCallback(self, "OnSelectNextItem")
@@ -206,8 +210,7 @@ function module:OnSelectionChanged(_, item)
 	if not item then return end
 
 	searchExecute:SetAttribute("type", "macro")
-	searchExecute:SetAttribute("macrotext",
-		self:GetMacroText(self.searchUI:GetSelectedItem(), self.searchUI:GetSelectedIndex()))
+	searchExecute:SetAttribute("macrotext", self.searchUI:GetSelectedItem().macroText)
 
 	SetOverrideBindingClick(searchExecute, true, "ENTER", "GlobalSearchExecuteButton")
 end
@@ -217,7 +220,7 @@ function module:OnRender(_, resultWidgets)
 	local leftBound = self.searchUI:GetPageBounds()
 	for i, resultWidget in ipairs(resultWidgets) do
 		local resultIndex = leftBound + i - 1
-		resultWidget:SetMacroText(self:GetMacroText(self.results[resultIndex].item, resultIndex))
+		resultWidget:SetMacroText(self.results[resultIndex].item.macroText)
 	end
 end
 
@@ -229,10 +232,15 @@ function module:ExecuteAction(resultIndex)
 	end
 end
 
-function module:OnMacroItemSelected(resultIndex)
+---@param _ unknown
+---@param item SearchItem
+function module:OnClick(_, item)
+	if item.action then
+		xpcall(item.action, geterrorhandler())
+	end
+
 	self:Hide()
 	local db = self:GetDB().profile
-	local item = self.results[resultIndex].item
 
 	if db.options.maxRecentItems == 0 then
 		db.recentItemsV2 = {}
@@ -271,27 +279,6 @@ function module:OnMacroItemSelected(resultIndex)
 		end
 		db.recentItemsV2 = newRecentItems
 	end
-end
-
----@param item SearchItem
----@param resultIndex integer
----@return string
-function module:GetMacroText(item, resultIndex)
-	local macroText = {
-		[[/run LibStub("AceAddon-3.0"):GetAddon("GlobalSearch"):GetModule("Search"):OnMacroItemSelected(]] ..
-		resultIndex ..
-		")",
-	}
-	if item.action then
-		macroText[#macroText + 1] =
-			[[/run LibStub("AceAddon-3.0"):GetAddon("GlobalSearch"):GetModule("Search"):ExecuteAction(]]
-			.. resultIndex .. ")"
-	elseif item.macroText then
-		macroText[#macroText + 1] = item.macroText
-	else
-		error(string.format("No action set for %s in %s", item.name, item.category))
-	end
-	return table.concat(macroText, "\n")
 end
 
 ---@param query string

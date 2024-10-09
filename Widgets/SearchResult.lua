@@ -96,6 +96,13 @@ do
 		frame.obj:Fire("OnRightClick")
 	end
 
+	local function onClick(frame, button)
+		-- unmodified left click only
+		if button == "LeftButton" and not (IsAltKeyDown() or IsShiftKeyDown() or IsControlKeyDown()) then
+			frame.obj:Fire("OnClick")
+		end
+	end
+
 	local function constructor()
 		local frame = CreateFrame("Button", nil, UIParent, "InsecureActionButtonTemplate,BackdropTemplate")
 		frame:Hide()
@@ -117,6 +124,8 @@ do
 		frame:SetAttribute("pressAndHoldAction", "1")
 		-- classic should use the normal type attribute, retail should use the pressAndHold release one
 		local typeSuffix = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and "release" or ""
+
+		frame:HookScript("OnClick", onClick)
 
 		-- Unmodified left click
 		frame:SetAttribute("type" .. typeSuffix .. "1", "macro")
