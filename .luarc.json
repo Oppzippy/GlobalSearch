@@ -109,6 +109,8 @@
         "MaximizeUIPanel",
         "GameTooltipHeaderText",
         "GameTooltipText",
-        "EasyMenu"
+        "EasyMenu",
+        "GetSpellLink",
+        "PickupSpell"
     ]
 }

@@ -11,6 +11,9 @@ local AceEvent = LibStub("AceEvent-3.0")
 local L = AceLocale:GetLocale("GlobalSearch")
 local addon = AceAddon:GetAddon("GlobalSearch")
 
+local PickupSpell = PickupSpell or C_Spell.PickupSpell
+local GetSpellLink = GetSpellLink or C_Spell.GetSpellLink
+
 ---@class MountsSearchProvider : SearchProvider, AceEvent-3.0
 local MountsSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.mounts)
 MountsSearchProvider.description = L.mounts_search_provider_desc
