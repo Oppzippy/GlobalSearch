@@ -2,7 +2,7 @@
 ## Interface-Classic: 11504
 ## Interface-BCC: 20504
 ## Interface-Wrath: 30403
-## Interface-Cata: 40400
+## Interface-Cata: 40401
 ## Title: Global Search
 ## Notes: Search for anything.
 ## Author: Oppzippy
