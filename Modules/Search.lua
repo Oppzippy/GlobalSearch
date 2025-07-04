@@ -211,6 +211,11 @@ function module:OnSelectionChanged(_, item)
 
 	searchExecute:SetAttribute("type", "macro")
 	searchExecute:SetAttribute("macrotext", self.searchUI:GetSelectedItem().macroText)
+	-- On classic, registering for anydown and anyup works as expected. On retail, it doesn't, since pressAndHoldAction exists.
+	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+		searchExecute:SetAttribute("pressAndHoldAction", "1")
+		searchExecute:SetAttribute("typerelease", "macro")
+	end
 
 	SetOverrideBindingClick(searchExecute, true, "ENTER", "GlobalSearchExecuteButton")
 end
