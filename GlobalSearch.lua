@@ -11,6 +11,7 @@ local L = AceLocale:GetLocale("GlobalSearch")
 
 ---@class GlobalSearch : AceAddon, AceEvent-3.0, AceConsole-3.0
 local GlobalSearch = AceAddon:NewAddon("GlobalSearch", "AceEvent-3.0", "AceConsole-3.0")
+ns.addon = GlobalSearch
 GlobalSearch:SetDefaultModulePrototype(ns.ModulePrototype.Create(GlobalSearch))
 GlobalSearch.providerRegistry = ns.SearchProviderRegistry.Create()
 GlobalSearch.queuedMessages = {}

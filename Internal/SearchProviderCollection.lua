@@ -34,6 +34,8 @@ function SearchProviderCollectionPrototype:GetProviderItemsAsync(providerID)
 			return {}
 		end
 
+		--- parameters 3+ get passed as arguments to the first, but lua-ls doesn't seem to recognize this
+		---@diagnostic disable-next-line: redundant-parameter
 		local success, itemGroup = xpcall(provider.Get, geterrorhandler and geterrorhandler() or print, provider)
 		coroutine.yield()
 
@@ -41,11 +43,37 @@ function SearchProviderCollectionPrototype:GetProviderItemsAsync(providerID)
 			local decoratedItemGroup = decoratedItemGroupCache[itemGroup]
 			if not decoratedItemGroup then
 				decoratedItemGroup = {}
+				-- In addition to adding category and provider information, also validate
 				for i, item in ipairs(itemGroup) do
-					decoratedItemGroup[i] = setmetatable({
-						providerID = providerID,
-						category = provider.name,
-					}, { __index = item })
+					local isValid, errorMessage = ns.ValidateSearchItem(item)
+					if isValid then
+						decoratedItemGroup[#decoratedItemGroup + 1] = setmetatable({
+							providerID = providerID,
+							category = provider.name,
+						}, { __index = item })
+					else
+						-- skip in tests
+						if ns.addon and ns.addon:IsDebugMode() then
+							---@diagnostic disable-next-line: undefined-global
+							if DevTool then
+								---@diagnostic disable-next-line: undefined-global
+								DevTool:AddData({
+									providerID = providerID,
+									category = provider.name,
+									item = item,
+									error = errorMessage,
+								})
+							end
+							ns.addon:Debugf(
+								"Invalid item from provider id %s (%s): index %d name %s: %s",
+								providerID,
+								provider.name or "nil",
+								i,
+								type(item) == "table" and type(item.name) == "string" and item.name or "nil",
+								errorMessage or "nil"
+							)
+						end
+					end
 				end
 				decoratedItemGroupCache[itemGroup] = decoratedItemGroup
 			end
