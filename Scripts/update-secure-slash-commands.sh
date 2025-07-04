@@ -1,6 +1,5 @@
 #!/bin/bash
-set -e
-set -o pipefail
+set -euo pipefail
 
 get_slash_commands_from_url() {
 	echo "{"

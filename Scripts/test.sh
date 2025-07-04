@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
-set -o pipefail
+set -euo pipefail
 
 lua5.1 Tests/Test.lua
