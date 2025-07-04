@@ -2,7 +2,7 @@
 ---@field id? any
 ---@field providerID? string
 ---@field name string
----@field category string
+---@field category? string
 ---@field texture number|string|fun(texture: Texture)
 ---@field extraSearchText? string
 ---@field action? function
