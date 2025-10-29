@@ -3,7 +3,7 @@
 ## Interface-BCC: 20504
 ## Interface-Wrath: 30403
 ## Interface-Cata: 40402
-## Interface-Mists: 50501
+## Interface-Mists: 50502
 ## Title: Global Search
 ## Notes: Search for anything.
 ## Author: Oppzippy
