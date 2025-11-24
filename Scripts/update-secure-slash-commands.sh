@@ -9,12 +9,12 @@ get_slash_commands_from_url() {
 
 get_slash_commands_for_all_versions() {
 	declare -A urls
-	urls["\"default\""]="https://raw.githubusercontent.com/BigWigsMods/WoWUI/live/AddOns/Blizzard_ChatFrameBase/Mainline/ChatFrame.lua"
-	urls["0"]="https://raw.githubusercontent.com/BigWigsMods/WoWUI/vanilla/Interface/AddOns/Blizzard_ChatFrameBase/Classic/ChatFrame.lua"
+	urls["\"default\""]="https://raw.githubusercontent.com/BigWigsMods/WoWUI/refs/heads/live/AddOns/Blizzard_ChatFrameBase/Shared/SlashCommands.lua"
+	urls["0"]="https://raw.githubusercontent.com/BigWigsMods/WoWUI/refs/heads/vanilla/Interface/AddOns/Blizzard_ChatFrameBase/Shared/SlashCommands.lua"
 	urls["1"]="https://raw.githubusercontent.com/BigWigsMods/WoWUI/tbc/Interface/FrameXML/ChatFrame.lua"
-	urls["2"]="https://raw.githubusercontent.com/BigWigsMods/WoWUI/wrath/Interface/FrameXML/ChatFrame.lua"
+	urls["2"]="https://raw.githubusercontent.com/BigWigsMods/WoWUI/refs/heads/wrath/Interface/AddOns/Blizzard_ChatFrameBase/Classic/ChatFrame.lua"
 	urls["3"]="https://raw.githubusercontent.com/BigWigsMods/WoWUI/cata/Interface/AddOns/Blizzard_ChatFrameBase/Classic/ChatFrame.lua"
-	urls["4"]="https://raw.githubusercontent.com/BigWigsMods/WoWUI/mists/Interface/AddOns/Blizzard_ChatFrameBase/Classic/ChatFrame.lua"
+	urls["4"]="https://raw.githubusercontent.com/BigWigsMods/WoWUI/refs/heads/mists/Interface/AddOns/Blizzard_ChatFrameBase/Shared/SlashCommands.lua"
 
 	for key in "${!urls[@]}"; do
 		echo ""
