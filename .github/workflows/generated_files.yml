@@ -6,7 +6,7 @@ jobs:
   update-secure-slash-commands:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Update secure slash commands
         run: ./Scripts/update-secure-slash-commands.sh > Generated/SecureSlashCommands.lua
 
