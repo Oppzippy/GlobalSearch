@@ -10,7 +10,13 @@ SlashCommandsSearchProvider.description = L.slash_commands_search_provider_desc
 
 ---@return SearchItem[]
 function SlashCommandsSearchProvider:Fetch()
-	ChatFrame_ImportAllListsToHash()
+	if ChatFrame_ImportAllListsToHash then
+		-- classic
+		ChatFrame_ImportAllListsToHash()
+	else
+		-- retail
+		ChatFrameUtil.ImportAllListsToHash()
+	end
 	local commands = {}
 	for command in next, hash_SlashCmdList do
 		commands[command] = true

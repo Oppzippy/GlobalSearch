@@ -9,7 +9,13 @@ local EmotesSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.e
 
 ---@return SearchItem[]
 function EmotesSearchProvider:Fetch()
-	ChatFrame_ImportAllListsToHash()
+	if ChatFrame_ImportAllListsToHash then
+		-- classic
+		ChatFrame_ImportAllListsToHash()
+	else
+		-- retail
+		ChatFrameUtil.ImportAllListsToHash()
+	end
 	local items = {}
 	for cmd, emote in next, hash_EmoteTokenList do
 		local codePoints = ns.UTF8.ToCodePoints(cmd)
