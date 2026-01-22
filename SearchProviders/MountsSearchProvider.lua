@@ -75,7 +75,8 @@ do
 		[34090] = true, -- Expert Riding
 		[90265] = true, -- Master Riding
 	}
-	function MountsSearchProvider:LEARNED_SPELL_IN_TAB(_, spellID)
+	-- clear cache when we learn a higher riding level
+	function MountsSearchProvider:OnLearnedSpell(_, spellID)
 		if ridingSpellIDs[spellID] then
 			self:ClearCache()
 		end
@@ -84,6 +85,14 @@ end
 
 MountsSearchProvider:RegisterEvent("NEW_MOUNT_ADDED", "ClearCache")
 MountsSearchProvider:RegisterEvent("MOUNT_JOURNAL_USABILITY_CHANGED", "ClearCache")
-MountsSearchProvider:RegisterEvent("LEARNED_SPELL_IN_TAB")
+
+-- both have spellID as the first parameter
+if C_EventUtils.IsEventValid("LEARNED_SPELL_IN_SKILL_LINE") then
+	-- retail
+	MountsSearchProvider:RegisterEvent("LEARNED_SPELL_IN_SKILL_LINE", "OnLearnedSpell")
+else
+	-- classic
+	MountsSearchProvider:RegisterEvent("LEARNED_SPELL_IN_TAB", "OnLearnedSpell")
+end
 
 GlobalSearchAPI:RegisterProvider("GlobalSearch_Mounts", MountsSearchProvider)
