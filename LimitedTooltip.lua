@@ -26,7 +26,8 @@ local function getAllowedFunctions()
 			allowedFunctions[key] = true
 		end
 		-- Retail has set functions on the table itself as of 10.0.2, and classic still has them in the metatable
-		local functionTable = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and GameTooltip or getmetatable(GameTooltip).__index
+		local functionTable = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE or WOW_PROJECT_ID == WOW_PROJECT_CAMELOT) and
+			GameTooltip or getmetatable(GameTooltip).__index
 		for key, value in next, functionTable do
 			if type(key) == "string" and type(value) == "function" and not disallowedFunctions[key] then
 				if key:find("^Set[A-Z]") then

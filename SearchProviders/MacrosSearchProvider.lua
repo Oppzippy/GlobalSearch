@@ -9,6 +9,8 @@ local L = AceLocale:GetLocale("GlobalSearch")
 local MacrosSearchProvider = GlobalSearchAPI:CreateProvider(L.global_search, L.macros)
 AceEvent:Embed(MacrosSearchProvider)
 
+local MAX_ACCOUNT_MACROS = MAX_ACCOUNT_MACROS or Constants.MacroConsts.MAX_ACCOUNT_MACROS
+
 ---@return fun(): SearchItem?
 function MacrosSearchProvider:Fetch()
 	return coroutine.wrap(function(...)

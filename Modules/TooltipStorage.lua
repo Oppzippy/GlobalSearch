@@ -39,7 +39,7 @@ end
 ---@param ... unknown
 ---@return string
 function module:GetTooltip(functionSuffix, ...)
-	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE or WOW_PROJECT_ID == WOW_PROJECT_CAMELOT then
 		return self:GetTooltipRetail("Get" .. functionSuffix, ...)
 	else
 		return self:GetTooltipClassic("Set" .. functionSuffix, ...)
