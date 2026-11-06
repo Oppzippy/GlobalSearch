@@ -16,10 +16,10 @@ jobs:
         with:
           flavor: |
             forever
+            classic_era
+            titan
+            anniversary
             classic
-            tbc
-            wrath
-            mists
             retail
 
       - name: Create pull request
