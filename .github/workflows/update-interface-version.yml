@@ -16,7 +16,7 @@ jobs:
         with:
           flavor: |
             forever
-            classic_era
+            vanilla
             titan
             anniversary
             classic
